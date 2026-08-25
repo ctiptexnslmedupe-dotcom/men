@@ -77,7 +77,7 @@
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-luxe-gold selection:text-black relative">
 
-    <!-- CAPA VISUAL DE FONDO: LOGO DIFUMINADO & AURORA ORBS -->
+    <!-- CAPA VISUAL DE FONDO -->
     <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[750px] h-[550px] bg-gradient-to-b from-amber-600/15 via-luxe-gold/8 to-transparent rounded-full blur-3xl"></div>
         <div class="absolute -bottom-40 right-[-10%] w-[600px] h-[600px] bg-amber-900/10 rounded-full blur-[140px]"></div>
@@ -110,7 +110,6 @@
                 </div>
             </div>
 
-            <!-- Identificador de Mesa del Comensal -->
             <div class="bg-luxe-card border border-luxe-gold/30 px-3.5 py-1.5 rounded-xl flex items-center gap-2 shadow-sm">
                 <i class="fa-solid fa-chair text-luxe-gold text-xs"></i>
                 <span id="lblMesaHeader" class="text-xs font-black font-luxury-serif text-luxe-stone">Mesa 04</span>
@@ -122,48 +121,71 @@
     <main class="flex-1 max-w-4xl mx-auto w-full px-4 py-6 pb-32 relative z-10">
         
         <!-- SUBSECCIÓN A: MENÚ GASTRONÓMICO -->
-        <div id="subseccionMenu" class="space-y-6">
+        <div id="subseccionMenu" class="space-y-5">
             
             <!-- Hero Banner -->
-            <div class="relative overflow-hidden rounded-3xl border border-luxe-border shadow-2xl h-48 flex items-end p-6 bg-cover bg-center" style="background-image: linear-gradient(to top, rgba(17,16,14,0.95) 15%, rgba(17,16,14,0.4) 65%, rgba(17,16,14,0.1) 100%), url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85');">
+            <div class="relative overflow-hidden rounded-3xl border border-luxe-border shadow-2xl h-44 flex items-end p-5 bg-cover bg-center" style="background-image: linear-gradient(to top, rgba(17,16,14,0.95) 15%, rgba(17,16,14,0.4) 65%, rgba(17,16,14,0.1) 100%), url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85');">
                 <div class="relative z-10">
-                    <span class="px-3 py-1 rounded-full text-[9px] font-extrabold uppercase tracking-[0.2em] bg-luxe-surface/90 text-luxe-gold border border-luxe-border inline-block mb-1.5 backdrop-blur-md">
+                    <span class="px-3 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-[0.2em] bg-luxe-surface/90 text-luxe-gold border border-luxe-border inline-block mb-1 backdrop-blur-md">
                         Alta Cocina • Macros Dinámicos
                     </span>
-                    <h2 class="text-xl font-luxury-serif font-black text-luxe-stone">Experiencia en <span id="lblMesaHero" class="text-luxe-gold">Mesa 04</span></h2>
-                    <p class="text-xs text-luxe-muted mt-0.5 max-w-sm">Personaliza cada plato con extras y observa cómo se recalculan los macros en tiempo real.</p>
+                    <h2 class="text-lg sm:text-xl font-luxury-serif font-black text-luxe-stone">Experiencia en <span id="lblMesaHero" class="text-luxe-gold">Mesa 04</span></h2>
+                    <p class="text-[11px] text-luxe-muted max-w-sm">Personaliza cada plato con extras y observa cómo se recalculan los macros en tiempo real.</p>
                 </div>
             </div>
 
+            <!-- Buscador Rápido de Platos -->
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-luxe-muted text-xs"></i>
+                <input type="text" id="inputBuscadorPlatos" oninput="buscarPlatosEnVivo(this.value)" placeholder="Buscar por nombre, ingrediente (ej. Salmón, Angus, Quinoa)..." class="w-full bg-luxe-card/90 text-xs text-luxe-stone pl-10 pr-4 py-3 rounded-2xl border border-luxe-border focus:border-luxe-gold focus:outline-none backdrop-blur-md shadow-sm">
+            </div>
+
             <!-- Filtro de Categorías -->
-            <div class="flex space-x-2.5 overflow-x-auto pb-1 custom-scroll text-xs">
-                <button onclick="filtrarCategoria('todos', event)" class="cat-pill active px-4 py-2.5 rounded-xl font-bold bg-luxe-gold text-black whitespace-nowrap transition shadow-md">Todas las Creaciones</button>
-                <button onclick="filtrarCategoria('entradas', event)" class="cat-pill px-4 py-2.5 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Entradas & Crudos</button>
-                <button onclick="filtrarCategoria('fondos', event)" class="cat-pill px-4 py-2.5 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Principales & Fuego</button>
-                <button onclick="filtrarCategoria('bebidas', event)" class="cat-pill px-4 py-2.5 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Elixires & Vinos</button>
-                <button onclick="filtrarCategoria('postres', event)" class="cat-pill px-4 py-2.5 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Postres Sin Azúcar</button>
+            <div class="flex space-x-2 overflow-x-auto pb-1 custom-scroll text-xs">
+                <button onclick="filtrarCategoria('todos', event)" class="cat-pill active px-3.5 py-2 rounded-xl font-bold bg-luxe-gold text-black whitespace-nowrap transition shadow-md">Todas las Creaciones</button>
+                <button onclick="filtrarCategoria('entradas', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Entradas</button>
+                <button onclick="filtrarCategoria('fondos', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Principales</button>
+                <button onclick="filtrarCategoria('bebidas', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Elixires</button>
+                <button onclick="filtrarCategoria('postres', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Postres</button>
             </div>
 
             <!-- Grilla de Platos -->
-            <div id="gridCatalogoPlatos" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+            <div id="gridCatalogoPlatos" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </div>
 
-        <!-- SUBSECCIÓN B: TICKET ACUMULADO (EN VIVO CON MODIFICACIONES EN TIEMPO REAL) -->
+        <!-- SUBSECCIÓN B: TICKET ACUMULADO (CON LÍNEA DE TIEMPO EN VIVO) -->
         <div id="subseccionTicket" class="hidden space-y-5 max-w-2xl mx-auto">
             
+            <!-- Banner Status Cocina con Línea de Tiempo Dinámica -->
             <div class="bg-luxe-card/90 backdrop-blur-md p-5 rounded-3xl border border-luxe-gold/30 shadow-2xl relative overflow-hidden">
-                <div class="flex items-center space-x-4 mb-2">
+                <div class="flex items-center space-x-4 mb-4">
                     <div class="w-12 h-12 rounded-2xl bg-luxe-surface border border-luxe-gold/40 text-luxe-gold flex items-center justify-center font-black text-xl gold-glow">
                         🍳
                     </div>
                     <div>
-                        <span class="text-[10px] tracking-[0.2em] text-luxe-gold font-bold uppercase">Comanda Recibida en Cocina</span>
-                        <h3 class="text-base font-luxury-serif font-black text-luxe-stone">¡El Chef está elaborando tu pedido!</h3>
-                        <p class="text-xs text-luxe-muted">Tu cuenta acumulada se mantiene sincronizada para esta mesa.</p>
+                        <span class="text-[10px] tracking-[0.2em] text-luxe-gold font-bold uppercase">Estado de Comanda en Tiempo Real</span>
+                        <h3 id="lblStatusCocinaHeader" class="text-base font-luxury-serif font-black text-luxe-stone">Comanda en Preparación</h3>
                     </div>
                 </div>
-                <div class="w-full bg-luxe-surface rounded-full h-1.5 mt-3 overflow-hidden border border-luxe-border">
-                    <div class="bg-gradient-to-r from-luxe-goldMuted to-luxe-gold h-full rounded-full w-3/4 animate-pulse"></div>
+
+                <!-- Live Stepper (Línea de Progreso Visual) -->
+                <div class="bg-luxe-surface/80 p-3 rounded-2xl border border-luxe-border/60">
+                    <div class="flex justify-between items-center text-[10px] font-bold text-center">
+                        <div class="flex-1 flex flex-col items-center">
+                            <span id="stepDot1" class="w-4 h-4 rounded-full bg-luxe-gold text-black flex items-center justify-center text-[9px] mb-1"><i class="fa-solid fa-check"></i></span>
+                            <span class="text-luxe-stone">Recibido</span>
+                        </div>
+                        <div id="stepLine1" class="h-[2px] flex-1 bg-luxe-gold/40 transition-colors"></div>
+                        <div class="flex-1 flex flex-col items-center">
+                            <span id="stepDot2" class="w-4 h-4 rounded-full bg-amber-400 text-black flex items-center justify-center text-[9px] mb-1 animate-pulse"><i class="fa-solid fa-fire"></i></span>
+                            <span class="text-amber-300">En Fuego</span>
+                        </div>
+                        <div id="stepLine2" class="h-[2px] flex-1 bg-luxe-border transition-colors"></div>
+                        <div class="flex-1 flex flex-col items-center">
+                            <span id="stepDot3" class="w-4 h-4 rounded-full bg-luxe-card border border-luxe-border text-luxe-muted flex items-center justify-center text-[9px] mb-1"><i class="fa-solid fa-utensils"></i></span>
+                            <span class="text-luxe-muted">En Mesa</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -183,7 +205,7 @@
 
                 <div class="p-6 bg-luxe-surface/90 border-t border-luxe-border space-y-2">
                     <div class="flex justify-between text-xs text-luxe-muted">
-                        <span>Subtotal de consumo neto</span>
+                        <span>Subtotal neto</span>
                         <span id="ticketSubtotalNeto">S/ 0.00</span>
                     </div>
                     <div class="flex justify-between text-xs text-luxe-muted">
@@ -239,7 +261,7 @@
         </button>
     </div>
 
-    <!-- MODAL DETALLE DE PLATO: EXTRAS & MACROS DINÁMICOS -->
+    <!-- MODAL DETALLE DE PLATO -->
     <div id="modalDetallePlato" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-luxe-surface w-full max-w-lg rounded-t-3xl sm:rounded-3xl border border-luxe-border overflow-hidden max-h-[92vh] flex flex-col shadow-2xl">
             
@@ -353,78 +375,86 @@
         </div>
     </div>
 
-    <!-- MODAL PEDIR LA CUENTA CON SEPARACIÓN DE CUENTA (SPLIT BILL) -->
+    <!-- MODAL PEDIR LA CUENTA: CON PROPINA VOLUNTARIA Y DIVISIÓN EXACTA -->
     <div id="modalPagarCuenta" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-luxe-surface w-full max-w-md rounded-3xl border border-luxe-border p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto custom-scroll">
             <button onclick="cerrarModalPedirCuenta()" class="absolute top-4 right-4 text-luxe-muted hover:text-white">
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
-            <div class="text-center mb-4">
-                <div class="w-12 h-12 rounded-2xl bg-luxe-card border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-2 text-xl font-bold">
+            <div class="text-center mb-3">
+                <div class="w-10 h-10 rounded-2xl bg-luxe-card border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-1.5 text-base font-bold">
                     <i class="fa-solid fa-receipt"></i>
                 </div>
                 <h3 class="text-base font-luxury-serif font-black text-luxe-stone">Solicitud de Cuenta</h3>
-                <p class="text-xs text-luxe-muted mt-0.5"><span id="lblModalPagarMesa" class="text-luxe-gold font-bold">Mesa 04</span></p>
+                <p class="text-xs text-luxe-muted"><span id="lblModalPagarMesa" class="text-luxe-gold font-bold">Mesa 04</span></p>
             </div>
 
-            <!-- TOTAL GLOBAL -->
+            <!-- TOTAL GLOBAL CON PROPINA INTEGRADA -->
             <div class="bg-luxe-card p-4 rounded-2xl border border-luxe-border text-center mb-3">
-                <span class="text-[10px] uppercase tracking-widest text-luxe-muted font-extrabold block">Total Global de la Mesa</span>
+                <span class="text-[9px] uppercase tracking-widest text-luxe-muted font-extrabold block">Total a Pagar</span>
                 <span id="lblModalPagarTotal" class="text-3xl font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
+                <span id="lblPropinaDesglose" class="text-[10px] text-amber-300/80 block mt-0.5 hidden">+ S/ 0.00 de servicio voluntario</span>
             </div>
 
-            <!-- CALCULADORA DE SEPARACIÓN DE CUENTA (SPLIT BILL) -->
-            <div class="bg-luxe-card/80 p-3.5 rounded-2xl border border-luxe-border/80 mb-4">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-[10px] font-black uppercase tracking-widest text-luxe-gold flex items-center gap-1">
-                        <i class="fa-solid fa-users"></i> ¿Dividir Cuenta en Partes Iguales?
-                    </span>
+            <!-- SELECTOR DE PROPINA SUGERIDA -->
+            <div class="bg-luxe-card/80 p-3 rounded-2xl border border-luxe-border/80 mb-3">
+                <span class="text-[9px] font-black uppercase tracking-widest text-luxe-muted block mb-1.5 text-center">
+                    ✨ Servicio Sugerido al Personal
+                </span>
+                <div class="flex items-center gap-1">
+                    <button type="button" onclick="seleccionarPropina(0)" class="btn-tip active flex-1 py-1 rounded-lg bg-luxe-surface border border-luxe-gold text-luxe-gold font-bold text-[11px]">0%</button>
+                    <button type="button" onclick="seleccionarPropina(10)" class="btn-tip flex-1 py-1 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-[11px]">10%</button>
+                    <button type="button" onclick="seleccionarPropina(15)" class="btn-tip flex-1 py-1 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-[11px]">15%</button>
+                    <button type="button" onclick="seleccionarPropina(20)" class="btn-tip flex-1 py-1 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-[11px]">20%</button>
                 </div>
-                <div class="flex items-center gap-1.5 mb-2">
-                    <button type="button" onclick="calcularSplitBill(1)" class="btn-split active flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-gold text-luxe-gold font-bold text-xs">1 pers</button>
+            </div>
+
+            <!-- DIVISIÓN DE CUENTA 100% SIMÉTRICA (1, 2, 3, 4, 5+) -->
+            <div class="bg-luxe-card/80 p-3 rounded-2xl border border-luxe-border/80 mb-4">
+                <span class="text-[9px] font-black uppercase tracking-widest text-luxe-gold block mb-1.5 text-center">
+                    <i class="fa-solid fa-users mr-1"></i> Dividir Cuenta en Partes Iguales
+                </span>
+                <div class="flex items-center gap-1 mb-2">
+                    <button type="button" onclick="calcularSplitBill(1)" class="btn-split active flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-gold text-luxe-gold font-bold text-xs">1</button>
                     <button type="button" onclick="calcularSplitBill(2)" class="btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-xs">2</button>
                     <button type="button" onclick="calcularSplitBill(3)" class="btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-xs">3</button>
                     <button type="button" onclick="calcularSplitBill(4)" class="btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-xs">4</button>
                     <button type="button" onclick="calcularSplitBill(5)" class="btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-xs">5+</button>
                 </div>
                 <div id="boxResultadoSplit" class="text-center py-1.5 px-3 bg-luxe-surface rounded-xl border border-luxe-gold/30 hidden">
-                    <span class="text-[10px] text-luxe-muted block">Monto exacto por persona:</span>
+                    <span class="text-[9px] text-luxe-muted block">Monto por comensal:</span>
                     <span id="lblMontoPorPersona" class="text-base font-black text-amber-300 font-luxury-serif">S/ 0.00 c/u</span>
                 </div>
             </div>
 
             <!-- MÉTODOS DE PAGO -->
-            <div class="space-y-2 mb-4">
-                <label class="flex items-center p-3 rounded-xl bg-luxe-card border border-luxe-border cursor-pointer hover:border-luxe-gold/50 transition">
+            <div class="space-y-1.5 mb-4">
+                <label class="flex items-center p-2.5 rounded-xl bg-luxe-card border border-luxe-border cursor-pointer hover:border-luxe-gold/50 transition">
                     <input type="radio" name="radioMetodoPago" value="Yape / Plin (QR)" checked onchange="toggleMetodoQR(true)" class="accent-luxe-gold mr-3">
                     <div class="flex-1">
                         <span class="text-xs font-bold text-luxe-stone block">📲 Yape / Plin Digital</span>
-                        <span class="text-[10px] text-luxe-muted">Escaneo rápido desde tu teléfono</span>
+                        <span class="text-[10px] text-luxe-muted">QR Digital al instante</span>
                     </div>
                 </label>
-                <label class="flex items-center p-3 rounded-xl bg-luxe-card border border-luxe-border cursor-pointer hover:border-luxe-gold/50 transition">
+                <label class="flex items-center p-2.5 rounded-xl bg-luxe-card border border-luxe-border cursor-pointer hover:border-luxe-gold/50 transition">
                     <input type="radio" name="radioMetodoPago" value="Tarjeta (POS Inalámbrico)" onchange="toggleMetodoQR(false)" class="accent-luxe-gold mr-3">
                     <div class="flex-1">
-                        <span class="text-xs font-bold text-luxe-stone block">💳 Tarjeta (Visa / MC / Amex)</span>
-                        <span class="text-[10px] text-luxe-muted">El mozo acude con el terminal POS inalámbrico</span>
+                        <span class="text-xs font-bold text-luxe-stone block">💳 Tarjeta (POS)</span>
+                        <span class="text-[10px] text-luxe-muted">El mozo trae el terminal</span>
                     </div>
                 </label>
-                <label class="flex items-center p-3 rounded-xl bg-luxe-card border border-luxe-border cursor-pointer hover:border-luxe-gold/50 transition">
+                <label class="flex items-center p-2.5 rounded-xl bg-luxe-card border border-luxe-border cursor-pointer hover:border-luxe-gold/50 transition">
                     <input type="radio" name="radioMetodoPago" value="Efectivo" onchange="toggleMetodoQR(false)" class="accent-luxe-gold mr-3">
                     <div class="flex-1">
                         <span class="text-xs font-bold text-luxe-stone block">💵 Efectivo</span>
-                        <span class="text-[10px] text-luxe-muted">Pago en billetes o moneda</span>
+                        <span class="text-[10px] text-luxe-muted">Pago en billetes</span>
                     </div>
                 </label>
             </div>
 
-            <!-- ========================================================================= -->
-            <!-- AQUÍ PUEDES REEMPLAZAR EL QR POR UNA FOTO REAL DE TU YAPE / PLIN          -->
-            <!-- Ejemplo: <img src="mi-qr-yape.jpg" class="w-40 h-40 mx-auto rounded-xl">  -->
-            <!-- ========================================================================= -->
             <div id="boxQrYapePlin" class="bg-white p-3 rounded-2xl text-center mb-4 flex flex-col items-center justify-center">
-                <svg class="w-28 h-28" viewBox="0 0 100 100" fill="none">
+                <svg class="w-24 h-24" viewBox="0 0 100 100" fill="none">
                     <rect width="100" height="100" fill="white"/>
                     <path d="M10 10H40V40H10V10ZM16 16V34H34V16H16Z" fill="#11100e"/>
                     <rect x="22" y="22" width="6" height="6" fill="#d4af37"/>
@@ -434,10 +464,10 @@
                     <rect x="22" y="72" width="6" height="6" fill="#d4af37"/>
                     <circle cx="50" cy="50" r="8" fill="#d4af37"/>
                 </svg>
-                <span class="text-[10px] font-black text-slate-900 mt-1 uppercase font-luxury-serif">AUREUS RESERVE S.A.C.</span>
+                <span class="text-[9px] font-black text-slate-900 mt-1 uppercase font-luxury-serif">AUREUS RESERVE S.A.C.</span>
             </div>
 
-            <button onclick="confirmarSolicitudDeCuenta()" class="w-full py-3.5 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow-lg transition">
+            <button onclick="confirmarSolicitudDeCuenta()" class="w-full py-3 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow-lg transition">
                 Confirmar y Llamar al Mozo
             </button>
         </div>
@@ -466,9 +496,6 @@
         }
         const db = firebase.database();
 
-        // =========================================================================
-        // AQUÍ PUEDES CAMBIAR LAS FOTOS, PRECIOS Y EXTRAS DE CADA PLATO
-        // =========================================================================
         const PRODUCTOS_CATALOGO = [
             {
                 id: 1,
@@ -577,7 +604,9 @@
         let cantidadModal = 1;
         let extrasSeleccionadosModal = [];
         let carritoRondaTemporal = [];
-        let totalCuentaActual = 0;
+        let totalConsumoBase = 0;
+        let porcentajePropina = 0;
+        let personasSplit = 1;
 
         function reproducirSonido(tipo) {
             try {
@@ -652,33 +681,54 @@
 
             const mesaKey = mesaActual.replace(/\s+/g, '_');
             
-            // Escuchar cambios de comanda (si el cajero cancela un plato, se actualiza solo en vivo)
+            // Escuchar cambios de mesa en vivo desde Firebase
             db.ref('mesas/' + mesaKey).on('value', (snapshot) => {
                 const dataMesa = snapshot.val();
                 if (dataMesa && dataMesa.comandas && dataMesa.comandas.length > 0) {
-                    totalCuentaActual = dataMesa.totalAcumulado || 0;
+                    totalConsumoBase = dataMesa.totalAcumulado || 0;
                     renderizarTicketEnVivoCliente(dataMesa);
+                    actualizarStepperProgreso(dataMesa);
                     document.getElementById('subseccionMenu').classList.add('hidden');
                     document.getElementById('subseccionTicket').classList.remove('hidden');
                 } else {
-                    totalCuentaActual = 0;
+                    totalConsumoBase = 0;
                     document.getElementById('subseccionMenu').classList.remove('hidden');
                     document.getElementById('subseccionTicket').classList.add('hidden');
                 }
             });
         });
 
+        // BUSCADOR DE PLATOS EN TIEMPO REAL
+        function buscarPlatosEnVivo(texto) {
+            const query = texto.toLowerCase().trim();
+            if (!query) {
+                renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
+                return;
+            }
+            const filtrados = PRODUCTOS_CATALOGO.filter(p => 
+                p.nombre.toLowerCase().includes(query) || 
+                p.desc.toLowerCase().includes(query) ||
+                p.tag.toLowerCase().includes(query)
+            );
+            renderizarCatalogoMenu(filtrados);
+        }
+
         function renderizarCatalogoMenu(platos) {
             const grid = document.getElementById('gridCatalogoPlatos');
             grid.innerHTML = '';
+
+            if (platos.length === 0) {
+                grid.innerHTML = '<div class="col-span-2 text-center py-10 text-luxe-muted text-xs"><i class="fa-solid fa-utensils text-2xl mb-2 text-luxe-border block"></i>No encontramos platos con ese nombre.</div>';
+                return;
+            }
 
             platos.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'bg-luxe-card/90 backdrop-blur-md rounded-3xl p-4 border border-luxe-border hover:border-luxe-gold/40 transition-all duration-300 flex flex-col sm:flex-row gap-4 shadow-xl';
                 card.innerHTML = `
-                    <div class="w-full sm:w-40 h-40 rounded-2xl overflow-hidden relative cursor-pointer flex-shrink-0" onclick="abrirModalDetallePlato(${p.id})">
+                    <div class="w-full sm:w-36 h-36 rounded-2xl overflow-hidden relative cursor-pointer flex-shrink-0" onclick="abrirModalDetallePlato(${p.id})">
                         <img src="${p.img}" alt="${p.nombre}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
-                        <span class="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-luxe-base/85 backdrop-blur-md text-luxe-gold text-[9px] font-extrabold tracking-wider uppercase">
+                        <span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-luxe-base/85 backdrop-blur-md text-luxe-gold text-[8px] font-extrabold tracking-wider uppercase">
                             ${p.tag}
                         </span>
                     </div>
@@ -686,10 +736,10 @@
                         <div>
                             <div class="flex justify-between items-start gap-2">
                                 <h4 onclick="abrirModalDetallePlato(${p.id})" class="text-sm font-luxury-serif font-black text-luxe-stone hover:text-luxe-gold cursor-pointer transition leading-snug">${p.nombre}</h4>
-                                <span class="text-base font-luxury-serif font-black text-luxe-gold whitespace-nowrap">S/ ${p.precioBase.toFixed(2)}</span>
+                                <span class="text-sm font-luxury-serif font-black text-luxe-gold whitespace-nowrap">S/ ${p.precioBase.toFixed(2)}</span>
                             </div>
                             <p class="text-xs text-luxe-muted mt-1 line-clamp-2 leading-relaxed">${p.desc}</p>
-                            <div class="flex items-center gap-2 mt-2.5 text-[9px] font-bold">
+                            <div class="flex items-center gap-2 mt-2 text-[9px] font-bold">
                                 <span class="text-amber-300 bg-luxe-surface px-2 py-0.5 rounded-md border border-luxe-border">${p.kcal} kcal</span>
                                 <span class="text-luxe-gold bg-luxe-surface px-2 py-0.5 rounded-md border border-luxe-border">Prot: ${p.prot}g</span>
                                 <span class="text-luxe-muted bg-luxe-surface px-2 py-0.5 rounded-md border border-luxe-border">${p.extrasDisponibles.length} extras</span>
@@ -699,7 +749,7 @@
                             <button onclick="abrirModalDetallePlato(${p.id})" class="text-[11px] font-bold text-luxe-muted hover:text-luxe-stone flex items-center gap-1">
                                 <span>Macros & Extras</span> <i class="fa-solid fa-arrow-right text-[9px]"></i>
                             </button>
-                            <button onclick="abrirModalDetallePlato(${p.id})" class="px-4 py-2 bg-luxe-gold hover:bg-luxe-goldLight text-black text-xs font-black rounded-xl transition flex items-center gap-1.5 shadow">
+                            <button onclick="abrirModalDetallePlato(${p.id})" class="px-3.5 py-1.5 bg-luxe-gold hover:bg-luxe-goldLight text-black text-xs font-black rounded-xl transition flex items-center gap-1.5 shadow">
                                 <i class="fa-solid fa-plus text-[10px]"></i> Pedir
                             </button>
                         </div>
@@ -712,9 +762,9 @@
         function filtrarCategoria(cat, event) {
             reproducirSonido('tap');
             document.querySelectorAll('.cat-pill').forEach(btn => {
-                btn.className = 'cat-pill px-4 py-2.5 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm';
+                btn.className = 'cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm';
             });
-            event.currentTarget.className = 'cat-pill active px-4 py-2.5 rounded-xl font-bold bg-luxe-gold text-black whitespace-nowrap transition shadow-md';
+            event.currentTarget.className = 'cat-pill active px-3.5 py-2 rounded-xl font-bold bg-luxe-gold text-black whitespace-nowrap transition shadow-md';
 
             if (cat === 'todos') {
                 renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
@@ -897,7 +947,7 @@
                 }
 
                 const card = document.createElement('div');
-                card.className = 'p-3.5 bg-luxe-card rounded-2xl border border-luxe-border flex justify-between items-start';
+                card.className = 'p-3 bg-luxe-card rounded-2xl border border-luxe-border flex justify-between items-start';
                 card.innerHTML = `
                     <div class="flex-1 pr-3">
                         <span class="text-xs font-luxury-serif font-black text-luxe-stone block">${it.cantidad}x ${it.nombre}</span>
@@ -937,10 +987,7 @@
         }
 
         function enviarPedidoACocinaFinal() {
-            if (carritoRondaTemporal.length === 0) {
-                alert("Tu carrito está vacío. Agrega al menos un plato.");
-                return;
-            }
+            if (carritoRondaTemporal.length === 0) return;
 
             const btnEnviar = document.getElementById('btnEnviarCocinaModal');
             btnEnviar.disabled = true;
@@ -975,7 +1022,6 @@
                 };
 
                 dataMesa.comandas.push(nuevaComanda);
-
                 return db.ref('mesas/' + mesaKey).set(dataMesa);
             }).then(() => {
                 btnEnviar.disabled = false;
@@ -990,6 +1036,42 @@
                 btnEnviar.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Confirmar y Enviar a Cocina';
                 alert("Error al enviar pedido: " + error.message);
             });
+        }
+
+        // ACTUALIZAR STEPPER DE PROGRESO SEGÚN COCINA
+        function actualizarStepperProgreso(dataMesa) {
+            if (!dataMesa.comandas || dataMesa.comandas.length === 0) return;
+            const ultComanda = dataMesa.comandas[dataMesa.comandas.length - 1];
+
+            const dot1 = document.getElementById('stepDot1');
+            const dot2 = document.getElementById('stepDot2');
+            const dot3 = document.getElementById('stepDot3');
+            const line1 = document.getElementById('stepLine1');
+            const line2 = document.getElementById('stepLine2');
+            const header = document.getElementById('lblStatusCocinaHeader');
+
+            if (ultComanda.estado === 'nuevo') {
+                header.innerText = '1. Comanda Recibida en Cocina';
+                dot1.className = 'w-4 h-4 rounded-full bg-luxe-gold text-black flex items-center justify-center text-[9px] mb-1 animate-pulse';
+                dot2.className = 'w-4 h-4 rounded-full bg-luxe-card border border-luxe-border text-luxe-muted flex items-center justify-center text-[9px] mb-1';
+                dot3.className = 'w-4 h-4 rounded-full bg-luxe-card border border-luxe-border text-luxe-muted flex items-center justify-center text-[9px] mb-1';
+                line1.className = 'h-[2px] flex-1 bg-luxe-border';
+                line2.className = 'h-[2px] flex-1 bg-luxe-border';
+            } else if (ultComanda.estado === 'preparacion') {
+                header.innerText = '2. ¡El Chef está en Fuego Preparando!';
+                dot1.className = 'w-4 h-4 rounded-full bg-luxe-gold text-black flex items-center justify-center text-[9px] mb-1';
+                dot2.className = 'w-4 h-4 rounded-full bg-amber-400 text-black flex items-center justify-center text-[9px] mb-1 animate-pulse';
+                dot3.className = 'w-4 h-4 rounded-full bg-luxe-card border border-luxe-border text-luxe-muted flex items-center justify-center text-[9px] mb-1';
+                line1.className = 'h-[2px] flex-1 bg-luxe-gold';
+                line2.className = 'h-[2px] flex-1 bg-luxe-border';
+            } else if (ultComanda.estado === 'entregado') {
+                header.innerText = '3. ¡Platos Servidos en tu Mesa!';
+                dot1.className = 'w-4 h-4 rounded-full bg-luxe-gold text-black flex items-center justify-center text-[9px] mb-1';
+                dot2.className = 'w-4 h-4 rounded-full bg-luxe-gold text-black flex items-center justify-center text-[9px] mb-1';
+                dot3.className = 'w-4 h-4 rounded-full bg-emerald-400 text-black flex items-center justify-center text-[9px] mb-1 animate-bounce';
+                line1.className = 'h-[2px] flex-1 bg-luxe-gold';
+                line2.className = 'h-[2px] flex-1 bg-luxe-gold';
+            }
         }
 
         function renderizarTicketEnVivoCliente(dataMesa) {
@@ -1032,7 +1114,7 @@
 
                     let statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 font-black rounded uppercase">En Comandera</span>';
                     if (cmd.estado === 'preparacion') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-amber-500/10 text-amber-300 border border-amber-500/20 font-black rounded uppercase">En Fuego</span>';
-                    if (cmd.estado === 'entregado') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black rounded uppercase">Servido en Mesa</span>';
+                    if (cmd.estado === 'entregado') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black rounded uppercase">Servido</span>';
 
                     bloque.innerHTML = `
                         <div class="flex justify-between items-center mb-1.5">
@@ -1090,21 +1172,51 @@
             });
         }
 
-        // CALCULADORA DE CUENTA DIVIDIDA (SPLIT BILL)
+        // CONTROL DE PROPINA VOLUNTARIA
+        function seleccionarPropina(porcentaje) {
+            reproducirSonido('tap');
+            porcentajePropina = porcentaje;
+            document.querySelectorAll('.btn-tip').forEach(btn => {
+                btn.className = 'btn-tip flex-1 py-1 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-[11px]';
+            });
+            event.currentTarget.className = 'btn-tip active flex-1 py-1 rounded-lg bg-luxe-surface border border-luxe-gold text-luxe-gold font-bold text-[11px]';
+
+            recalcularTotalesConPropinaYSplit();
+        }
+
+        // DIVISIÓN DE CUENTA 100% SIMÉTRICA (1, 2, 3, 4, 5+)
         function calcularSplitBill(personas) {
             reproducirSonido('tap');
+            personasSplit = personas;
             document.querySelectorAll('.btn-split').forEach(btn => {
                 btn.className = 'btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-xs';
             });
             event.currentTarget.className = 'btn-split active flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-gold text-luxe-gold font-bold text-xs';
 
-            const box = document.getElementById('boxResultadoSplit');
-            if (personas > 1 && totalCuentaActual > 0) {
-                const porPersona = totalCuentaActual / personas;
-                document.getElementById('lblMontoPorPersona').innerText = `S/ ${porPersona.toFixed(2)} c/u (${personas} personas)`;
-                box.classList.remove('hidden');
+            recalcularTotalesConPropinaYSplit();
+        }
+
+        function recalcularTotalesConPropinaYSplit() {
+            const montoPropina = (totalConsumoBase * (porcentajePropina / 100));
+            const totalConPropina = totalConsumoBase + montoPropina;
+
+            document.getElementById('lblModalPagarTotal').innerText = `S/ ${totalConPropina.toFixed(2)}`;
+
+            const desglosePropina = document.getElementById('lblPropinaDesglose');
+            if (porcentajePropina > 0) {
+                desglosePropina.innerText = `+ S/ ${montoPropina.toFixed(2)} (${porcentajePropina}% servicio voluntario)`;
+                desglosePropina.classList.remove('hidden');
             } else {
-                box.classList.add('hidden');
+                desglosePropina.classList.add('hidden');
+            }
+
+            const boxSplit = document.getElementById('boxResultadoSplit');
+            if (personasSplit > 1 && totalConPropina > 0) {
+                const porPersona = totalConPropina / personasSplit;
+                document.getElementById('lblMontoPorPersona').innerText = `S/ ${porPersona.toFixed(2)} c/u (${personasSplit} comensales)`;
+                boxSplit.classList.remove('hidden');
+            } else {
+                boxSplit.classList.add('hidden');
             }
         }
 
@@ -1118,10 +1230,11 @@
                     return;
                 }
 
-                totalCuentaActual = data.totalAcumulado;
+                totalConsumoBase = data.totalAcumulado;
+                porcentajePropina = 0;
+                personasSplit = 1;
                 document.getElementById('lblModalPagarMesa').innerText = mesaActual;
-                document.getElementById('lblModalPagarTotal').innerText = `S/ ${data.totalAcumulado.toFixed(2)}`;
-                calcularSplitBill(1);
+                recalcularTotalesConPropinaYSplit();
                 document.getElementById('modalPagarCuenta').classList.remove('hidden');
             });
         }
@@ -1140,20 +1253,22 @@
             reproducirSonido('pay');
             const metodo = document.querySelector('input[name="radioMetodoPago"]:checked').value;
             const mesaKey = mesaActual.replace(/\s+/g, '_');
+            const montoPropina = (totalConsumoBase * (porcentajePropina / 100));
+            const totalFinal = totalConsumoBase + montoPropina;
 
-            db.ref('mesas/' + mesaKey).once('value').then((snap) => {
-                const data = snap.val();
-                const alerta = {
-                    id: 'ALT-' + Date.now(),
-                    mesa: mesaActual,
-                    tipo: 'cuenta',
-                    metodo: metodo,
-                    total: data ? data.totalAcumulado : 0,
-                    hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    mensaje: `💳 Cuenta solicitada: ${mesaActual} — ${metodo} (S/ ${data ? data.totalAcumulado.toFixed(2) : '0.00'})`
-                };
-                return db.ref('alertas').push(alerta);
-            }).then(() => {
+            const alerta = {
+                id: 'ALT-' + Date.now(),
+                mesa: mesaActual,
+                tipo: 'cuenta',
+                metodo: metodo,
+                propina: montoPropina,
+                total: totalFinal,
+                split: personasSplit,
+                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                mensaje: `💳 Cuenta solicitada: ${mesaActual} — ${metodo} (S/ ${totalFinal.toFixed(2)}${personasSplit > 1 ? ` | ${personasSplit} personas` : ''})`
+            };
+
+            db.ref('alertas').push(alerta).then(() => {
                 cerrarModalPedirCuenta();
                 mostrarToast(`Cuenta solicitada con método: ${metodo}`, 'success');
             });
