@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AUREUS RESERVE — Carta Digital</title>
+    <title>AUREUS RESERVE — Carta Digital & Menú en Mesa</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -145,15 +145,12 @@
             </div>
 
             <!-- Grilla de Platos -->
-            <div id="gridCatalogoPlatos" class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <!-- Se llena vía JS -->
-            </div>
+            <div id="gridCatalogoPlatos" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
         </div>
 
-        <!-- SUBSECCIÓN B: TICKET ACUMULADO (PERSISTENCIA TOTAL EN LA NUBE) -->
+        <!-- SUBSECCIÓN B: TICKET ACUMULADO (EN VIVO CON MODIFICACIONES EN TIEMPO REAL) -->
         <div id="subseccionTicket" class="hidden space-y-5 max-w-2xl mx-auto">
             
-            <!-- Banner Status Cocina -->
             <div class="bg-luxe-card/90 backdrop-blur-md p-5 rounded-3xl border border-luxe-gold/30 shadow-2xl relative overflow-hidden">
                 <div class="flex items-center space-x-4 mb-2">
                     <div class="w-12 h-12 rounded-2xl bg-luxe-surface border border-luxe-gold/40 text-luxe-gold flex items-center justify-center font-black text-xl gold-glow">
@@ -162,7 +159,7 @@
                     <div>
                         <span class="text-[10px] tracking-[0.2em] text-luxe-gold font-bold uppercase">Comanda Recibida en Cocina</span>
                         <h3 class="text-base font-luxury-serif font-black text-luxe-stone">¡El Chef está elaborando tu pedido!</h3>
-                        <p class="text-xs text-luxe-muted">Tu cuenta acumulada se mantiene guardada para esta mesa.</p>
+                        <p class="text-xs text-luxe-muted">Tu cuenta acumulada se mantiene sincronizada para esta mesa.</p>
                     </div>
                 </div>
                 <div class="w-full bg-luxe-surface rounded-full h-1.5 mt-3 overflow-hidden border border-luxe-border">
@@ -182,9 +179,7 @@
                     </span>
                 </div>
 
-                <div id="listaItemsTicketAcumulado" class="p-5 space-y-4 max-h-96 overflow-y-auto custom-scroll divide-y divide-luxe-border/60">
-                    <!-- Rondas dinámicas -->
-                </div>
+                <div id="listaItemsTicketAcumulado" class="p-5 space-y-4 max-h-96 overflow-y-auto custom-scroll divide-y divide-luxe-border/60"></div>
 
                 <div class="p-6 bg-luxe-surface/90 border-t border-luxe-border space-y-2">
                     <div class="flex justify-between text-xs text-luxe-muted">
@@ -272,7 +267,7 @@
                 <!-- Macros que suman los extras -->
                 <div class="bg-luxe-card/90 p-3.5 rounded-2xl border border-luxe-border shadow-inner">
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-luxe-muted">Composición Nutricional en Tiempo Real</span>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-luxe-muted">Composición Nutricional</span>
                         <span id="badgeExtrasSumados" class="text-[9px] font-bold text-luxe-gold bg-luxe-surface px-2 py-0.5 rounded-md border border-luxe-border hidden">+ Extras sumados</span>
                     </div>
                     <div class="grid grid-cols-4 gap-2 text-center">
@@ -298,7 +293,7 @@
                 <!-- Lista de Extras -->
                 <div>
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-luxe-gold">Selecciona Extras (Aportan Macros al Plato)</span>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-luxe-gold">Selecciona Extras</span>
                         <span class="text-[10px] text-luxe-muted">Opcional</span>
                     </div>
                     <div id="modalListaExtras" class="space-y-2"></div>
@@ -350,7 +345,7 @@
                     <span class="text-luxe-muted font-semibold uppercase tracking-wider">Subtotal esta ronda:</span>
                     <span id="modalCarroSubtotalVal" class="text-lg font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
                 </div>
-                <button onclick="enviarPedidoACocinaFinal()" class="w-full py-4 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                <button id="btnEnviarCocinaModal" onclick="enviarPedidoACocinaFinal()" class="w-full py-4 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-paper-plane"></i>
                     <span>Confirmar y Enviar a Cocina</span>
                 </button>
@@ -358,26 +353,48 @@
         </div>
     </div>
 
-    <!-- MODAL PEDIR LA CUENTA -->
+    <!-- MODAL PEDIR LA CUENTA CON SEPARACIÓN DE CUENTA (SPLIT BILL) -->
     <div id="modalPagarCuenta" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
-        <div class="bg-luxe-surface w-full max-w-md rounded-3xl border border-luxe-border p-6 relative shadow-2xl">
+        <div class="bg-luxe-surface w-full max-w-md rounded-3xl border border-luxe-border p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto custom-scroll">
             <button onclick="cerrarModalPedirCuenta()" class="absolute top-4 right-4 text-luxe-muted hover:text-white">
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
-            <div class="text-center mb-5">
+            <div class="text-center mb-4">
                 <div class="w-12 h-12 rounded-2xl bg-luxe-card border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-2 text-xl font-bold">
                     <i class="fa-solid fa-receipt"></i>
                 </div>
                 <h3 class="text-base font-luxury-serif font-black text-luxe-stone">Solicitud de Cuenta</h3>
-                <p class="text-xs text-luxe-muted mt-0.5"><span id="lblModalPagarMesa" class="text-luxe-gold font-bold">Mesa 04</span> • Elige la forma de pago</p>
+                <p class="text-xs text-luxe-muted mt-0.5"><span id="lblModalPagarMesa" class="text-luxe-gold font-bold">Mesa 04</span></p>
             </div>
 
-            <div class="bg-luxe-card p-4 rounded-2xl border border-luxe-border text-center mb-4">
+            <!-- TOTAL GLOBAL -->
+            <div class="bg-luxe-card p-4 rounded-2xl border border-luxe-border text-center mb-3">
                 <span class="text-[10px] uppercase tracking-widest text-luxe-muted font-extrabold block">Total Global de la Mesa</span>
                 <span id="lblModalPagarTotal" class="text-3xl font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
             </div>
 
+            <!-- CALCULADORA DE SEPARACIÓN DE CUENTA (SPLIT BILL) -->
+            <div class="bg-luxe-card/80 p-3.5 rounded-2xl border border-luxe-border/80 mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-[10px] font-black uppercase tracking-widest text-luxe-gold flex items-center gap-1">
+                        <i class="fa-solid fa-users"></i> ¿Dividir Cuenta en Partes Iguales?
+                    </span>
+                </div>
+                <div class="flex items-center gap-1.5 mb-2">
+                    <button type="button" onclick="calcularSplitBill(1)" class="btn-split active flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-gold text-luxe-gold font-bold text-xs">1 pers</button>
+                    <button type="button" onclick="calcularSplitBill(2)" class="btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-xs">2</button>
+                    <button type="button" onclick="calcularSplitBill(3)" class="btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-xs">3</button>
+                    <button type="button" onclick="calcularSplitBill(4)" class="btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-xs">4</button>
+                    <button type="button" onclick="calcularSplitBill(5)" class="btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-xs">5+</button>
+                </div>
+                <div id="boxResultadoSplit" class="text-center py-1.5 px-3 bg-luxe-surface rounded-xl border border-luxe-gold/30 hidden">
+                    <span class="text-[10px] text-luxe-muted block">Monto exacto por persona:</span>
+                    <span id="lblMontoPorPersona" class="text-base font-black text-amber-300 font-luxury-serif">S/ 0.00 c/u</span>
+                </div>
+            </div>
+
+            <!-- MÉTODOS DE PAGO -->
             <div class="space-y-2 mb-4">
                 <label class="flex items-center p-3 rounded-xl bg-luxe-card border border-luxe-border cursor-pointer hover:border-luxe-gold/50 transition">
                     <input type="radio" name="radioMetodoPago" value="Yape / Plin (QR)" checked onchange="toggleMetodoQR(true)" class="accent-luxe-gold mr-3">
@@ -390,7 +407,7 @@
                     <input type="radio" name="radioMetodoPago" value="Tarjeta (POS Inalámbrico)" onchange="toggleMetodoQR(false)" class="accent-luxe-gold mr-3">
                     <div class="flex-1">
                         <span class="text-xs font-bold text-luxe-stone block">💳 Tarjeta (Visa / MC / Amex)</span>
-                        <span class="text-[10px] text-luxe-muted">El mozo acude con el terminal inalámbrico</span>
+                        <span class="text-[10px] text-luxe-muted">El mozo acude con el terminal POS inalámbrico</span>
                     </div>
                 </label>
                 <label class="flex items-center p-3 rounded-xl bg-luxe-card border border-luxe-border cursor-pointer hover:border-luxe-gold/50 transition">
@@ -402,6 +419,10 @@
                 </label>
             </div>
 
+            <!-- ========================================================================= -->
+            <!-- AQUÍ PUEDES REEMPLAZAR EL QR POR UNA FOTO REAL DE TU YAPE / PLIN          -->
+            <!-- Ejemplo: <img src="mi-qr-yape.jpg" class="w-40 h-40 mx-auto rounded-xl">  -->
+            <!-- ========================================================================= -->
             <div id="boxQrYapePlin" class="bg-white p-3 rounded-2xl text-center mb-4 flex flex-col items-center justify-center">
                 <svg class="w-28 h-28" viewBox="0 0 100 100" fill="none">
                     <rect width="100" height="100" fill="white"/>
@@ -428,9 +449,8 @@
         <span id="toastMsg" class="text-xs font-bold block">Notificación</span>
     </div>
 
-    <!-- JAVASCRIPT DEL CLIENTE CON FIREBASE -->
+    <!-- JAVASCRIPT DEL CLIENTE -->
     <script>
-        // CONFIGURACIÓN DE FIREBASE CON TUS CREDENCIALES
         const firebaseConfig = {
             apiKey: "AIzaSyAOdDt5smefZAZHcMZA2spWVRwT8xaAAq4",
             authDomain: "work-9d40e.firebaseapp.com",
@@ -441,12 +461,14 @@
             appId: "1:200660411485:web:cd81eb3611578c8fee19b4"
         };
 
-        // Inicializar Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
         const db = firebase.database();
 
+        // =========================================================================
+        // AQUÍ PUEDES CAMBIAR LAS FOTOS, PRECIOS Y EXTRAS DE CADA PLATO
+        // =========================================================================
         const PRODUCTOS_CATALOGO = [
             {
                 id: 1,
@@ -555,8 +577,8 @@
         let cantidadModal = 1;
         let extrasSeleccionadosModal = [];
         let carritoRondaTemporal = [];
+        let totalCuentaActual = 0;
 
-        // SONIDOS SINTETIZADOS
         function reproducirSonido(tipo) {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -616,7 +638,6 @@
             } catch(e) {}
         }
 
-        // DETECTAR MESA Y CONECTAR A FIREBASE EN VIVO
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const paramMesa = urlParams.get('mesa');
@@ -629,16 +650,18 @@
 
             renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
 
-            // ESCUCHAR EN TIEMPO REAL LA BASE DE DATOS DE ESTA MESA
             const mesaKey = mesaActual.replace(/\s+/g, '_');
+            
+            // Escuchar cambios de comanda (si el cajero cancela un plato, se actualiza solo en vivo)
             db.ref('mesas/' + mesaKey).on('value', (snapshot) => {
                 const dataMesa = snapshot.val();
                 if (dataMesa && dataMesa.comandas && dataMesa.comandas.length > 0) {
+                    totalCuentaActual = dataMesa.totalAcumulado || 0;
                     renderizarTicketEnVivoCliente(dataMesa);
                     document.getElementById('subseccionMenu').classList.add('hidden');
                     document.getElementById('subseccionTicket').classList.remove('hidden');
                 } else {
-                    // Si cocina liberó la mesa, se resetea sola
+                    totalCuentaActual = 0;
                     document.getElementById('subseccionMenu').classList.remove('hidden');
                     document.getElementById('subseccionTicket').classList.add('hidden');
                 }
@@ -700,7 +723,6 @@
             }
         }
 
-        // DETALLE DE PLATO & RECALCULO DE MACROS
         function abrirModalDetallePlato(id) {
             reproducirSonido('tap');
             const prod = PRODUCTOS_CATALOGO.find(p => p.id === id);
@@ -863,7 +885,6 @@
             }
         }
 
-        // MODAL CARRITO
         function abrirModalCarrito() {
             reproducirSonido('tap');
             const lista = document.getElementById('listaItemsModalCarrito');
@@ -915,15 +936,20 @@
             actualizarBarraCarritoFlotante();
         }
 
-        // ENVIAR PEDIDO DIRECTO A FIREBASE (TIEMPO REAL)
         function enviarPedidoACocinaFinal() {
-            if (carritoRondaTemporal.length === 0) return;
+            if (carritoRondaTemporal.length === 0) {
+                alert("Tu carrito está vacío. Agrega al menos un plato.");
+                return;
+            }
+
+            const btnEnviar = document.getElementById('btnEnviarCocinaModal');
+            btnEnviar.disabled = true;
+            btnEnviar.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Enviando...';
 
             reproducirSonido('order');
             const horaEnvio = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             const mesaKey = mesaActual.replace(/\s+/g, '_');
 
-            // Leer estado actual de la mesa en Firebase
             db.ref('mesas/' + mesaKey).once('value').then((snapshot) => {
                 let dataMesa = snapshot.val() || {
                     mesaId: mesaActual,
@@ -950,13 +976,19 @@
 
                 dataMesa.comandas.push(nuevaComanda);
 
-                // Guardar en la nube (Notifica a cocina al instante)
-                db.ref('mesas/' + mesaKey).set(dataMesa).then(() => {
-                    carritoRondaTemporal = [];
-                    actualizarBarraCarritoFlotante();
-                    cerrarModalCarrito();
-                    mostrarToast(`¡Pedido de ${mesaActual} enviado a cocina!`, 'success');
-                });
+                return db.ref('mesas/' + mesaKey).set(dataMesa);
+            }).then(() => {
+                btnEnviar.disabled = false;
+                btnEnviar.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Confirmar y Enviar a Cocina';
+
+                carritoRondaTemporal = [];
+                actualizarBarraCarritoFlotante();
+                cerrarModalCarrito();
+                mostrarToast(`¡Pedido de ${mesaActual} enviado a cocina!`, 'success');
+            }).catch((error) => {
+                btnEnviar.disabled = false;
+                btnEnviar.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Confirmar y Enviar a Cocina';
+                alert("Error al enviar pedido: " + error.message);
             });
         }
 
@@ -1044,7 +1076,6 @@
             });
         }
 
-        // LLAMAR MOZO & PEDIR CUENTA (FIREBASE)
         function solicitarAsistenciaMozo() {
             reproducirSonido('bell');
             const alerta = {
@@ -1059,6 +1090,24 @@
             });
         }
 
+        // CALCULADORA DE CUENTA DIVIDIDA (SPLIT BILL)
+        function calcularSplitBill(personas) {
+            reproducirSonido('tap');
+            document.querySelectorAll('.btn-split').forEach(btn => {
+                btn.className = 'btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-xs';
+            });
+            event.currentTarget.className = 'btn-split active flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-gold text-luxe-gold font-bold text-xs';
+
+            const box = document.getElementById('boxResultadoSplit');
+            if (personas > 1 && totalCuentaActual > 0) {
+                const porPersona = totalCuentaActual / personas;
+                document.getElementById('lblMontoPorPersona').innerText = `S/ ${porPersona.toFixed(2)} c/u (${personas} personas)`;
+                box.classList.remove('hidden');
+            } else {
+                box.classList.add('hidden');
+            }
+        }
+
         function abrirModalPedirCuenta() {
             reproducirSonido('pay');
             const mesaKey = mesaActual.replace(/\s+/g, '_');
@@ -1069,8 +1118,10 @@
                     return;
                 }
 
+                totalCuentaActual = data.totalAcumulado;
                 document.getElementById('lblModalPagarMesa').innerText = mesaActual;
                 document.getElementById('lblModalPagarTotal').innerText = `S/ ${data.totalAcumulado.toFixed(2)}`;
+                calcularSplitBill(1);
                 document.getElementById('modalPagarCuenta').classList.remove('hidden');
             });
         }
@@ -1101,10 +1152,10 @@
                     hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     mensaje: `💳 Cuenta solicitada: ${mesaActual} — ${metodo} (S/ ${data ? data.totalAcumulado.toFixed(2) : '0.00'})`
                 };
-                db.ref('alertas').push(alerta).then(() => {
-                    cerrarModalPedirCuenta();
-                    mostrarToast(`Cuenta solicitada con método: ${metodo}`, 'success');
-                });
+                return db.ref('alertas').push(alerta);
+            }).then(() => {
+                cerrarModalPedirCuenta();
+                mostrarToast(`Cuenta solicitada con método: ${metodo}`, 'success');
             });
         }
 
