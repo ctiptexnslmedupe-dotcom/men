@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUREUS RESERVE — Carta Digital</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        luxe: {
+                            base: '#11100e',
+                            surface: '#181613',
+                            card: '#201d19',
+                            cardHover: '#292520',
+                            border: '#3d3830',
+                            gold: '#d4af37',
+                            goldLight: '#f3e5ab',
+                            goldMuted: '#9e8027',
+                            stone: '#f5f2eb',
+                            muted: '#a8a296'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Cinzel', 'Georgia', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #11100e;
+            color: #f5f2eb;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+        .font-luxury-serif { font-family: 'Cinzel', serif; }
+        .gold-glow { box-shadow: 0 4px 30px -4px rgba(212, 175, 55, 0.25); }
+        .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #3d3830; border-radius: 999px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+        
+        .macro-pulse { animation: macroFlash 0.35s ease-out; }
+        @keyframes macroFlash {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.1); color: #d4af37; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .watermark-float {
+            animation: watermarkBreathe 16s ease-in-out infinite alternate;
+        }
+        @keyframes watermarkBreathe {
+            0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.08; }
+            50% { transform: translate(-50%, -50%) scale(1.05) rotate(2deg); opacity: 0.12; }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.08; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-luxe-gold selection:text-black relative">
+
+    <!-- CAPA VISUAL DE FONDO: LOGO DIFUMINADO & AURORA ORBS -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[750px] h-[550px] bg-gradient-to-b from-amber-600/15 via-luxe-gold/8 to-transparent rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-40 right-[-10%] w-[600px] h-[600px] bg-amber-900/10 rounded-full blur-[140px]"></div>
+
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] sm:w-[850px] sm:h-[850px] watermark-float flex items-center justify-center text-luxe-gold">
+            <svg viewBox="0 0 500 500" fill="none" class="w-full h-full stroke-current" stroke-width="1.2">
+                <circle cx="250" cy="250" r="230" stroke-dasharray="6 6" stroke-opacity="0.6"/>
+                <circle cx="250" cy="250" r="205" stroke-opacity="0.8"/>
+                <path d="M190 200 L210 160 L250 185 L290 160 L310 200 Z" fill="currentColor" fill-opacity="0.15" stroke-width="2"/>
+                <path d="M250 195 L205 305 H228 L238 280 H262 L272 305 H295 L250 195Z" fill="currentColor" fill-opacity="0.25"/>
+                <path d="M170 250 C170 320 220 350 250 350 C280 350 330 320 330 250" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- HEADER CLIENTE -->
+    <header class="sticky top-0 z-40 bg-luxe-surface/85 backdrop-blur-xl border-b border-luxe-border px-4 py-3.5 shadow-xl">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="navegarInicioCliente()">
+                <div class="w-10 h-10 rounded-2xl bg-luxe-card border border-luxe-border flex items-center justify-center shadow-md">
+                    <i class="fa-solid fa-crown text-luxe-gold text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="text-xs tracking-[0.25em] font-luxury-serif font-black uppercase text-luxe-stone leading-none">
+                        Aureus <span class="text-luxe-gold">Reserve</span>
+                    </h1>
+                    <span class="text-[9px] tracking-widest text-luxe-muted font-semibold uppercase flex items-center gap-1 mt-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Conectado en Vivo
+                    </span>
+                </div>
+            </div>
+
+            <!-- Identificador de Mesa del Comensal -->
+            <div class="bg-luxe-card border border-luxe-gold/30 px-3.5 py-1.5 rounded-xl flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-chair text-luxe-gold text-xs"></i>
+                <span id="lblMesaHeader" class="text-xs font-black font-luxury-serif text-luxe-stone">Mesa 04</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- CUERPO PRINCIPAL CLIENTE -->
+    <main class="flex-1 max-w-4xl mx-auto w-full px-4 py-6 pb-32 relative z-10">
+        
+        <!-- SUBSECCIÓN A: MENÚ GASTRONÓMICO -->
+        <div id="subseccionMenu" class="space-y-6">
+            
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-3xl border border-luxe-border shadow-2xl h-48 flex items-end p-6 bg-cover bg-center" style="background-image: linear-gradient(to top, rgba(17,16,14,0.95) 15%, rgba(17,16,14,0.4) 65%, rgba(17,16,14,0.1) 100%), url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85');">
+                <div class="relative z-10">
+                    <span class="px-3 py-1 rounded-full text-[9px] font-extrabold uppercase tracking-[0.2em] bg-luxe-surface/90 text-luxe-gold border border-luxe-border inline-block mb-1.5 backdrop-blur-md">
+                        Alta Cocina • Macros Dinámicos
+                    </span>
+                    <h2 class="text-xl font-luxury-serif font-black text-luxe-stone">Experiencia en <span id="lblMesaHero" class="text-luxe-gold">Mesa 04</span></h2>
+                    <p class="text-xs text-luxe-muted mt-0.5 max-w-sm">Personaliza cada plato con extras y observa cómo se recalculan los macros en tiempo real.</p>
+                </div>
+            </div>
+
+            <!-- Filtro de Categorías -->
+            <div class="flex space-x-2.5 overflow-x-auto pb-1 custom-scroll text-xs">
+                <button onclick="filtrarCategoria('todos', event)" class="cat-pill active px-4 py-2.5 rounded-xl font-bold bg-luxe-gold text-black whitespace-nowrap transition shadow-md">Todas las Creaciones</button>
+                <button onclick="filtrarCategoria('entradas', event)" class="cat-pill px-4 py-2.5 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Entradas & Crudos</button>
+                <button onclick="filtrarCategoria('fondos', event)" class="cat-pill px-4 py-2.5 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Principales & Fuego</button>
+                <button onclick="filtrarCategoria('bebidas', event)" class="cat-pill px-4 py-2.5 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Elixires & Vinos</button>
+                <button onclick="filtrarCategoria('postres', event)" class="cat-pill px-4 py-2.5 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Postres Sin Azúcar</button>
+            </div>
+
+            <!-- Grilla de Platos -->
+            <div id="gridCatalogoPlatos" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Se llena vía JS -->
+            </div>
+        </div>
+
+        <!-- SUBSECCIÓN B: TICKET ACUMULADO (PERSISTENCIA TOTAL EN LA NUBE) -->
+        <div id="subseccionTicket" class="hidden space-y-5 max-w-2xl mx-auto">
+            
+            <!-- Banner Status Cocina -->
+            <div class="bg-luxe-card/90 backdrop-blur-md p-5 rounded-3xl border border-luxe-gold/30 shadow-2xl relative overflow-hidden">
+                <div class="flex items-center space-x-4 mb-2">
+                    <div class="w-12 h-12 rounded-2xl bg-luxe-surface border border-luxe-gold/40 text-luxe-gold flex items-center justify-center font-black text-xl gold-glow">
+                        🍳
+                    </div>
+                    <div>
+                        <span class="text-[10px] tracking-[0.2em] text-luxe-gold font-bold uppercase">Comanda Recibida en Cocina</span>
+                        <h3 class="text-base font-luxury-serif font-black text-luxe-stone">¡El Chef está elaborando tu pedido!</h3>
+                        <p class="text-xs text-luxe-muted">Tu cuenta acumulada se mantiene guardada para esta mesa.</p>
+                    </div>
+                </div>
+                <div class="w-full bg-luxe-surface rounded-full h-1.5 mt-3 overflow-hidden border border-luxe-border">
+                    <div class="bg-gradient-to-r from-luxe-goldMuted to-luxe-gold h-full rounded-full w-3/4 animate-pulse"></div>
+                </div>
+            </div>
+
+            <!-- Tarjeta de Ticket -->
+            <div class="bg-luxe-card/90 backdrop-blur-md rounded-3xl border border-luxe-border shadow-2xl overflow-hidden">
+                <div class="p-5 bg-luxe-surface/90 border-b border-luxe-border flex justify-between items-center">
+                    <div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-widest text-luxe-muted">Consumo Acumulado</span>
+                        <h4 id="lblTicketMesaTitle" class="text-base font-luxury-serif font-black text-luxe-stone">Mesa 04</h4>
+                    </div>
+                    <span class="px-3 py-1 bg-luxe-gold/10 text-luxe-gold border border-luxe-gold/30 text-[10px] font-black rounded-full uppercase tracking-widest">
+                        Cuenta Abierta
+                    </span>
+                </div>
+
+                <div id="listaItemsTicketAcumulado" class="p-5 space-y-4 max-h-96 overflow-y-auto custom-scroll divide-y divide-luxe-border/60">
+                    <!-- Rondas dinámicas -->
+                </div>
+
+                <div class="p-6 bg-luxe-surface/90 border-t border-luxe-border space-y-2">
+                    <div class="flex justify-between text-xs text-luxe-muted">
+                        <span>Subtotal de consumo neto</span>
+                        <span id="ticketSubtotalNeto">S/ 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-luxe-muted">
+                        <span>IGV (18% incluido)</span>
+                        <span id="ticketIgvCalculado">S/ 0.00</span>
+                    </div>
+                    <div class="pt-3 border-t border-luxe-border flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-luxe-muted block">TOTAL ACUMULADO</span>
+                            <span id="ticketTotalMacrosResume" class="text-[11px] text-luxe-gold font-semibold">0 kcal</span>
+                        </div>
+                        <span id="ticketTotalAcumuladoSoles" class="text-2xl font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="space-y-2.5 pt-1">
+                <button onclick="volverAlMenuParaPedirMas()" class="w-full py-4 bg-luxe-card/90 hover:bg-luxe-cardHover text-luxe-stone border border-luxe-gold/40 hover:border-luxe-gold rounded-2xl font-bold text-xs transition shadow-lg flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-plus text-luxe-gold"></i>
+                    <span>➕ Pedir algo más (Añadir nuevo plato o bebida)</span>
+                </button>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="solicitarAsistenciaMozo()" class="py-3.5 bg-luxe-card/90 hover:bg-luxe-cardHover text-amber-300 border border-amber-500/30 rounded-2xl font-bold text-xs transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-bell"></i>
+                        <span>Llamar al Mozo</span>
+                    </button>
+                    <button onclick="abrirModalPedirCuenta()" class="py-3.5 bg-gradient-to-r from-luxe-goldMuted via-luxe-gold to-luxe-goldLight text-black font-black text-xs rounded-2xl transition shadow-lg flex items-center justify-center gap-2 gold-glow">
+                        <i class="fa-solid fa-credit-card"></i>
+                        <span>Pedir la Cuenta</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- BARRA FLOTANTE DE CARRITO -->
+    <div id="barraFlotanteCarrito" class="fixed bottom-5 left-4 right-4 max-w-xl mx-auto bg-luxe-card/95 backdrop-blur-2xl border border-luxe-gold/40 p-3.5 rounded-2xl shadow-2xl flex justify-between items-center z-30 transform translate-y-36 transition-transform duration-300 gold-glow">
+        <div class="flex items-center space-x-3 pl-2">
+            <div class="w-10 h-10 rounded-xl bg-luxe-gold text-black flex items-center justify-center font-black text-sm shadow">
+                <span id="txtCantCarritoFlotante">0</span>
+            </div>
+            <div>
+                <span class="text-[10px] text-luxe-muted block font-semibold uppercase tracking-wider">Subtotal esta ronda:</span>
+                <span id="txtTotalCarritoFlotante" class="text-base font-black text-luxe-stone font-luxury-serif">S/ 0.00</span>
+            </div>
+        </div>
+        <button onclick="abrirModalCarrito()" class="px-5 py-2.5 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl transition flex items-center gap-2 shadow">
+            <span>Revisar Pedido</span>
+            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </button>
+    </div>
+
+    <!-- MODAL DETALLE DE PLATO: EXTRAS & MACROS DINÁMICOS -->
+    <div id="modalDetallePlato" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-luxe-surface w-full max-w-lg rounded-t-3xl sm:rounded-3xl border border-luxe-border overflow-hidden max-h-[92vh] flex flex-col shadow-2xl">
+            
+            <div class="relative h-56 w-full overflow-hidden bg-luxe-base">
+                <img id="modalImgPlato" src="" alt="Plato" class="w-full h-full object-cover">
+                <button onclick="cerrarModalDetalle()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-luxe-base/80 text-luxe-stone flex items-center justify-center hover:bg-luxe-base transition">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+                <div class="absolute bottom-3 left-4">
+                    <span id="modalTagPlato" class="px-3 py-1 bg-luxe-card/90 border border-luxe-border text-luxe-gold font-black text-[9px] uppercase tracking-widest rounded-full shadow">
+                        ALTA GASTRONOMÍA
+                    </span>
+                </div>
+            </div>
+
+            <div class="p-5 overflow-y-auto custom-scroll space-y-4 flex-1">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 id="modalNombrePlato" class="text-base font-luxury-serif font-black text-luxe-stone">Nombre</h3>
+                        <p id="modalDescPlato" class="text-xs text-luxe-muted mt-1 leading-relaxed">Descripción</p>
+                    </div>
+                    <span id="modalPrecioBasePlato" class="text-lg font-black text-luxe-gold whitespace-nowrap ml-3 font-luxury-serif">S/ 0.00</span>
+                </div>
+
+                <!-- Macros que suman los extras -->
+                <div class="bg-luxe-card/90 p-3.5 rounded-2xl border border-luxe-border shadow-inner">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-luxe-muted">Composición Nutricional en Tiempo Real</span>
+                        <span id="badgeExtrasSumados" class="text-[9px] font-bold text-luxe-gold bg-luxe-surface px-2 py-0.5 rounded-md border border-luxe-border hidden">+ Extras sumados</span>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2 text-center">
+                        <div class="bg-luxe-surface p-2 rounded-xl border border-luxe-border">
+                            <span class="text-[9px] text-luxe-muted font-semibold uppercase block">Energía</span>
+                            <span id="modalKcalPlato" class="text-xs font-black text-amber-300">0 kcal</span>
+                        </div>
+                        <div class="bg-luxe-surface p-2 rounded-xl border border-luxe-border">
+                            <span class="text-[9px] text-luxe-muted font-semibold uppercase block">Proteína</span>
+                            <span id="modalProtPlato" class="text-xs font-black text-luxe-gold">0g</span>
+                        </div>
+                        <div class="bg-luxe-surface p-2 rounded-xl border border-luxe-border">
+                            <span class="text-[9px] text-luxe-muted font-semibold uppercase block">Carbos</span>
+                            <span id="modalCarbPlato" class="text-xs font-black text-sky-300">0g</span>
+                        </div>
+                        <div class="bg-luxe-surface p-2 rounded-xl border border-luxe-border">
+                            <span class="text-[9px] text-luxe-muted font-semibold uppercase block">Grasas</span>
+                            <span id="modalGrasPlato" class="text-xs font-black text-rose-300">0g</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de Extras -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-luxe-gold">Selecciona Extras (Aportan Macros al Plato)</span>
+                        <span class="text-[10px] text-luxe-muted">Opcional</span>
+                    </div>
+                    <div id="modalListaExtras" class="space-y-2"></div>
+                </div>
+
+                <!-- Notas -->
+                <div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-luxe-muted block mb-2">Instrucciones para el Chef</span>
+                    <div class="flex flex-wrap gap-1.5 mb-2">
+                        <button type="button" onclick="insertarNotaRapida('Término medio')" class="text-[10px] px-2.5 py-1 rounded-lg bg-luxe-card border border-luxe-border text-luxe-stone hover:border-luxe-gold/50">🥩 Término medio</button>
+                        <button type="button" onclick="insertarNotaRapida('Aderezo aparte')" class="text-[10px] px-2.5 py-1 rounded-lg bg-luxe-card border border-luxe-border text-luxe-stone hover:border-luxe-gold/50">🥗 Aderezo aparte</button>
+                        <button type="button" onclick="insertarNotaRapida('Sin sal añadida')" class="text-[10px] px-2.5 py-1 rounded-lg bg-luxe-card border border-luxe-border text-luxe-stone hover:border-luxe-gold/50">🧂 Sin sal</button>
+                    </div>
+                    <input type="text" id="modalInputNotas" placeholder="Ej: Sin cebolla, alérgico a frutos secos..." class="w-full bg-luxe-card text-xs text-luxe-stone px-3.5 py-2.5 rounded-xl border border-luxe-border focus:border-luxe-gold focus:outline-none">
+                </div>
+            </div>
+
+            <div class="p-4 bg-luxe-card border-t border-luxe-border flex items-center justify-between gap-3">
+                <div class="flex items-center bg-luxe-surface rounded-xl border border-luxe-border p-1">
+                    <button onclick="ajustarCantidadModal(-1)" class="w-8 h-8 rounded-lg bg-luxe-card text-luxe-stone font-bold hover:text-white flex items-center justify-center">-</button>
+                    <span id="modalTxtCantidad" class="w-8 text-center font-bold text-xs text-luxe-stone">1</span>
+                    <button onclick="ajustarCantidadModal(1)" class="w-8 h-8 rounded-lg bg-luxe-card text-luxe-stone font-bold hover:text-white flex items-center justify-center">+</button>
+                </div>
+                <button onclick="confirmarAgregarAlCarrito()" class="flex-1 py-3.5 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Añadir • <span id="modalBtnPrecioTotal">S/ 0.00</span></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CARRITO -->
+    <div id="modalCarrito" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-luxe-surface w-full max-w-lg rounded-t-3xl sm:rounded-3xl border border-luxe-border overflow-hidden max-h-[90vh] flex flex-col shadow-2xl">
+            <div class="p-4 bg-luxe-card border-b border-luxe-border flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-receipt text-luxe-gold"></i>
+                    <h3 class="text-sm font-luxury-serif font-black text-luxe-stone">Revisión de Pedido</h3>
+                </div>
+                <button onclick="cerrarModalCarrito()" class="text-luxe-muted hover:text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div id="listaItemsModalCarrito" class="p-4 overflow-y-auto custom-scroll space-y-3 flex-1"></div>
+
+            <div class="p-5 bg-luxe-card border-t border-luxe-border space-y-3">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-luxe-muted font-semibold uppercase tracking-wider">Subtotal esta ronda:</span>
+                    <span id="modalCarroSubtotalVal" class="text-lg font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
+                </div>
+                <button onclick="enviarPedidoACocinaFinal()" class="w-full py-4 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Confirmar y Enviar a Cocina</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PEDIR LA CUENTA -->
+    <div id="modalPagarCuenta" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-luxe-surface w-full max-w-md rounded-3xl border border-luxe-border p-6 relative shadow-2xl">
+            <button onclick="cerrarModalPedirCuenta()" class="absolute top-4 right-4 text-luxe-muted hover:text-white">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center mb-5">
+                <div class="w-12 h-12 rounded-2xl bg-luxe-card border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-2 text-xl font-bold">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+                <h3 class="text-base font-luxury-serif font-black text-luxe-stone">Solicitud de Cuenta</h3>
+                <p class="text-xs text-luxe-muted mt-0.5"><span id="lblModalPagarMesa" class="text-luxe-gold font-bold">Mesa 04</span> • Elige la forma de pago</p>
+            </div>
+
+            <div class="bg-luxe-card p-4 rounded-2xl border border-luxe-border text-center mb-4">
+                <span class="text-[10px] uppercase tracking-widest text-luxe-muted font-extrabold block">Total Global de la Mesa</span>
+                <span id="lblModalPagarTotal" class="text-3xl font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
+            </div>
+
+            <div class="space-y-2 mb-4">
+                <label class="flex items-center p-3 rounded-xl bg-luxe-card border border-luxe-border cursor-pointer hover:border-luxe-gold/50 transition">
+                    <input type="radio" name="radioMetodoPago" value="Yape / Plin (QR)" checked onchange="toggleMetodoQR(true)" class="accent-luxe-gold mr-3">
+                    <div class="flex-1">
+                        <span class="text-xs font-bold text-luxe-stone block">📲 Yape / Plin Digital</span>
+                        <span class="text-[10px] text-luxe-muted">Escaneo rápido desde tu teléfono</span>
+                    </div>
+                </label>
+                <label class="flex items-center p-3 rounded-xl bg-luxe-card border border-luxe-border cursor-pointer hover:border-luxe-gold/50 transition">
+                    <input type="radio" name="radioMetodoPago" value="Tarjeta (POS Inalámbrico)" onchange="toggleMetodoQR(false)" class="accent-luxe-gold mr-3">
+                    <div class="flex-1">
+                        <span class="text-xs font-bold text-luxe-stone block">💳 Tarjeta (Visa / MC / Amex)</span>
+                        <span class="text-[10px] text-luxe-muted">El mozo acude con el terminal inalámbrico</span>
+                    </div>
+                </label>
+                <label class="flex items-center p-3 rounded-xl bg-luxe-card border border-luxe-border cursor-pointer hover:border-luxe-gold/50 transition">
+                    <input type="radio" name="radioMetodoPago" value="Efectivo" onchange="toggleMetodoQR(false)" class="accent-luxe-gold mr-3">
+                    <div class="flex-1">
+                        <span class="text-xs font-bold text-luxe-stone block">💵 Efectivo</span>
+                        <span class="text-[10px] text-luxe-muted">Pago en billetes o moneda</span>
+                    </div>
+                </label>
+            </div>
+
+            <div id="boxQrYapePlin" class="bg-white p-3 rounded-2xl text-center mb-4 flex flex-col items-center justify-center">
+                <svg class="w-28 h-28" viewBox="0 0 100 100" fill="none">
+                    <rect width="100" height="100" fill="white"/>
+                    <path d="M10 10H40V40H10V10ZM16 16V34H34V16H16Z" fill="#11100e"/>
+                    <rect x="22" y="22" width="6" height="6" fill="#d4af37"/>
+                    <path d="M60 10H90V40H60V10ZM66 16V34H84V16H66Z" fill="#11100e"/>
+                    <rect x="72" y="22" width="6" height="6" fill="#d4af37"/>
+                    <path d="M10 60H40V90H10V60ZM16 66V84H34V66H16Z" fill="#11100e"/>
+                    <rect x="22" y="72" width="6" height="6" fill="#d4af37"/>
+                    <circle cx="50" cy="50" r="8" fill="#d4af37"/>
+                </svg>
+                <span class="text-[10px] font-black text-slate-900 mt-1 uppercase font-luxury-serif">AUREUS RESERVE S.A.C.</span>
+            </div>
+
+            <button onclick="confirmarSolicitudDeCuenta()" class="w-full py-3.5 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow-lg transition">
+                Confirmar y Llamar al Mozo
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICACIÓN -->
+    <div id="toastNotification" class="fixed top-5 right-5 z-50 bg-luxe-card/95 backdrop-blur-md text-luxe-stone px-4 py-3 rounded-2xl shadow-2xl border border-luxe-border flex items-center space-x-3 transform translate-x-96 transition-transform duration-300">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-luxe-gold text-base"></i>
+        <span id="toastMsg" class="text-xs font-bold block">Notificación</span>
+    </div>
+
+    <!-- JAVASCRIPT DEL CLIENTE CON FIREBASE -->
+    <script>
+        // CONFIGURACIÓN DE FIREBASE CON TUS CREDENCIALES
+        const firebaseConfig = {
+            apiKey: "AIzaSyAOdDt5smefZAZHcMZA2spWVRwT8xaAAq4",
+            authDomain: "work-9d40e.firebaseapp.com",
+            databaseURL: "https://work-9d40e-default-rtdb.firebaseio.com",
+            projectId: "work-9d40e",
+            storageBucket: "work-9d40e.firebasestorage.app",
+            messagingSenderId: "200660411485",
+            appId: "1:200660411485:web:cd81eb3611578c8fee19b4"
+        };
+
+        // Inicializar Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
+
+        const PRODUCTOS_CATALOGO = [
+            {
+                id: 1,
+                nombre: "Tataki de Atún Rojo & Sésamo Tostado",
+                categoria: "entradas",
+                precioBase: 54.00,
+                desc: "Lomo de atún aleta amarilla sellado, costra de sésamo bicolor, palta tatemada y ponzu trufado.",
+                img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=85",
+                tag: "Pesca Sostenible",
+                kcal: 410, prot: 44, carb: 12, gras: 18,
+                extrasDisponibles: [
+                    { id: 'ex_caviar', nombre: 'Caviar Oscietra Imperial (15g)', precio: 28.00, kcal: 40, prot: 4, carb: 1, gras: 3 },
+                    { id: 'ex_palta', nombre: 'Doble Palta Hass Tatemada', precio: 7.00, kcal: 120, prot: 2, carb: 6, gras: 11 },
+                    { id: 'ex_trufa', nombre: 'Aceite de Trufa Blanca Italiana', precio: 8.00, kcal: 45, prot: 0, carb: 0, gras: 5 }
+                ]
+            },
+            {
+                id: 2,
+                nombre: "Carpaccio de Pulpo al Olivo Criollo",
+                categoria: "entradas",
+                precioBase: 46.00,
+                desc: "Láminas finas de pulpo a baja temperatura, emulsión de aceitunas de botija y chips de masa madre.",
+                img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=85",
+                tag: "Entrada Fría",
+                kcal: 320, prot: 32, carb: 8, gras: 14,
+                extrasDisponibles: [
+                    { id: 'ex_tostadas', nombre: 'Chips Masa Madre Keto Extra', precio: 6.00, kcal: 90, prot: 4, carb: 5, gras: 6 },
+                    { id: 'ex_alcaparras', nombre: 'Alcaparras Crocantes Fritas', precio: 5.00, kcal: 25, prot: 1, carb: 2, gras: 2 }
+                ]
+            },
+            {
+                id: 3,
+                nombre: "Ribeye Black Angus 300g al Carbón",
+                categoria: "fondos",
+                precioBase: 78.00,
+                desc: "Corte selecto Angus de pastoreo, espárragos verdes grillados y puré de camote rústico.",
+                img: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&q=85",
+                tag: "Grass-Fed Angus",
+                kcal: 710, prot: 62, carb: 24, gras: 36,
+                extrasDisponibles: [
+                    { id: 'ex_mantequilla_trufa', nombre: 'Mantequilla de Trufa Negra', precio: 12.00, kcal: 110, prot: 1, carb: 0, gras: 12 },
+                    { id: 'ex_huevo_granja', nombre: 'Huevo Pochado de Granja Libre', precio: 6.00, kcal: 75, prot: 7, carb: 1, gras: 5 },
+                    { id: 'ex_chimichurri', nombre: 'Chimichurri Rústico de la Casa', precio: 5.00, kcal: 50, prot: 0, carb: 1, gras: 5 }
+                ]
+            },
+            {
+                id: 4,
+                nombre: "Salmón Salvaje con Costra de Hierbas",
+                categoria: "fondos",
+                precioBase: 64.00,
+                desc: "Filete de salmón salvaje atlántico, costra de eneldo y almendras, sobre quinoa negra orgánica.",
+                img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=85",
+                tag: "Omega-3 Puro",
+                kcal: 560, prot: 48, carb: 20, gras: 26,
+                extrasDisponibles: [
+                    { id: 'ex_extra_salmon', nombre: 'Porción Extra Salmón Salvaje (120g)', precio: 22.00, kcal: 220, prot: 26, carb: 0, gras: 13 },
+                    { id: 'ex_esparragos', nombre: 'Espárragos Salteados en Aceite de Oliva', precio: 9.00, kcal: 45, prot: 3, carb: 4, gras: 3 }
+                ]
+            },
+            {
+                id: 5,
+                nombre: "Bowl de Quinoa Orgánica, Pollo & Edamame",
+                categoria: "fondos",
+                precioBase: 42.00,
+                desc: "Pechuga de pollo orgánico a las brasas, edamame, palta, brotes microgreens y aderezo sésamo.",
+                img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=85",
+                tag: "High Protein",
+                kcal: 490, prot: 50, carb: 36, gras: 12,
+                extrasDisponibles: [
+                    { id: 'ex_doble_pollo', nombre: 'Doble Pechuga de Pollo Orgánico (150g)', precio: 14.00, kcal: 180, prot: 35, carb: 0, gras: 4 },
+                    { id: 'ex_queso_cabra', nombre: 'Queso de Cabra Curado Artesanal', precio: 8.00, kcal: 95, prot: 6, carb: 1, gras: 8 }
+                ]
+            },
+            {
+                id: 6,
+                nombre: "Té Blanco Imperial & Orquídeas",
+                categoria: "bebidas",
+                precioBase: 22.00,
+                desc: "Bebida botánica antioxidante infusionada en frío con pétalos de orquídea silvestre y menta fresca.",
+                img: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=800&q=85",
+                tag: "Elixir Botánico",
+                kcal: 35, prot: 1, carb: 6, gras: 0,
+                extrasDisponibles: [
+                    { id: 'ex_colageno', nombre: 'Shot de Colágeno Marino Hidrolizado', precio: 8.00, kcal: 35, prot: 9, carb: 0, gras: 0 },
+                    { id: 'ex_miel_cruda', nombre: 'Miel de Abejas Cruda de Bosque Nativo', precio: 4.00, kcal: 45, prot: 0, carb: 12, gras: 0 }
+                ]
+            },
+            {
+                id: 7,
+                nombre: "Mousse de Cacao 85% & Frutos Silvestres",
+                categoria: "postres",
+                precioBase: 32.00,
+                desc: "Cacao puro amazónico sin azúcar añadida con Isolate Whey Protein y coulis de frambuesas.",
+                img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=85",
+                tag: "Sugar-Free Luxe",
+                kcal: 310, prot: 22, carb: 16, gras: 14,
+                extrasDisponibles: [
+                    { id: 'ex_pistachos', nombre: 'Pistachos de Bronte Tostados', precio: 8.00, kcal: 85, prot: 3, carb: 4, gras: 7 },
+                    { id: 'ex_nibs', nombre: 'Nibs de Cacao Criollo Orgánico', precio: 4.00, kcal: 40, prot: 1, carb: 2, gras: 3 }
+                ]
+            }
+        ];
+
+        let mesaActual = 'Mesa 04';
+        let platoModalActivo = null;
+        let cantidadModal = 1;
+        let extrasSeleccionadosModal = [];
+        let carritoRondaTemporal = [];
+
+        // SONIDOS SINTETIZADOS
+        function reproducirSonido(tipo) {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const now = ctx.currentTime;
+
+                if (tipo === 'tap') {
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(550, now);
+                    gain.gain.setValueAtTime(0.06, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(now); osc.stop(now + 0.08);
+                } else if (tipo === 'extra') {
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(750, now);
+                    osc.frequency.exponentialRampToValueAtTime(1100, now + 0.09);
+                    gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(now); osc.stop(now + 0.14);
+                } else if (tipo === 'add') {
+                    const osc1 = ctx.createOscillator(); const gain1 = ctx.createGain();
+                    osc1.type = 'sine'; osc1.frequency.setValueAtTime(523.25, now);
+                    gain1.gain.setValueAtTime(0.12, now); gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                    osc1.connect(gain1); gain1.connect(ctx.destination);
+                    osc1.start(now); osc1.stop(now + 0.25);
+
+                    const osc2 = ctx.createOscillator(); const gain2 = ctx.createGain();
+                    osc2.type = 'sine'; osc2.frequency.setValueAtTime(783.99, now + 0.08);
+                    gain2.gain.setValueAtTime(0.15, now + 0.08);
+                    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc2.connect(gain2); gain2.connect(ctx.destination);
+                    osc2.start(now + 0.08); osc2.stop(now + 0.35);
+                } else if (tipo === 'order') {
+                    [440, 554.37, 659.25].forEach((f, i) => {
+                        const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                        osc.type = 'sine'; osc.frequency.setValueAtTime(f, now + (i * 0.04));
+                        gain.gain.setValueAtTime(0.1, now + (i * 0.04)); gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.0);
+                        osc.connect(gain); gain.connect(ctx.destination);
+                        osc.start(now + (i * 0.04)); osc.stop(now + 1.0);
+                    });
+                } else if (tipo === 'bell') {
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(1760, now);
+                    gain.gain.setValueAtTime(0.18, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(now); osc.stop(now + 0.7);
+                } else if (tipo === 'pay') {
+                    [587.33, 739.99, 880].forEach((freq, idx) => {
+                        const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                        osc.type = 'sine'; osc.frequency.setValueAtTime(freq, now + (idx * 0.05));
+                        gain.gain.setValueAtTime(0.09, now + (idx * 0.05)); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                        osc.connect(gain); gain.connect(ctx.destination);
+                        osc.start(now + (idx * 0.05)); osc.stop(now + 0.6);
+                    });
+                }
+            } catch(e) {}
+        }
+
+        // DETECTAR MESA Y CONECTAR A FIREBASE EN VIVO
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramMesa = urlParams.get('mesa');
+            if (paramMesa) {
+                mesaActual = decodeURIComponent(paramMesa);
+            }
+
+            document.getElementById('lblMesaHeader').innerText = mesaActual;
+            document.getElementById('lblMesaHero').innerText = mesaActual;
+
+            renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
+
+            // ESCUCHAR EN TIEMPO REAL LA BASE DE DATOS DE ESTA MESA
+            const mesaKey = mesaActual.replace(/\s+/g, '_');
+            db.ref('mesas/' + mesaKey).on('value', (snapshot) => {
+                const dataMesa = snapshot.val();
+                if (dataMesa && dataMesa.comandas && dataMesa.comandas.length > 0) {
+                    renderizarTicketEnVivoCliente(dataMesa);
+                    document.getElementById('subseccionMenu').classList.add('hidden');
+                    document.getElementById('subseccionTicket').classList.remove('hidden');
+                } else {
+                    // Si cocina liberó la mesa, se resetea sola
+                    document.getElementById('subseccionMenu').classList.remove('hidden');
+                    document.getElementById('subseccionTicket').classList.add('hidden');
+                }
+            });
+        });
+
+        function renderizarCatalogoMenu(platos) {
+            const grid = document.getElementById('gridCatalogoPlatos');
+            grid.innerHTML = '';
+
+            platos.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'bg-luxe-card/90 backdrop-blur-md rounded-3xl p-4 border border-luxe-border hover:border-luxe-gold/40 transition-all duration-300 flex flex-col sm:flex-row gap-4 shadow-xl';
+                card.innerHTML = `
+                    <div class="w-full sm:w-40 h-40 rounded-2xl overflow-hidden relative cursor-pointer flex-shrink-0" onclick="abrirModalDetallePlato(${p.id})">
+                        <img src="${p.img}" alt="${p.nombre}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                        <span class="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-luxe-base/85 backdrop-blur-md text-luxe-gold text-[9px] font-extrabold tracking-wider uppercase">
+                            ${p.tag}
+                        </span>
+                    </div>
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start gap-2">
+                                <h4 onclick="abrirModalDetallePlato(${p.id})" class="text-sm font-luxury-serif font-black text-luxe-stone hover:text-luxe-gold cursor-pointer transition leading-snug">${p.nombre}</h4>
+                                <span class="text-base font-luxury-serif font-black text-luxe-gold whitespace-nowrap">S/ ${p.precioBase.toFixed(2)}</span>
+                            </div>
+                            <p class="text-xs text-luxe-muted mt-1 line-clamp-2 leading-relaxed">${p.desc}</p>
+                            <div class="flex items-center gap-2 mt-2.5 text-[9px] font-bold">
+                                <span class="text-amber-300 bg-luxe-surface px-2 py-0.5 rounded-md border border-luxe-border">${p.kcal} kcal</span>
+                                <span class="text-luxe-gold bg-luxe-surface px-2 py-0.5 rounded-md border border-luxe-border">Prot: ${p.prot}g</span>
+                                <span class="text-luxe-muted bg-luxe-surface px-2 py-0.5 rounded-md border border-luxe-border">${p.extrasDisponibles.length} extras</span>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-luxe-border/60 flex items-center justify-between">
+                            <button onclick="abrirModalDetallePlato(${p.id})" class="text-[11px] font-bold text-luxe-muted hover:text-luxe-stone flex items-center gap-1">
+                                <span>Macros & Extras</span> <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                            </button>
+                            <button onclick="abrirModalDetallePlato(${p.id})" class="px-4 py-2 bg-luxe-gold hover:bg-luxe-goldLight text-black text-xs font-black rounded-xl transition flex items-center gap-1.5 shadow">
+                                <i class="fa-solid fa-plus text-[10px]"></i> Pedir
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filtrarCategoria(cat, event) {
+            reproducirSonido('tap');
+            document.querySelectorAll('.cat-pill').forEach(btn => {
+                btn.className = 'cat-pill px-4 py-2.5 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm';
+            });
+            event.currentTarget.className = 'cat-pill active px-4 py-2.5 rounded-xl font-bold bg-luxe-gold text-black whitespace-nowrap transition shadow-md';
+
+            if (cat === 'todos') {
+                renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
+            } else {
+                renderizarCatalogoMenu(PRODUCTOS_CATALOGO.filter(p => p.categoria === cat));
+            }
+        }
+
+        // DETALLE DE PLATO & RECALCULO DE MACROS
+        function abrirModalDetallePlato(id) {
+            reproducirSonido('tap');
+            const prod = PRODUCTOS_CATALOGO.find(p => p.id === id);
+            if (!prod) return;
+
+            platoModalActivo = prod;
+            cantidadModal = 1;
+            extrasSeleccionadosModal = [];
+
+            document.getElementById('modalImgPlato').src = prod.img;
+            document.getElementById('modalTagPlato').innerText = prod.tag.toUpperCase();
+            document.getElementById('modalNombrePlato').innerText = prod.nombre;
+            document.getElementById('modalDescPlato').innerText = prod.desc;
+            document.getElementById('modalPrecioBasePlato').innerText = `S/ ${prod.precioBase.toFixed(2)}`;
+            document.getElementById('modalTxtCantidad').innerText = cantidadModal;
+            document.getElementById('modalInputNotas').value = '';
+
+            const contenedorExtras = document.getElementById('modalListaExtras');
+            contenedorExtras.innerHTML = '';
+
+            prod.extrasDisponibles.forEach(ex => {
+                const itemDiv = document.createElement('label');
+                itemDiv.className = 'flex items-center justify-between p-2.5 rounded-xl bg-luxe-card border border-luxe-border hover:border-luxe-gold/40 cursor-pointer transition';
+                itemDiv.innerHTML = `
+                    <div class="flex items-center space-x-2.5">
+                        <input type="checkbox" onchange="toggleExtraPlato('${ex.id}', this.checked)" class="accent-luxe-gold w-4 h-4 rounded cursor-pointer">
+                        <div>
+                            <span class="text-xs font-semibold text-luxe-stone block">${ex.nombre}</span>
+                            <span class="text-[10px] text-luxe-muted">+${ex.kcal} kcal | P: +${ex.prot}g | C: +${ex.carb}g | G: +${ex.gras}g</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-luxe-gold whitespace-nowrap ml-2">+ S/ ${ex.precio.toFixed(2)}</span>
+                `;
+                contenedorExtras.appendChild(itemDiv);
+            });
+
+            recalcularMacrosYPrecioModal();
+            document.getElementById('modalDetallePlato').classList.remove('hidden');
+        }
+
+        function cerrarModalDetalle() {
+            reproducirSonido('tap');
+            document.getElementById('modalDetallePlato').classList.add('hidden');
+        }
+
+        function toggleExtraPlato(extraId, isChecked) {
+            reproducirSonido('extra');
+            const extraObj = platoModalActivo.extrasDisponibles.find(e => e.id === extraId);
+            if (!extraObj) return;
+
+            if (isChecked) {
+                extrasSeleccionadosModal.push(extraObj);
+            } else {
+                extrasSeleccionadosModal = extrasSeleccionadosModal.filter(e => e.id !== extraId);
+            }
+            recalcularMacrosYPrecioModal();
+        }
+
+        function recalcularMacrosYPrecioModal() {
+            if (!platoModalActivo) return;
+
+            let totalKcal = platoModalActivo.kcal;
+            let totalProt = platoModalActivo.prot;
+            let totalCarb = platoModalActivo.carb;
+            let totalGras = platoModalActivo.gras;
+            let sumaPrecioExtras = 0;
+
+            extrasSeleccionadosModal.forEach(e => {
+                totalKcal += e.kcal;
+                totalProt += e.prot;
+                totalCarb += e.carb;
+                totalGras += e.gras;
+                sumaPrecioExtras += e.precio;
+            });
+
+            const lblKcal = document.getElementById('modalKcalPlato');
+            const lblProt = document.getElementById('modalProtPlato');
+            const lblCarb = document.getElementById('modalCarbPlato');
+            const lblGras = document.getElementById('modalGrasPlato');
+            const badgeSumados = document.getElementById('badgeExtrasSumados');
+
+            lblKcal.innerText = `${totalKcal} kcal`;
+            lblProt.innerText = `${totalProt}g`;
+            lblCarb.innerText = `${totalCarb}g`;
+            lblGras.innerText = `${totalGras}g`;
+
+            [lblKcal, lblProt, lblCarb, lblGras].forEach(el => {
+                el.classList.remove('macro-pulse');
+                void el.offsetWidth;
+                el.classList.add('macro-pulse');
+            });
+
+            if (extrasSeleccionadosModal.length > 0) {
+                badgeSumados.classList.remove('hidden');
+            } else {
+                badgeSumados.classList.add('hidden');
+            }
+
+            const precioUnitario = platoModalActivo.precioBase + sumaPrecioExtras;
+            document.getElementById('modalBtnPrecioTotal').innerText = `S/ ${(precioUnitario * cantidadModal).toFixed(2)}`;
+        }
+
+        function insertarNotaRapida(texto) {
+            reproducirSonido('tap');
+            const input = document.getElementById('modalInputNotas');
+            input.value = input.value.trim() === '' ? texto : `${input.value}, ${texto}`;
+        }
+
+        function ajustarCantidadModal(delta) {
+            reproducirSonido('tap');
+            const nuevo = cantidadModal + delta;
+            if (nuevo >= 1) {
+                cantidadModal = nuevo;
+                document.getElementById('modalTxtCantidad').innerText = cantidadModal;
+                recalcularMacrosYPrecioModal();
+            }
+        }
+
+        function confirmarAgregarAlCarrito() {
+            if (!platoModalActivo) return;
+            reproducirSonido('add');
+
+            const notaUsuario = document.getElementById('modalInputNotas').value.trim();
+            const sumaExtras = extrasSeleccionadosModal.reduce((acc, e) => acc + e.precio, 0);
+            const precioUnitario = platoModalActivo.precioBase + sumaExtras;
+
+            const totalKcal = platoModalActivo.kcal + extrasSeleccionadosModal.reduce((a, e) => a + e.kcal, 0);
+            const totalProt = platoModalActivo.prot + extrasSeleccionadosModal.reduce((a, e) => a + e.prot, 0);
+            const totalCarb = platoModalActivo.carb + extrasSeleccionadosModal.reduce((a, e) => a + e.carb, 0);
+            const totalGras = platoModalActivo.gras + extrasSeleccionadosModal.reduce((a, e) => a + e.gras, 0);
+
+            carritoRondaTemporal.push({
+                productoId: platoModalActivo.id,
+                nombre: platoModalActivo.nombre,
+                precioBase: platoModalActivo.precioBase,
+                extras: [...extrasSeleccionadosModal],
+                macrosFinales: { kcal: totalKcal, prot: totalProt, carb: totalCarb, gras: totalGras },
+                precioUnitario: precioUnitario,
+                cantidad: cantidadModal,
+                subtotal: precioUnitario * cantidadModal,
+                notas: notaUsuario || 'Sin notas especiales'
+            });
+
+            cerrarModalDetalle();
+            actualizarBarraCarritoFlotante();
+            mostrarToast(`Añadido: ${cantidadModal}x ${platoModalActivo.nombre}`, 'success');
+        }
+
+        function actualizarBarraCarritoFlotante() {
+            const barra = document.getElementById('barraFlotanteCarrito');
+            const totalCant = carritoRondaTemporal.reduce((acc, it) => acc + it.cantidad, 0);
+            const totalMonto = carritoRondaTemporal.reduce((acc, it) => acc + it.subtotal, 0);
+
+            if (totalCant > 0) {
+                barra.classList.remove('translate-y-36');
+                document.getElementById('txtCantCarritoFlotante').innerText = totalCant;
+                document.getElementById('txtTotalCarritoFlotante').innerText = `S/ ${totalMonto.toFixed(2)}`;
+            } else {
+                barra.classList.add('translate-y-36');
+            }
+        }
+
+        // MODAL CARRITO
+        function abrirModalCarrito() {
+            reproducirSonido('tap');
+            const lista = document.getElementById('listaItemsModalCarrito');
+            lista.innerHTML = '';
+
+            carritoRondaTemporal.forEach((it, idx) => {
+                let extrasTxt = '';
+                if (it.extras && it.extras.length > 0) {
+                    extrasTxt = `<span class="text-[10px] text-luxe-gold block mt-0.5">+ Extras: ${it.extras.map(e => e.nombre).join(', ')}</span>`;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'p-3.5 bg-luxe-card rounded-2xl border border-luxe-border flex justify-between items-start';
+                card.innerHTML = `
+                    <div class="flex-1 pr-3">
+                        <span class="text-xs font-luxury-serif font-black text-luxe-stone block">${it.cantidad}x ${it.nombre}</span>
+                        ${extrasTxt}
+                        <span class="text-[10px] text-amber-300 font-semibold block mt-0.5">${it.macrosFinales.kcal} kcal | P: ${it.macrosFinales.prot}g (c/u)</span>
+                        <span class="text-[10px] text-luxe-muted block mt-0.5 italic">Nota: "${it.notas}"</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xs font-black text-luxe-gold font-luxury-serif">S/ ${it.subtotal.toFixed(2)}</span>
+                        <button onclick="eliminarItemCarro(${idx})" class="text-slate-500 hover:text-rose-400 text-xs">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                lista.appendChild(card);
+            });
+
+            const subtotal = carritoRondaTemporal.reduce((acc, it) => acc + it.subtotal, 0);
+            document.getElementById('modalCarroSubtotalVal').innerText = `S/ ${subtotal.toFixed(2)}`;
+            document.getElementById('modalCarrito').classList.remove('hidden');
+        }
+
+        function cerrarModalCarrito() {
+            reproducirSonido('tap');
+            document.getElementById('modalCarrito').classList.add('hidden');
+        }
+
+        function eliminarItemCarro(idx) {
+            reproducirSonido('tap');
+            carritoRondaTemporal.splice(idx, 1);
+            if (carritoRondaTemporal.length === 0) {
+                cerrarModalCarrito();
+            } else {
+                abrirModalCarrito();
+            }
+            actualizarBarraCarritoFlotante();
+        }
+
+        // ENVIAR PEDIDO DIRECTO A FIREBASE (TIEMPO REAL)
+        function enviarPedidoACocinaFinal() {
+            if (carritoRondaTemporal.length === 0) return;
+
+            reproducirSonido('order');
+            const horaEnvio = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const mesaKey = mesaActual.replace(/\s+/g, '_');
+
+            // Leer estado actual de la mesa en Firebase
+            db.ref('mesas/' + mesaKey).once('value').then((snapshot) => {
+                let dataMesa = snapshot.val() || {
+                    mesaId: mesaActual,
+                    inicioServicio: horaEnvio,
+                    totalAcumulado: 0,
+                    contadorRondas: 0,
+                    comandas: []
+                };
+
+                if (!dataMesa.comandas) dataMesa.comandas = [];
+
+                dataMesa.contadorRondas = (dataMesa.contadorRondas || 0) + 1;
+                const totalRonda = carritoRondaTemporal.reduce((acc, it) => acc + it.subtotal, 0);
+                dataMesa.totalAcumulado = (dataMesa.totalAcumulado || 0) + totalRonda;
+
+                const nuevaComanda = {
+                    id: 'CMD-' + Math.floor(1000 + Math.random() * 9000),
+                    mesaId: mesaActual,
+                    ronda: dataMesa.contadorRondas,
+                    hora: horaEnvio,
+                    estado: 'nuevo',
+                    items: [...carritoRondaTemporal]
+                };
+
+                dataMesa.comandas.push(nuevaComanda);
+
+                // Guardar en la nube (Notifica a cocina al instante)
+                db.ref('mesas/' + mesaKey).set(dataMesa).then(() => {
+                    carritoRondaTemporal = [];
+                    actualizarBarraCarritoFlotante();
+                    cerrarModalCarrito();
+                    mostrarToast(`¡Pedido de ${mesaActual} enviado a cocina!`, 'success');
+                });
+            });
+        }
+
+        function renderizarTicketEnVivoCliente(dataMesa) {
+            document.getElementById('lblTicketMesaTitle').innerText = `${dataMesa.mesaId} • Servicio iniciado a las ${dataMesa.inicioServicio}`;
+            const contenedor = document.getElementById('listaItemsTicketAcumulado');
+            contenedor.innerHTML = '';
+
+            let totalKcalMesa = 0;
+
+            if (dataMesa.comandas) {
+                dataMesa.comandas.forEach(cmd => {
+                    const bloque = document.createElement('div');
+                    bloque.className = 'pt-3 pb-2';
+
+                    let itemsHtml = '';
+                    if (cmd.items) {
+                        cmd.items.forEach(it => {
+                            let txtExtras = '';
+                            if (it.extras && it.extras.length > 0) {
+                                txtExtras = `<span class="text-[10px] text-luxe-gold block">+ Extras: ${it.extras.map(e => e.nombre).join(', ')}</span>`;
+                            }
+
+                            if (it.macrosFinales) {
+                                totalKcalMesa += (it.macrosFinales.kcal * it.cantidad);
+                            }
+
+                            itemsHtml += `
+                                <div class="flex justify-between items-start py-1.5 text-xs">
+                                    <div>
+                                        <span class="text-luxe-stone font-bold">${it.cantidad}x ${it.nombre}</span>
+                                        ${txtExtras}
+                                        <span class="text-[10px] text-amber-300 font-semibold block">${it.macrosFinales ? it.macrosFinales.kcal : 0} kcal | P: ${it.macrosFinales ? it.macrosFinales.prot : 0}g</span>
+                                        ${it.notas !== 'Sin notas especiales' ? `<span class="text-[10px] text-luxe-muted block italic">Nota: "${it.notas}"</span>` : ''}
+                                    </div>
+                                    <span class="text-luxe-gold font-bold font-luxury-serif">S/ ${it.subtotal.toFixed(2)}</span>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    let statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 font-black rounded uppercase">En Comandera</span>';
+                    if (cmd.estado === 'preparacion') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-amber-500/10 text-amber-300 border border-amber-500/20 font-black rounded uppercase">En Fuego</span>';
+                    if (cmd.estado === 'entregado') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black rounded uppercase">Servido en Mesa</span>';
+
+                    bloque.innerHTML = `
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[11px] font-luxury-serif font-black text-luxe-stone uppercase tracking-widest">Ronda #${cmd.ronda} (${cmd.hora})</span>
+                            ${statusBadge}
+                        </div>
+                        <div class="space-y-1 pl-1">${itemsHtml}</div>
+                    `;
+                    contenedor.appendChild(bloque);
+                });
+            }
+
+            const total = dataMesa.totalAcumulado || 0;
+            const subtotalSinIgv = total / 1.18;
+            const igv = total - subtotalSinIgv;
+
+            document.getElementById('ticketSubtotalNeto').innerText = `S/ ${subtotalSinIgv.toFixed(2)}`;
+            document.getElementById('ticketIgvCalculado').innerText = `S/ ${igv.toFixed(2)}`;
+            document.getElementById('ticketTotalAcumuladoSoles').innerText = `S/ ${total.toFixed(2)}`;
+            document.getElementById('ticketTotalMacrosResume').innerText = `${totalKcalMesa} kcal acumuladas`;
+        }
+
+        function volverAlMenuParaPedirMas() {
+            reproducirSonido('tap');
+            document.getElementById('subseccionMenu').classList.remove('hidden');
+            document.getElementById('subseccionTicket').classList.add('hidden');
+        }
+
+        function navegarInicioCliente() {
+            reproducirSonido('tap');
+            const mesaKey = mesaActual.replace(/\s+/g, '_');
+            db.ref('mesas/' + mesaKey).once('value').then((snap) => {
+                const dataMesa = snap.val();
+                if (dataMesa && dataMesa.comandas && dataMesa.comandas.length > 0) {
+                    document.getElementById('subseccionMenu').classList.add('hidden');
+                    document.getElementById('subseccionTicket').classList.remove('hidden');
+                } else {
+                    document.getElementById('subseccionMenu').classList.remove('hidden');
+                    document.getElementById('subseccionTicket').classList.add('hidden');
+                }
+            });
+        }
+
+        // LLAMAR MOZO & PEDIR CUENTA (FIREBASE)
+        function solicitarAsistenciaMozo() {
+            reproducirSonido('bell');
+            const alerta = {
+                id: 'ALT-' + Date.now(),
+                mesa: mesaActual,
+                tipo: 'mozo',
+                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                mensaje: `🔔 Mozo solicitado en ${mesaActual}`
+            };
+            db.ref('alertas').push(alerta).then(() => {
+                mostrarToast('Asistencia solicitada. El personal se acerca a tu mesa.', 'success');
+            });
+        }
+
+        function abrirModalPedirCuenta() {
+            reproducirSonido('pay');
+            const mesaKey = mesaActual.replace(/\s+/g, '_');
+            db.ref('mesas/' + mesaKey).once('value').then((snap) => {
+                const data = snap.val();
+                if (!data || !data.totalAcumulado || data.totalAcumulado <= 0) {
+                    mostrarToast('No hay consumo registrado en esta mesa', 'warning');
+                    return;
+                }
+
+                document.getElementById('lblModalPagarMesa').innerText = mesaActual;
+                document.getElementById('lblModalPagarTotal').innerText = `S/ ${data.totalAcumulado.toFixed(2)}`;
+                document.getElementById('modalPagarCuenta').classList.remove('hidden');
+            });
+        }
+
+        function cerrarModalPedirCuenta() {
+            reproducirSonido('tap');
+            document.getElementById('modalPagarCuenta').classList.add('hidden');
+        }
+
+        function toggleMetodoQR(isYape) {
+            reproducirSonido('tap');
+            document.getElementById('boxQrYapePlin').style.display = isYape ? 'flex' : 'none';
+        }
+
+        function confirmarSolicitudDeCuenta() {
+            reproducirSonido('pay');
+            const metodo = document.querySelector('input[name="radioMetodoPago"]:checked').value;
+            const mesaKey = mesaActual.replace(/\s+/g, '_');
+
+            db.ref('mesas/' + mesaKey).once('value').then((snap) => {
+                const data = snap.val();
+                const alerta = {
+                    id: 'ALT-' + Date.now(),
+                    mesa: mesaActual,
+                    tipo: 'cuenta',
+                    metodo: metodo,
+                    total: data ? data.totalAcumulado : 0,
+                    hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    mensaje: `💳 Cuenta solicitada: ${mesaActual} — ${metodo} (S/ ${data ? data.totalAcumulado.toFixed(2) : '0.00'})`
+                };
+                db.ref('alertas').push(alerta).then(() => {
+                    cerrarModalPedirCuenta();
+                    mostrarToast(`Cuenta solicitada con método: ${metodo}`, 'success');
+                });
+            });
+        }
+
+        function mostrarToast(msg, tipo = 'info') {
+            const toast = document.getElementById('toastNotification');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = msg;
+            if (tipo === 'success') {
+                toastIcon.className = 'fa-solid fa-circle-check text-emerald-400 text-base';
+            } else {
+                toastIcon.className = 'fa-solid fa-circle-info text-luxe-gold text-base';
+            }
+
+            toast.classList.remove('translate-x-96');
+            setTimeout(() => {
+                toast.classList.add('translate-x-96');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

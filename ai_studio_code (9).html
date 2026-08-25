@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUREUS KDS — Monitor de Cocina & Caja</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        luxe: {
+                            base: '#11100e',
+                            surface: '#181613',
+                            card: '#201d19',
+                            cardHover: '#292520',
+                            border: '#3d3830',
+                            gold: '#d4af37',
+                            goldLight: '#f3e5ab',
+                            goldMuted: '#9e8027',
+                            stone: '#f5f2eb',
+                            muted: '#a8a296'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Cinzel', 'Georgia', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #11100e;
+            color: #f5f2eb;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+        .font-luxury-serif { font-family: 'Cinzel', serif; }
+        .gold-glow { box-shadow: 0 4px 30px -4px rgba(212, 175, 55, 0.25); }
+        .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #3d3830; border-radius: 999px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #d4af37; }
+        
+        .watermark-float {
+            animation: watermarkBreathe 16s ease-in-out infinite alternate;
+        }
+        @keyframes watermarkBreathe {
+            0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.05; }
+            50% { transform: translate(-50%, -50%) scale(1.05) rotate(2deg); opacity: 0.09; }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.05; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-luxe-gold selection:text-black relative">
+
+    <!-- FONDO VISUAL CON MARCA DE AGUA DIFUMINADA -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[750px] h-[550px] bg-gradient-to-b from-amber-600/15 via-luxe-gold/8 to-transparent rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-40 right-[-10%] w-[600px] h-[600px] bg-amber-900/10 rounded-full blur-[140px]"></div>
+
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] watermark-float flex items-center justify-center text-luxe-gold">
+            <svg viewBox="0 0 500 500" fill="none" class="w-full h-full stroke-current" stroke-width="1.2">
+                <circle cx="250" cy="250" r="230" stroke-dasharray="6 6" stroke-opacity="0.6"/>
+                <circle cx="250" cy="250" r="205" stroke-opacity="0.8"/>
+                <path d="M190 200 L210 160 L250 185 L290 160 L310 200 Z" fill="currentColor" fill-opacity="0.15" stroke-width="2"/>
+                <path d="M250 195 L205 305 H228 L238 280 H262 L272 305 H295 L250 195Z" fill="currentColor" fill-opacity="0.25"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 1. PANTALLA DE ACCESO / LOGIN POR PIN -->
+    <!-- ========================================================================= -->
+    <div id="pantallaLoginCocina" class="fixed inset-0 z-50 bg-luxe-base flex items-center justify-center p-4">
+        <div class="bg-luxe-surface w-full max-w-sm rounded-3xl border border-luxe-border p-8 text-center shadow-2xl relative overflow-hidden">
+            <div class="w-16 h-16 rounded-2xl bg-luxe-card border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-4 text-2xl gold-glow">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h2 class="text-lg font-luxury-serif font-black text-luxe-stone">Acceso de Personal</h2>
+            <p class="text-xs text-luxe-muted mt-1 mb-5">Ingresa el PIN de cocina / caja (PIN: <b class="text-luxe-gold">1234</b>)</p>
+
+            <input type="password" id="inputPinStaff" maxlength="4" placeholder="••••" class="w-full bg-luxe-card text-center text-2xl tracking-[0.5em] font-black text-luxe-gold py-3 rounded-2xl border border-luxe-border focus:border-luxe-gold focus:outline-none mb-5 shadow-inner">
+
+            <button onclick="autenticarStaff()" class="w-full py-3.5 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                <span>Ingresar al KDS</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- 2. DASHBOARD DE PRODUCCIÓN KDS & CONTROL DE CAJA -->
+    <!-- ========================================================================= -->
+    <div id="dashboardCocina" class="hidden flex-1 flex flex-col relative z-10">
+        
+        <!-- HEADER KDS -->
+        <header class="bg-luxe-surface/90 backdrop-blur-xl border-b border-luxe-border px-6 py-3.5 flex justify-between items-center shadow-xl">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-2xl bg-luxe-card border border-luxe-gold/40 flex items-center justify-center shadow-md">
+                    <i class="fa-solid fa-fire-burner text-luxe-gold text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="text-xs tracking-[0.25em] font-luxury-serif font-black uppercase text-luxe-stone leading-none">
+                        KDS • <span class="text-luxe-gold">Monitor Central</span>
+                    </h1>
+                    <span class="text-[9px] tracking-widest text-luxe-muted font-semibold uppercase flex items-center gap-1.5 mt-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Firebase Cloud Conectado
+                    </span>
+                </div>
+            </div>
+
+            <!-- Centro: Reloj en Vivo -->
+            <div class="hidden sm:flex items-center bg-luxe-card px-4 py-1.5 rounded-xl border border-luxe-border">
+                <i class="fa-regular fa-clock text-luxe-gold mr-2 text-xs"></i>
+                <span id="relojLive" class="font-mono text-xs font-bold text-luxe-stone">--:--:--</span>
+            </div>
+
+            <!-- Derecha: Cerrar Turno -->
+            <div class="flex items-center space-x-3">
+                <button onclick="cerrarSesionStaff()" class="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold rounded-xl transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Cerrar Turno</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- STREAM DE ALERTAS DE SALÓN (LLAMADAS DE MOZO Y CUENTAS) -->
+        <div class="bg-luxe-surface/60 border-b border-luxe-border px-6 py-2.5 flex items-center gap-3 overflow-x-auto custom-scroll shadow-sm">
+            <span class="text-[10px] font-black uppercase tracking-widest text-amber-300 flex items-center gap-1.5 whitespace-nowrap">
+                <i class="fa-solid fa-bell animate-bounce"></i> Alertas de Salón:
+            </span>
+            <div id="contenedorAlertasStaff" class="flex items-center gap-2 flex-wrap">
+                <!-- Se inyecta vía Firebase -->
+            </div>
+        </div>
+
+        <!-- TABLERO KANBAN KDS -->
+        <main class="flex-1 max-w-7xl mx-auto w-full p-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Columna 1: 🔴 Nuevos Pedidos -->
+                <div class="bg-luxe-surface/90 backdrop-blur-md rounded-3xl p-4 border border-luxe-border flex flex-col shadow-xl">
+                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-luxe-border">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-rose-500 animate-ping"></span>
+                            <h3 class="font-black text-xs tracking-wider uppercase text-luxe-stone">1. Nuevos en Comandera</h3>
+                        </div>
+                        <span id="badgeNuevos" class="px-2 py-0.5 bg-rose-500/10 text-rose-400 font-bold text-xs rounded-lg border border-rose-500/20">0</span>
+                    </div>
+                    <div id="columnaNuevos" class="space-y-4 flex-1 overflow-y-auto custom-scroll min-h-[500px]"></div>
+                </div>
+
+                <!-- Columna 2: 🟡 En Preparación -->
+                <div class="bg-luxe-surface/90 backdrop-blur-md rounded-3xl p-4 border border-luxe-border flex flex-col shadow-xl">
+                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-luxe-border">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+                            <h3 class="font-black text-xs tracking-wider uppercase text-luxe-stone">2. En Fuego / Cocinando</h3>
+                        </div>
+                        <span id="badgePrep" class="px-2 py-0.5 bg-amber-500/10 text-amber-400 font-bold text-xs rounded-lg border border-amber-500/20">0</span>
+                    </div>
+                    <div id="columnaPrep" class="space-y-4 flex-1 overflow-y-auto custom-scroll min-h-[500px]"></div>
+                </div>
+
+                <!-- Columna 3: 🟢 Servidos & Control de Caja (LIBERAR MESAS) -->
+                <div class="bg-luxe-surface/90 backdrop-blur-md rounded-3xl p-4 border border-luxe-border flex flex-col shadow-xl">
+                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-luxe-border">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+                            <h3 class="font-black text-xs tracking-wider uppercase text-luxe-stone">3. Servidos / Liberación</h3>
+                        </div>
+                        <span id="badgeEntregados" class="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 font-bold text-xs rounded-lg border border-emerald-500/20">0</span>
+                    </div>
+                    <div id="columnaEntregados" class="space-y-4 flex-1 overflow-y-auto custom-scroll min-h-[500px]"></div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- JAVASCRIPT DE COCINA CON FIREBASE -->
+    <script>
+        // CONFIGURACIÓN DE FIREBASE CON TUS CREDENCIALES
+        const firebaseConfig = {
+            apiKey: "AIzaSyAOdDt5smefZAZHcMZA2spWVRwT8xaAAq4",
+            authDomain: "work-9d40e.firebaseapp.com",
+            databaseURL: "https://work-9d40e-default-rtdb.firebaseio.com",
+            projectId: "work-9d40e",
+            storageBucket: "work-9d40e.firebasestorage.app",
+            messagingSenderId: "200660411485",
+            appId: "1:200660411485:web:cd81eb3611578c8fee19b4"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
+
+        let primeraCarga = true;
+
+        // GONG AUTOMÁTICO AL RECIBIR PEDIDO
+        function reproducirGongCocina() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const now = ctx.currentTime;
+                [440, 554.37, 659.25, 880].forEach((f, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(f, now + (i * 0.04));
+                    gain.gain.setValueAtTime(0.12, now + (i * 0.04));
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + (i * 0.04));
+                    osc.stop(now + 1.2);
+                });
+            } catch(e) {}
+        }
+
+        // CONTROL DE SESIÓN POR PIN
+        function autenticarStaff() {
+            const pin = document.getElementById('inputPinStaff').value;
+            if (pin === '1234' || pin === '') {
+                sessionStorage.setItem('staff_auth', 'true');
+                document.getElementById('pantallaLoginCocina').classList.add('hidden');
+                document.getElementById('dashboardCocina').classList.remove('hidden');
+                iniciarKDS();
+            } else {
+                alert('PIN Incorrecto. Prueba con 1234');
+            }
+        }
+
+        function cerrarSesionStaff() {
+            sessionStorage.removeItem('staff_auth');
+            location.reload();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('staff_auth') === 'true') {
+                document.getElementById('pantallaLoginCocina').classList.add('hidden');
+                document.getElementById('dashboardCocina').classList.remove('hidden');
+                iniciarKDS();
+            }
+
+            // RELOJ EN VIVO
+            setInterval(() => {
+                const r = document.getElementById('relojLive');
+                if (r) r.innerText = new Date().toLocaleTimeString();
+            }, 1000);
+        });
+
+        // ESCUCHAR EN TIEMPO REAL LAS COMANDAS DE TODAS LAS MESAS
+        function iniciarKDS() {
+            db.ref('mesas').on('value', (snapshot) => {
+                const dbMesas = snapshot.val() || {};
+                renderizarTableroKDS(dbMesas);
+
+                if (!primeraCarga) {
+                    reproducirGongCocina();
+                }
+                primeraCarga = false;
+            });
+
+            // ESCUCHAR ALERTAS DE MOZO Y CUENTA EN VIVO
+            db.ref('alertas').on('value', (snapshot) => {
+                const dbAlertas = snapshot.val() || {};
+                renderizarAlertasStaff(dbAlertas);
+            });
+        }
+
+        function renderizarTableroKDS(db) {
+            const colNuevos = document.getElementById('columnaNuevos');
+            const colPrep = document.getElementById('columnaPrep');
+            const colEntregados = document.getElementById('columnaEntregados');
+
+            colNuevos.innerHTML = '';
+            colPrep.innerHTML = '';
+            colEntregados.innerHTML = '';
+
+            let cN = 0, cP = 0, cE = 0;
+
+            Object.keys(db).forEach(mKey => {
+                const mesa = db[mKey];
+
+                if (mesa && mesa.comandas) {
+                    mesa.comandas.forEach((cmd, cmdIdx) => {
+                        const card = document.createElement('div');
+                        card.className = 'bg-luxe-card p-4 rounded-2xl border border-luxe-border shadow-md flex flex-col justify-between';
+
+                        let itemsHtml = '';
+                        if (cmd.items) {
+                            cmd.items.forEach(it => {
+                                itemsHtml += `
+                                    <div class="py-1.5 border-b border-luxe-border/40 text-xs">
+                                        <div class="flex justify-between font-bold text-luxe-stone">
+                                            <span>${it.cantidad}x ${it.nombre}</span>
+                                        </div>
+                                        ${it.extras && it.extras.length > 0 ? `<p class="text-[10px] text-luxe-gold font-semibold">+ Extras: ${it.extras.map(e => e.nombre).join(', ')}</p>` : ''}
+                                        ${it.notas !== 'Sin notas especiales' ? `<p class="text-[10px] text-amber-300 font-semibold bg-luxe-surface px-2 py-0.5 rounded border border-luxe-border mt-0.5">⚠️ Nota: "${it.notas}"</p>` : ''}
+                                    </div>
+                                `;
+                            });
+                        }
+
+                        let actionBtn = '';
+                        if (cmd.estado === 'nuevo') {
+                            cN++;
+                            actionBtn = `<button onclick="cambiarEstadoComanda('${mKey}', ${cmdIdx}, 'preparacion')" class="w-full py-2.5 bg-amber-400 hover:bg-amber-300 text-black font-black text-xs rounded-xl transition shadow">Iniciar Preparación 👨‍🍳</button>`;
+                            colNuevos.appendChild(card);
+                        } else if (cmd.estado === 'preparacion') {
+                            cP++;
+                            actionBtn = `<button onclick="cambiarEstadoComanda('${mKey}', ${cmdIdx}, 'entregado')" class="w-full py-2.5 bg-emerald-400 hover:bg-emerald-300 text-black font-black text-xs rounded-xl transition shadow">Marcar como Servido 🚀</button>`;
+                            colPrep.appendChild(card);
+                        } else {
+                            cE++;
+                            actionBtn = `<span class="text-[11px] text-center block text-luxe-muted font-bold">✓ Entregado a comensal</span>`;
+                            colEntregados.appendChild(card);
+                        }
+
+                        card.innerHTML = `
+                            <div>
+                                <div class="flex justify-between items-start pb-2 mb-2 border-b border-luxe-border">
+                                    <div>
+                                        <span class="text-xs font-luxury-serif font-black text-luxe-gold bg-luxe-surface px-2.5 py-1 rounded-lg border border-luxe-border">${mesa.mesaId}</span>
+                                        <span class="text-[10px] text-luxe-muted ml-1.5 font-bold">Ronda #${cmd.ronda}</span>
+                                    </div>
+                                    <span class="text-[11px] font-mono text-luxe-muted"><i class="fa-regular fa-clock mr-1"></i>${cmd.hora}</span>
+                                </div>
+                                <div class="space-y-1 mb-3">${itemsHtml}</div>
+                            </div>
+                            <div class="pt-2 border-t border-luxe-border">${actionBtn}</div>
+                        `;
+                    });
+
+                    // BOTÓN DE LIBERACIÓN DE MESA EN CAJA
+                    if (mesa.comandas && mesa.comandas.length > 0) {
+                        const cajaBox = document.createElement('div');
+                        cajaBox.className = 'mt-3 bg-luxe-surface p-3.5 rounded-2xl border border-rose-500/40 shadow';
+                        cajaBox.innerHTML = `
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-luxury-serif font-black text-luxe-stone">${mesa.mesaId}</span>
+                                <span class="text-xs font-black text-luxe-gold">Total: S/ ${(mesa.totalAcumulado || 0).toFixed(2)}</span>
+                            </div>
+                            <button onclick="liberarMesaTotal('${mKey}', '${mesa.mesaId}')" class="w-full py-2 bg-rose-600 hover:bg-rose-500 text-white font-black text-xs rounded-xl shadow transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-broom"></i>
+                                <span>🧹 Cobrar y Liberar ${mesa.mesaId}</span>
+                            </button>
+                        `;
+                        colEntregados.appendChild(cajaBox);
+                    }
+                }
+            });
+
+            document.getElementById('badgeNuevos').innerText = cN;
+            document.getElementById('badgePrep').innerText = cP;
+            document.getElementById('badgeEntregados').innerText = cE;
+        }
+
+        // CAMBIAR ESTADO EN FIREBASE
+        function cambiarEstadoComanda(mKey, cmdIdx, nuevoEstado) {
+            db.ref(`mesas/${mKey}/comandas/${cmdIdx}/estado`).set(nuevoEstado);
+        }
+
+        // LIBERAR MESA EN FIREBASE (RESETEA EL CELULAR DEL CLIENTE EN VIVO)
+        function liberarMesaTotal(mKey, mesaNombre) {
+            const conf = confirm(`¿Confirmar cobro y liberar ${mesaNombre}? La pantalla del cliente volverá a S/ 0.00.`);
+            if (!conf) return;
+
+            db.ref('mesas/' + mKey).remove().then(() => {
+                // Eliminar alertas relacionadas con esa mesa
+                db.ref('alertas').once('value', (snap) => {
+                    const data = snap.val();
+                    if (data) {
+                        Object.keys(data).forEach(k => {
+                            if (data[k].mesa === mesaNombre) {
+                                db.ref('alertas/' + k).remove();
+                            }
+                        });
+                    }
+                });
+            });
+        }
+
+        function renderizarAlertasStaff(alertasObj) {
+            const cont = document.getElementById('contenedorAlertasStaff');
+            cont.innerHTML = '';
+
+            const keys = Object.keys(alertasObj);
+            if (keys.length === 0) {
+                cont.innerHTML = '<span class="text-[10px] text-luxe-muted italic">Sin llamadas de mozo o cuentas pendientes</span>';
+                return;
+            }
+
+            keys.slice(-4).reverse().forEach(k => {
+                const alt = alertasObj[k];
+                const tag = document.createElement('div');
+                tag.className = 'px-3 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-300 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm';
+                tag.innerHTML = `
+                    <span>${alt.mensaje} (${alt.hora})</span>
+                    <button onclick="eliminarAlerta('${k}')" class="text-luxe-muted hover:text-white"><i class="fa-solid fa-check"></i></button>
+                `;
+                cont.appendChild(tag);
+            });
+        }
+
+        function eliminarAlerta(key) {
+            db.ref('alertas/' + key).remove();
+        }
+    </script>
+</body>
+</html>
