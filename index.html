@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AUREUS KDS — Monitor Inteligente de Cocina, Stock & Caja</title>
+    <title>AUREUS RESERVE — Carta Digital & Menú en Mesa</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -57,245 +57,429 @@
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #3d3830; border-radius: 999px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #d4af37; }
-
-        /* ANIMACIÓN ALERTA SLA URGENTE (>15 MIN) */
-        .urgent-sla-pulse {
-            animation: urgentFlash 1.8s infinite;
-        }
-        @keyframes urgentFlash {
-            0%, 100% { border-color: rgba(244, 63, 94, 0.4); box-shadow: 0 0 0px rgba(244, 63, 94, 0); }
-            50% { border-color: rgba(244, 63, 94, 1); box-shadow: 0 0 20px rgba(244, 63, 94, 0.35); }
+        
+        .macro-pulse { animation: macroFlash 0.35s ease-out; }
+        @keyframes macroFlash {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.1); color: #d4af37; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .watermark-float {
             animation: watermarkBreathe 16s ease-in-out infinite alternate;
         }
         @keyframes watermarkBreathe {
-            0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.05; }
-            50% { transform: translate(-50%, -50%) scale(1.05) rotate(2deg); opacity: 0.09; }
-            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.05; }
-        }
-
-        /* FORMATO IMPRESIÓN TÉRMICA 80MM */
-        @media print {
-            body * { visibility: hidden; }
-            #areaImpresionTermica, #areaImpresionTermica * { visibility: visible; }
-            #areaImpresionTermica {
-                position: absolute; left: 0; top: 0;
-                width: 80mm !important; max-width: 80mm !important;
-                margin: 0 !important; padding: 4mm !important;
-                font-family: 'Courier New', Courier, monospace !important;
-                color: #000000 !important; background: #ffffff !important;
-                font-size: 11px !important; line-height: 1.25 !important;
-            }
-            @page { size: 80mm auto; margin: 0; }
+            0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.08; }
+            50% { transform: translate(-50%, -50%) scale(1.05) rotate(2deg); opacity: 0.12; }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.08; }
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-luxe-gold selection:text-black relative">
 
-    <!-- FONDO VISUAL CON MARCA DE AGUA DIFUMINADA -->
+    <!-- CAPA VISUAL DE FONDO -->
     <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[750px] h-[550px] bg-gradient-to-b from-amber-600/15 via-luxe-gold/8 to-transparent rounded-full blur-3xl"></div>
         <div class="absolute -bottom-40 right-[-10%] w-[600px] h-[600px] bg-amber-900/10 rounded-full blur-[140px]"></div>
 
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] watermark-float flex items-center justify-center text-luxe-gold">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] sm:w-[850px] sm:h-[850px] watermark-float flex items-center justify-center text-luxe-gold">
             <svg viewBox="0 0 500 500" fill="none" class="w-full h-full stroke-current" stroke-width="1.2">
                 <circle cx="250" cy="250" r="230" stroke-dasharray="6 6" stroke-opacity="0.6"/>
                 <circle cx="250" cy="250" r="205" stroke-opacity="0.8"/>
                 <path d="M190 200 L210 160 L250 185 L290 160 L310 200 Z" fill="currentColor" fill-opacity="0.15" stroke-width="2"/>
                 <path d="M250 195 L205 305 H228 L238 280 H262 L272 305 H295 L250 195Z" fill="currentColor" fill-opacity="0.25"/>
+                <path d="M170 250 C170 320 220 350 250 350 C280 350 330 320 330 250" stroke-width="2" stroke-linecap="round"/>
             </svg>
         </div>
     </div>
 
-    <!-- 1. PANTALLA DE LOGIN POR PIN -->
-    <div id="pantallaLoginCocina" class="fixed inset-0 z-50 bg-luxe-base flex items-center justify-center p-4">
-        <div class="bg-luxe-surface w-full max-w-sm rounded-3xl border border-luxe-border p-8 text-center shadow-2xl relative overflow-hidden">
-            <div class="w-16 h-16 rounded-2xl bg-luxe-card border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-4 text-2xl gold-glow">
-                <i class="fa-solid fa-lock"></i>
-            </div>
-            <h2 class="text-lg font-luxury-serif font-black text-luxe-stone">Acceso de Personal</h2>
-            <p class="text-xs text-luxe-muted mt-1 mb-5">Ingresa el PIN de cocina / caja (PIN: <b class="text-luxe-gold">1234</b>)</p>
-
-            <input type="password" id="inputPinStaff" maxlength="4" placeholder="••••" class="w-full bg-luxe-card text-center text-2xl tracking-[0.5em] font-black text-luxe-gold py-3 rounded-2xl border border-luxe-border focus:border-luxe-gold focus:outline-none mb-5 shadow-inner">
-
-            <button onclick="autenticarStaff()" class="w-full py-3.5 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-                <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                <span>Ingresar al KDS</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- 2. DASHBOARD KDS DE COCINA -->
-    <div id="dashboardCocina" class="hidden flex-1 flex flex-col relative z-10">
-        
-        <!-- HEADER KDS -->
-        <header class="bg-luxe-surface/90 backdrop-blur-xl border-b border-luxe-border px-6 py-3 flex flex-wrap justify-between items-center gap-3 shadow-xl">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-2xl bg-luxe-card border border-luxe-gold/40 flex items-center justify-center shadow-md">
-                    <i class="fa-solid fa-fire-burner text-luxe-gold text-sm"></i>
+    <!-- HEADER CLIENTE -->
+    <header class="sticky top-0 z-40 bg-luxe-surface/85 backdrop-blur-xl border-b border-luxe-border px-4 py-3.5 shadow-xl">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="navegarInicioCliente()">
+                <div class="w-10 h-10 rounded-2xl bg-luxe-card border border-luxe-border flex items-center justify-center shadow-md">
+                    <i class="fa-solid fa-crown text-luxe-gold text-sm"></i>
                 </div>
                 <div>
                     <h1 class="text-xs tracking-[0.25em] font-luxury-serif font-black uppercase text-luxe-stone leading-none">
-                        KDS • <span class="text-luxe-gold">Monitor Central</span>
+                        Aureus <span class="text-luxe-gold">Reserve</span>
                     </h1>
-                    <span class="text-[9px] tracking-widest text-luxe-muted font-semibold uppercase flex items-center gap-1.5 mt-0.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> SLA & Asistente de Voz Activo
+                    <span class="text-[9px] tracking-widest text-luxe-muted font-semibold uppercase flex items-center gap-1 mt-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Conectado en Vivo
                     </span>
                 </div>
             </div>
 
-            <!-- CONTROLES CENTRALES: STOCK + VOZ + REPETIR -->
-            <div class="flex items-center space-x-2 bg-luxe-card px-3 py-1.5 rounded-2xl border border-luxe-border">
-                
-                <!-- BOTÓN CONTROL DE STOCK / AGOTADOS -->
-                <button onclick="abrirModalStock()" class="px-2.5 py-1 bg-luxe-surface hover:bg-luxe-cardHover text-rose-400 border border-rose-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm" title="Bloquear platos agotados">
-                    <i class="fa-solid fa-boxes-stacked"></i>
-                    <span>Control Stock</span>
-                    <span id="badgeAgotadosCount" class="w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center hidden">0</span>
-                </button>
-
-                <!-- Toggle de Voz -->
-                <button id="btnToggleVoz" onclick="toggleAsistenteVoz()" class="px-2.5 py-1 bg-luxe-gold/15 text-luxe-gold border border-luxe-gold/40 rounded-xl text-xs font-bold transition flex items-center gap-1.5" title="Activar o pausar la voz">
-                    <i id="iconoVoz" class="fa-solid fa-volume-high"></i>
-                    <span id="txtEstadoVoz" class="hidden md:inline">Voz: ON</span>
-                </button>
-
-                <!-- Botón Repetir Última Comanda -->
-                <button onclick="repetirUltimaComanda()" class="px-2.5 py-1 bg-luxe-surface hover:bg-luxe-cardHover text-amber-300 border border-amber-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm" title="Repetir último pedido">
-                    <i class="fa-solid fa-rotate-left"></i>
-                    <span>Repetir</span>
-                </button>
-
-                <!-- Reloj -->
-                <div class="hidden lg:flex items-center pl-2 border-l border-luxe-border text-xs font-mono text-luxe-muted">
-                    <i class="fa-regular fa-clock mr-1 text-luxe-gold"></i>
-                    <span id="relojLive">--:--:--</span>
-                </div>
+            <!-- Identificador de Mesa -->
+            <div class="bg-luxe-card border border-luxe-gold/30 px-3.5 py-1.5 rounded-xl flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-chair text-luxe-gold text-xs"></i>
+                <span id="lblMesaHeader" class="text-xs font-black font-luxury-serif text-luxe-stone">Mesa 04</span>
             </div>
-
-            <!-- CERRAR TURNO -->
-            <div class="flex items-center space-x-3">
-                <button onclick="cerrarSesionStaff()" class="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold rounded-xl transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Cerrar Turno</span>
-                </button>
-            </div>
-        </header>
-
-        <!-- STREAM DE ALERTAS DE SALÓN (MOZO / CUENTAS) -->
-        <div class="bg-luxe-surface/60 border-b border-luxe-border px-6 py-2 flex items-center gap-3 overflow-x-auto custom-scroll shadow-sm">
-            <span class="text-[10px] font-black uppercase tracking-widest text-amber-300 flex items-center gap-1.5 whitespace-nowrap">
-                <i class="fa-solid fa-bell animate-bounce"></i> Salón:
-            </span>
-            <div id="contenedorAlertasStaff" class="flex items-center gap-2 flex-wrap"></div>
         </div>
+    </header>
 
-        <!-- TABLERO KANBAN KDS -->
-        <main class="flex-1 max-w-7xl mx-auto w-full p-5">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                
-                <!-- Columna 1: 🔴 Nuevos -->
-                <div class="bg-luxe-surface/90 backdrop-blur-md rounded-3xl p-4 border border-luxe-border flex flex-col shadow-xl">
-                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-luxe-border">
-                        <div class="flex items-center space-x-2">
-                            <span class="w-3 h-3 rounded-full bg-rose-500 animate-ping"></span>
-                            <h3 class="font-black text-xs tracking-wider uppercase text-luxe-stone">1. Nuevos en Comandera</h3>
-                        </div>
-                        <span id="badgeNuevos" class="px-2 py-0.5 bg-rose-500/10 text-rose-400 font-bold text-xs rounded-lg border border-rose-500/20">0</span>
-                    </div>
-                    <div id="columnaNuevos" class="space-y-4 flex-1 overflow-y-auto custom-scroll min-h-[500px]"></div>
-                </div>
-
-                <!-- Columna 2: 🟡 En Fuego -->
-                <div class="bg-luxe-surface/90 backdrop-blur-md rounded-3xl p-4 border border-luxe-border flex flex-col shadow-xl">
-                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-luxe-border">
-                        <div class="flex items-center space-x-2">
-                            <span class="w-3 h-3 rounded-full bg-amber-400"></span>
-                            <h3 class="font-black text-xs tracking-wider uppercase text-luxe-stone">2. En Fuego / Cocinando</h3>
-                        </div>
-                        <span id="badgePrep" class="px-2 py-0.5 bg-amber-500/10 text-amber-400 font-bold text-xs rounded-lg border border-amber-500/20">0</span>
-                    </div>
-                    <div id="columnaPrep" class="space-y-4 flex-1 overflow-y-auto custom-scroll min-h-[500px]"></div>
-                </div>
-
-                <!-- Columna 3: 🟢 Servidos & Control de Caja -->
-                <div class="bg-luxe-surface/90 backdrop-blur-md rounded-3xl p-4 border border-luxe-border flex flex-col shadow-xl">
-                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-luxe-border">
-                        <div class="flex items-center space-x-2">
-                            <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
-                            <h3 class="font-black text-xs tracking-wider uppercase text-luxe-stone">3. Servidos & Caja</h3>
-                        </div>
-                        <span id="badgeEntregados" class="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 font-bold text-xs rounded-lg border border-emerald-500/20">0</span>
-                    </div>
-                    <div id="columnaEntregados" class="space-y-4 flex-1 overflow-y-auto custom-scroll min-h-[500px]"></div>
-                </div>
-
-            </div>
-        </main>
-    </div>
-
-    <!-- ========================================================================= -->
-    <!-- MODAL: CONTROL DE STOCK & PLATOS AGOTADOS ("SOLD OUT")                   -->
-    <!-- ========================================================================= -->
-    <div id="modalStockControl" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
-        <div class="bg-luxe-surface w-full max-w-lg rounded-3xl border border-luxe-border p-6 shadow-2xl max-h-[85vh] flex flex-col">
-            <div class="flex justify-between items-center pb-3 border-b border-luxe-border">
-                <div class="flex items-center space-x-2">
-                    <i class="fa-solid fa-boxes-stacked text-rose-400"></i>
-                    <h3 class="text-sm font-luxury-serif font-black text-luxe-stone">Control de Stock en Tiempo Real</h3>
-                </div>
-                <button onclick="cerrarModalStock()" class="text-luxe-muted hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <p class="text-xs text-luxe-muted my-2">Toca cualquier plato para marcarlo como <b>AGOTADO</b>. Se bloqueará de inmediato en los celulares de los comensales.</p>
+    <!-- CUERPO PRINCIPAL CLIENTE -->
+    <main class="flex-1 max-w-4xl mx-auto w-full px-4 py-6 pb-32 relative z-10">
+        
+        <!-- SUBSECCIÓN A: MENÚ GASTRONÓMICO -->
+        <div id="subseccionMenu" class="space-y-5">
             
-            <div id="listaPlatosStock" class="space-y-2 overflow-y-auto custom-scroll flex-1 pr-1 my-2">
-                <!-- Se llena con JS -->
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-3xl border border-luxe-border shadow-2xl h-44 flex items-end p-5 bg-cover bg-center" style="background-image: linear-gradient(to top, rgba(17,16,14,0.95) 15%, rgba(17,16,14,0.4) 65%, rgba(17,16,14,0.1) 100%), url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85');">
+                <div class="relative z-10">
+                    <span class="px-3 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-[0.2em] bg-luxe-surface/90 text-luxe-gold border border-luxe-border inline-block mb-1 backdrop-blur-md">
+                        Alta Cocina • Macros Dinámicos
+                    </span>
+                    <h2 class="text-lg sm:text-xl font-luxury-serif font-black text-luxe-stone">Experiencia en <span id="lblMesaHero" class="text-luxe-gold">Mesa 04</span></h2>
+                    <p class="text-[11px] text-luxe-muted max-w-sm">Personaliza cada plato con extras y observa cómo se recalculan los macros en tiempo real.</p>
+                </div>
             </div>
 
-            <div class="pt-3 border-t border-luxe-border flex justify-end">
-                <button onclick="cerrarModalStock()" class="px-5 py-2.5 bg-luxe-gold text-black font-black text-xs rounded-xl shadow">Listo</button>
+            <!-- Buscador Rápido -->
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-luxe-muted text-xs"></i>
+                <input type="text" id="inputBuscadorPlatos" oninput="buscarPlatosEnVivo(this.value)" placeholder="Buscar plato o ingrediente (ej. Salmón, Angus, Quinoa)..." class="w-full bg-luxe-card/90 text-xs text-luxe-stone pl-10 pr-4 py-3 rounded-2xl border border-luxe-border focus:border-luxe-gold focus:outline-none backdrop-blur-md shadow-sm">
+            </div>
+
+            <!-- Filtro de Categorías -->
+            <div class="flex space-x-2 overflow-x-auto pb-1 custom-scroll text-xs">
+                <button onclick="filtrarCategoria('todos', event)" class="cat-pill active px-3.5 py-2 rounded-xl font-bold bg-luxe-gold text-black whitespace-nowrap transition shadow-md">Todas las Creaciones</button>
+                <button onclick="filtrarCategoria('entradas', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Entradas</button>
+                <button onclick="filtrarCategoria('fondos', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Principales</button>
+                <button onclick="filtrarCategoria('bebidas', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Elixires</button>
+                <button onclick="filtrarCategoria('postres', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm">Postres</button>
+            </div>
+
+            <!-- Grilla de Platos -->
+            <div id="gridCatalogoPlatos" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+
+        <!-- SUBSECCIÓN B: TICKET ACUMULADO (EN VIVO CON LÍNEA DE TIEMPO) -->
+        <div id="subseccionTicket" class="hidden space-y-5 max-w-2xl mx-auto">
+            
+            <div class="bg-luxe-card/90 backdrop-blur-md p-5 rounded-3xl border border-luxe-gold/30 shadow-2xl relative overflow-hidden">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-luxe-surface border border-luxe-gold/40 text-luxe-gold flex items-center justify-center font-black text-xl gold-glow">
+                        🍳
+                    </div>
+                    <div>
+                        <span class="text-[10px] tracking-[0.2em] text-luxe-gold font-bold uppercase">Estado de Comanda en Tiempo Real</span>
+                        <h3 id="lblStatusCocinaHeader" class="text-base font-luxury-serif font-black text-luxe-stone">Comanda en Preparación</h3>
+                    </div>
+                </div>
+
+                <!-- Stepper de Progreso en Vivo -->
+                <div class="bg-luxe-surface/80 p-3 rounded-2xl border border-luxe-border/60">
+                    <div class="flex justify-between items-center text-[10px] font-bold text-center">
+                        <div class="flex-1 flex flex-col items-center">
+                            <span id="stepDot1" class="w-4 h-4 rounded-full bg-luxe-gold text-black flex items-center justify-center text-[9px] mb-1"><i class="fa-solid fa-check"></i></span>
+                            <span class="text-luxe-stone">Recibido</span>
+                        </div>
+                        <div id="stepLine1" class="h-[2px] flex-1 bg-luxe-gold/40 transition-colors"></div>
+                        <div class="flex-1 flex flex-col items-center">
+                            <span id="stepDot2" class="w-4 h-4 rounded-full bg-amber-400 text-black flex items-center justify-center text-[9px] mb-1 animate-pulse"><i class="fa-solid fa-fire"></i></span>
+                            <span class="text-amber-300">En Fuego</span>
+                        </div>
+                        <div id="stepLine2" class="h-[2px] flex-1 bg-luxe-border transition-colors"></div>
+                        <div class="flex-1 flex flex-col items-center">
+                            <span id="stepDot3" class="w-4 h-4 rounded-full bg-luxe-card border border-luxe-border text-luxe-muted flex items-center justify-center text-[9px] mb-1"><i class="fa-solid fa-utensils"></i></span>
+                            <span class="text-luxe-muted">En Mesa</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta de Ticket -->
+            <div class="bg-luxe-card/90 backdrop-blur-md rounded-3xl border border-luxe-border shadow-2xl overflow-hidden">
+                <div class="p-5 bg-luxe-surface/90 border-b border-luxe-border flex justify-between items-center">
+                    <div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-widest text-luxe-muted">Consumo Acumulado</span>
+                        <h4 id="lblTicketMesaTitle" class="text-base font-luxury-serif font-black text-luxe-stone">Mesa 04</h4>
+                    </div>
+                    <span class="px-3 py-1 bg-luxe-gold/10 text-luxe-gold border border-luxe-gold/30 text-[10px] font-black rounded-full uppercase tracking-widest">
+                        Cuenta Abierta
+                    </span>
+                </div>
+
+                <div id="listaItemsTicketAcumulado" class="p-5 space-y-4 max-h-96 overflow-y-auto custom-scroll divide-y divide-luxe-border/60"></div>
+
+                <div class="p-6 bg-luxe-surface/90 border-t border-luxe-border space-y-2">
+                    <div class="flex justify-between text-xs text-luxe-muted">
+                        <span>Subtotal neto</span>
+                        <span id="ticketSubtotalNeto">S/ 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-luxe-muted">
+                        <span>IGV (18% incluido)</span>
+                        <span id="ticketIgvCalculado">S/ 0.00</span>
+                    </div>
+                    <div class="pt-3 border-t border-luxe-border flex justify-between items-center">
+                        <div>
+                            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-luxe-muted block">TOTAL ACUMULADO</span>
+                            <span id="ticketTotalMacrosResume" class="text-[11px] text-luxe-gold font-semibold">0 kcal</span>
+                        </div>
+                        <span id="ticketTotalAcumuladoSoles" class="text-2xl font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="space-y-2.5 pt-1">
+                <button onclick="volverAlMenuParaPedirMas()" class="w-full py-4 bg-luxe-card/90 hover:bg-luxe-cardHover text-luxe-stone border border-luxe-gold/40 hover:border-luxe-gold rounded-2xl font-bold text-xs transition shadow-lg flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-plus text-luxe-gold"></i>
+                    <span>➕ Pedir algo más (Añadir nuevo plato o bebida)</span>
+                </button>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="solicitarAsistenciaMozo()" class="py-3.5 bg-luxe-card/90 hover:bg-luxe-cardHover text-amber-300 border border-amber-500/30 rounded-2xl font-bold text-xs transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-bell"></i>
+                        <span>Llamar al Mozo</span>
+                    </button>
+                    <button onclick="abrirModalPedirCuenta()" class="py-3.5 bg-gradient-to-r from-luxe-goldMuted via-luxe-gold to-luxe-goldLight text-black font-black text-xs rounded-2xl transition shadow-lg flex items-center justify-center gap-2 gold-glow">
+                        <i class="fa-solid fa-credit-card"></i>
+                        <span>Pedir la Cuenta</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- BARRA FLOTANTE DE CARRITO -->
+    <div id="barraFlotanteCarrito" class="fixed bottom-5 left-4 right-4 max-w-xl mx-auto bg-luxe-card/95 backdrop-blur-2xl border border-luxe-gold/40 p-3.5 rounded-2xl shadow-2xl flex justify-between items-center z-30 transform translate-y-36 transition-transform duration-300 gold-glow">
+        <div class="flex items-center space-x-3 pl-2">
+            <div class="w-10 h-10 rounded-xl bg-luxe-gold text-black flex items-center justify-center font-black text-sm shadow">
+                <span id="txtCantCarritoFlotante">0</span>
+            </div>
+            <div>
+                <span class="text-[10px] text-luxe-muted block font-semibold uppercase tracking-wider">Subtotal esta ronda:</span>
+                <span id="txtTotalCarritoFlotante" class="text-base font-black text-luxe-stone font-luxury-serif">S/ 0.00</span>
+            </div>
+        </div>
+        <button onclick="abrirModalCarrito()" class="px-5 py-2.5 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl transition flex items-center gap-2 shadow">
+            <span>Revisar Pedido</span>
+            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </button>
+    </div>
+
+    <!-- MODAL DETALLE DE PLATO -->
+    <div id="modalDetallePlato" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-luxe-surface w-full max-w-lg rounded-t-3xl sm:rounded-3xl border border-luxe-border overflow-hidden max-h-[92vh] flex flex-col shadow-2xl">
+            
+            <div class="relative h-56 w-full overflow-hidden bg-luxe-base">
+                <img id="modalImgPlato" src="" alt="Plato" class="w-full h-full object-cover">
+                <button onclick="cerrarModalDetalle()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-luxe-base/80 text-luxe-stone flex items-center justify-center hover:bg-luxe-base transition">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+                <div class="absolute bottom-3 left-4">
+                    <span id="modalTagPlato" class="px-3 py-1 bg-luxe-card/90 border border-luxe-border text-luxe-gold font-black text-[9px] uppercase tracking-widest rounded-full shadow">
+                        ALTA GASTRONOMÍA
+                    </span>
+                </div>
+            </div>
+
+            <div class="p-5 overflow-y-auto custom-scroll space-y-4 flex-1">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 id="modalNombrePlato" class="text-base font-luxury-serif font-black text-luxe-stone">Nombre</h3>
+                        <p id="modalDescPlato" class="text-xs text-luxe-muted mt-1 leading-relaxed">Descripción</p>
+                    </div>
+                    <span id="modalPrecioBasePlato" class="text-lg font-black text-luxe-gold whitespace-nowrap ml-3 font-luxury-serif">S/ 0.00</span>
+                </div>
+
+                <!-- Macros Dinámicos -->
+                <div class="bg-luxe-card/90 p-3.5 rounded-2xl border border-luxe-border shadow-inner">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-luxe-muted">Composición Nutricional</span>
+                        <span id="badgeExtrasSumados" class="text-[9px] font-bold text-luxe-gold bg-luxe-surface px-2 py-0.5 rounded-md border border-luxe-border hidden">+ Extras sumados</span>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2 text-center">
+                        <div class="bg-luxe-surface p-2 rounded-xl border border-luxe-border">
+                            <span class="text-[9px] text-luxe-muted font-semibold uppercase block">Energía</span>
+                            <span id="modalKcalPlato" class="text-xs font-black text-amber-300">0 kcal</span>
+                        </div>
+                        <div class="bg-luxe-surface p-2 rounded-xl border border-luxe-border">
+                            <span class="text-[9px] text-luxe-muted font-semibold uppercase block">Proteína</span>
+                            <span id="modalProtPlato" class="text-xs font-black text-luxe-gold">0g</span>
+                        </div>
+                        <div class="bg-luxe-surface p-2 rounded-xl border border-luxe-border">
+                            <span class="text-[9px] text-luxe-muted font-semibold uppercase block">Carbos</span>
+                            <span id="modalCarbPlato" class="text-xs font-black text-sky-300">0g</span>
+                        </div>
+                        <div class="bg-luxe-surface p-2 rounded-xl border border-luxe-border">
+                            <span class="text-[9px] text-luxe-muted font-semibold uppercase block">Grasas</span>
+                            <span id="modalGrasPlato" class="text-xs font-black text-rose-300">0g</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de Extras -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-luxe-gold">Selecciona Extras</span>
+                        <span class="text-[10px] text-luxe-muted">Opcional</span>
+                    </div>
+                    <div id="modalListaExtras" class="space-y-2"></div>
+                </div>
+
+                <!-- Notas -->
+                <div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-luxe-muted block mb-2">Instrucciones para el Chef</span>
+                    <div class="flex flex-wrap gap-1.5 mb-2">
+                        <button type="button" onclick="insertarNotaRapida('Término medio')" class="text-[10px] px-2.5 py-1 rounded-lg bg-luxe-card border border-luxe-border text-luxe-stone hover:border-luxe-gold/50">🥩 Término medio</button>
+                        <button type="button" onclick="insertarNotaRapida('Aderezo aparte')" class="text-[10px] px-2.5 py-1 rounded-lg bg-luxe-card border border-luxe-border text-luxe-stone hover:border-luxe-gold/50">🥗 Aderezo aparte</button>
+                        <button type="button" onclick="insertarNotaRapida('Sin sal añadida')" class="text-[10px] px-2.5 py-1 rounded-lg bg-luxe-card border border-luxe-border text-luxe-stone hover:border-luxe-gold/50">🧂 Sin sal</button>
+                    </div>
+                    <input type="text" id="modalInputNotas" placeholder="Ej: Sin cebolla, alérgico a frutos secos..." class="w-full bg-luxe-card text-xs text-luxe-stone px-3.5 py-2.5 rounded-xl border border-luxe-border focus:border-luxe-gold focus:outline-none">
+                </div>
+            </div>
+
+            <div class="p-4 bg-luxe-card border-t border-luxe-border flex items-center justify-between gap-3">
+                <div class="flex items-center bg-luxe-surface rounded-xl border border-luxe-border p-1">
+                    <button onclick="ajustarCantidadModal(-1)" class="w-8 h-8 rounded-lg bg-luxe-card text-luxe-stone font-bold hover:text-white flex items-center justify-center">-</button>
+                    <span id="modalTxtCantidad" class="w-8 text-center font-bold text-xs text-luxe-stone">1</span>
+                    <button onclick="ajustarCantidadModal(1)" class="w-8 h-8 rounded-lg bg-luxe-card text-luxe-stone font-bold hover:text-white flex items-center justify-center">+</button>
+                </div>
+                <button onclick="confirmarAgregarAlCarrito()" class="flex-1 py-3.5 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Añadir • <span id="modalBtnPrecioTotal">S/ 0.00</span></span>
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- ========================================================================= -->
-    <!-- MODAL: MOVER / TRANSFERIR MESA                                           -->
-    <!-- ========================================================================= -->
-    <div id="modalMoverMesa" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
-        <div class="bg-luxe-surface w-full max-w-sm rounded-3xl border border-luxe-border p-6 shadow-2xl text-center">
-            <div class="w-12 h-12 rounded-2xl bg-luxe-card border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-3 text-lg font-bold">
-                <i class="fa-solid fa-right-left"></i>
+    <!-- MODAL CARRITO -->
+    <div id="modalCarrito" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-luxe-surface w-full max-w-lg rounded-t-3xl sm:rounded-3xl border border-luxe-border overflow-hidden max-h-[90vh] flex flex-col shadow-2xl">
+            <div class="p-4 bg-luxe-card border-b border-luxe-border flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-receipt text-luxe-gold"></i>
+                    <h3 class="text-sm font-luxury-serif font-black text-luxe-stone">Revisión de Pedido</h3>
+                </div>
+                <button onclick="cerrarModalCarrito()" class="text-luxe-muted hover:text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            <h3 class="text-base font-luxury-serif font-black text-luxe-stone">Mover / Transferir Comanda</h3>
-            <p class="text-xs text-luxe-muted mt-1 mb-4">Transfiere todos los pedidos y la cuenta activa de <b id="lblOrigenMesaMover" class="text-luxe-gold">Mesa 04</b> a otra mesa:</p>
 
-            <label class="text-[10px] font-bold uppercase tracking-widest text-luxe-muted block mb-1.5 text-left">Seleccionar Mesa Destino:</label>
-            <select id="selectDestinoMesa" class="w-full bg-luxe-card text-luxe-stone text-xs font-bold p-3 rounded-xl border border-luxe-border focus:border-luxe-gold focus:outline-none mb-5">
-                <option value="Mesa 01">Mesa 01</option>
-                <option value="Mesa 02">Mesa 02</option>
-                <option value="Mesa 03">Mesa 03</option>
-                <option value="Mesa 04">Mesa 04</option>
-                <option value="Mesa 05">Mesa 05</option>
-                <option value="Mesa 06">Mesa 06</option>
-                <option value="Mesa 07">Mesa 07</option>
-                <option value="Mesa 08">Mesa 08</option>
-                <option value="Terraza VIP">Terraza VIP</option>
-                <option value="Barra Principal">Barra Principal</option>
-            </select>
+            <div id="listaItemsModalCarrito" class="p-4 overflow-y-auto custom-scroll space-y-3 flex-1"></div>
 
-            <div class="grid grid-cols-2 gap-2">
-                <button onclick="cerrarModalMoverMesa()" class="py-2.5 bg-luxe-card text-luxe-muted hover:text-white text-xs font-bold rounded-xl">Cancelar</button>
-                <button onclick="confirmarMoverMesa()" class="py-2.5 bg-luxe-gold hover:bg-luxe-goldLight text-black text-xs font-black rounded-xl shadow">Confirmar Traslado</button>
+            <div class="p-5 bg-luxe-card border-t border-luxe-border space-y-3">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-luxe-muted font-semibold uppercase tracking-wider">Subtotal esta ronda:</span>
+                    <span id="modalCarroSubtotalVal" class="text-lg font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
+                </div>
+                <button id="btnEnviarCocinaModal" onclick="enviarPedidoACocinaFinal()" class="w-full py-4 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Confirmar y Enviar a Cocina</span>
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- CONTENEDOR OCULTO PARA IMPRESIÓN TÉRMICA DE 80MM -->
-    <div id="areaImpresionTermica" class="hidden"></div>
+    <!-- MODAL PEDIR LA CUENTA: CON PROPINA Y DIVISIÓN EXACTA (1, 2, 3, 4, 5+) -->
+    <div id="modalPagarCuenta" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-luxe-surface w-full max-w-md rounded-3xl border border-luxe-border p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto custom-scroll">
+            <button onclick="cerrarModalPedirCuenta()" class="absolute top-4 right-4 text-luxe-muted hover:text-white">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
 
-    <!-- JAVASCRIPT DE COCINA -->
+            <div class="text-center mb-3">
+                <div class="w-10 h-10 rounded-2xl bg-luxe-card border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-1.5 text-base font-bold">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+                <h3 class="text-base font-luxury-serif font-black text-luxe-stone">Solicitud de Cuenta</h3>
+                <p class="text-xs text-luxe-muted"><span id="lblModalPagarMesa" class="text-luxe-gold font-bold">Mesa 04</span></p>
+            </div>
+
+            <!-- TOTAL GLOBAL CON PROPINA INTEGRADA -->
+            <div class="bg-luxe-card p-4 rounded-2xl border border-luxe-border text-center mb-3">
+                <span class="text-[9px] uppercase tracking-widest text-luxe-muted font-extrabold block">Total a Pagar</span>
+                <span id="lblModalPagarTotal" class="text-3xl font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
+                <span id="lblPropinaDesglose" class="text-[10px] text-amber-300/80 block mt-0.5 hidden">+ S/ 0.00 de servicio voluntario</span>
+            </div>
+
+            <!-- SELECTOR DE PROPINA SUGERIDA -->
+            <div class="bg-luxe-card/80 p-3 rounded-2xl border border-luxe-border/80 mb-3">
+                <span class="text-[9px] font-black uppercase tracking-widest text-luxe-muted block mb-1.5 text-center">
+                    ✨ Servicio Sugerido al Personal
+                </span>
+                <div class="flex items-center gap-1">
+                    <button type="button" onclick="seleccionarPropina(0)" class="btn-tip active flex-1 py-1 rounded-lg bg-luxe-surface border border-luxe-gold text-luxe-gold font-bold text-[11px]">0%</button>
+                    <button type="button" onclick="seleccionarPropina(10)" class="btn-tip flex-1 py-1 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-[11px]">10%</button>
+                    <button type="button" onclick="seleccionarPropina(15)" class="btn-tip flex-1 py-1 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-[11px]">15%</button>
+                    <button type="button" onclick="seleccionarPropina(20)" class="btn-tip flex-1 py-1 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-[11px]">20%</button>
+                </div>
+            </div>
+
+            <!-- DIVISIÓN DE CUENTA 100% SIMÉTRICA (1, 2, 3, 4, 5+) -->
+            <div class="bg-luxe-card/80 p-3 rounded-2xl border border-luxe-border/80 mb-4">
+                <span class="text-[9px] font-black uppercase tracking-widest text-luxe-gold block mb-1.5 text-center">
+                    <i class="fa-solid fa-users mr-1"></i> Dividir Cuenta en Partes Iguales
+                </span>
+                <div class="flex items-center gap-1 mb-2">
+                    <button type="button" onclick="calcularSplitBill(1)" class="btn-split active flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-gold text-luxe-gold font-bold text-xs">1</button>
+                    <button type="button" onclick="calcularSplitBill(2)" class="btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-xs">2</button>
+                    <button type="button" onclick="calcularSplitBill(3)" class="btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-xs">3</button>
+                    <button type="button" onclick="calcularSplitBill(4)" class="btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-xs">4</button>
+                    <button type="button" onclick="calcularSplitBill(5)" class="btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-xs">5+</button>
+                </div>
+                <div id="boxResultadoSplit" class="text-center py-1.5 px-3 bg-luxe-surface rounded-xl border border-luxe-gold/30 hidden">
+                    <span class="text-[9px] text-luxe-muted block">Monto por comensal:</span>
+                    <span id="lblMontoPorPersona" class="text-base font-black text-amber-300 font-luxury-serif">S/ 0.00 c/u</span>
+                </div>
+            </div>
+
+            <!-- MÉTODOS DE PAGO -->
+            <div class="space-y-1.5 mb-4">
+                <label class="flex items-center p-2.5 rounded-xl bg-luxe-card border border-luxe-border cursor-pointer hover:border-luxe-gold/50 transition">
+                    <input type="radio" name="radioMetodoPago" value="Yape / Plin (QR)" checked onchange="toggleMetodoQR(true)" class="accent-luxe-gold mr-3">
+                    <div class="flex-1">
+                        <span class="text-xs font-bold text-luxe-stone block">📲 Yape / Plin Digital</span>
+                        <span class="text-[10px] text-luxe-muted">QR Digital al instante</span>
+                    </div>
+                </label>
+                <label class="flex items-center p-2.5 rounded-xl bg-luxe-card border border-luxe-border cursor-pointer hover:border-luxe-gold/50 transition">
+                    <input type="radio" name="radioMetodoPago" value="Tarjeta (POS Inalámbrico)" onchange="toggleMetodoQR(false)" class="accent-luxe-gold mr-3">
+                    <div class="flex-1">
+                        <span class="text-xs font-bold text-luxe-stone block">💳 Tarjeta (POS)</span>
+                        <span class="text-[10px] text-luxe-muted">El mozo trae el terminal</span>
+                    </div>
+                </label>
+                <label class="flex items-center p-2.5 rounded-xl bg-luxe-card border border-luxe-border cursor-pointer hover:border-luxe-gold/50 transition">
+                    <input type="radio" name="radioMetodoPago" value="Efectivo" onchange="toggleMetodoQR(false)" class="accent-luxe-gold mr-3">
+                    <div class="flex-1">
+                        <span class="text-xs font-bold text-luxe-stone block">💵 Efectivo</span>
+                        <span class="text-[10px] text-luxe-muted">Pago en billetes</span>
+                    </div>
+                </label>
+            </div>
+
+            <div id="boxQrYapePlin" class="bg-white p-3 rounded-2xl text-center mb-4 flex flex-col items-center justify-center">
+                <svg class="w-24 h-24" viewBox="0 0 100 100" fill="none">
+                    <rect width="100" height="100" fill="white"/>
+                    <path d="M10 10H40V40H10V10ZM16 16V34H34V16H16Z" fill="#11100e"/>
+                    <rect x="22" y="22" width="6" height="6" fill="#d4af37"/>
+                    <path d="M60 10H90V40H60V10ZM66 16V34H84V16H66Z" fill="#11100e"/>
+                    <rect x="72" y="22" width="6" height="6" fill="#d4af37"/>
+                    <path d="M10 60H40V90H10V60ZM16 66V84H34V66H16Z" fill="#11100e"/>
+                    <rect x="22" y="72" width="6" height="6" fill="#d4af37"/>
+                    <circle cx="50" cy="50" r="8" fill="#d4af37"/>
+                </svg>
+                <span class="text-[9px] font-black text-slate-900 mt-1 uppercase font-luxury-serif">AUREUS RESERVE S.A.C.</span>
+            </div>
+
+            <button onclick="confirmarSolicitudDeCuenta()" class="w-full py-3 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow-lg transition">
+                Confirmar y Llamar al Mozo
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICACIÓN -->
+    <div id="toastNotification" class="fixed top-5 right-5 z-50 bg-luxe-card/95 backdrop-blur-md text-luxe-stone px-4 py-3 rounded-2xl shadow-2xl border border-luxe-border flex items-center space-x-3 transform translate-x-96 transition-transform duration-300">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-luxe-gold text-base"></i>
+        <span id="toastMsg" class="text-xs font-bold block">Notificación</span>
+    </div>
+
+    <!-- JAVASCRIPT DEL CLIENTE -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAOdDt5smefZAZHcMZA2spWVRwT8xaAAq4",
@@ -312,645 +496,810 @@
         }
         const db = firebase.database();
 
-        // Catálogo local para gestión de stock
-        const CATALOGO_PLATOS_STOCK = [
-            { id: 1, nombre: "Tataki de Atún Rojo & Sésamo Tostado", cat: "Entradas" },
-            { id: 2, nombre: "Carpaccio de Pulpo al Olivo Criollo", cat: "Entradas" },
-            { id: 3, nombre: "Ribeye Black Angus 300g al Carbón", cat: "Principales" },
-            { id: 4, nombre: "Salmón Salvaje con Costra de Hierbas", cat: "Principales" },
-            { id: 5, nombre: "Bowl de Quinoa Orgánica, Pollo & Edamame", cat: "Principales" },
-            { id: 6, nombre: "Té Blanco Imperial & Orquídeas", cat: "Bebidas" },
-            { id: 7, nombre: "Mousse de Cacao 85% & Frutos Silvestres", cat: "Postres" }
+        const PRODUCTOS_CATALOGO = [
+            {
+                id: 1,
+                nombre: "Tataki de Atún Rojo & Sésamo Tostado",
+                categoria: "entradas",
+                precioBase: 54.00,
+                desc: "Lomo de atún aleta amarilla sellado, costra de sésamo bicolor, palta tatemada y ponzu trufado.",
+                img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=85",
+                tag: "Pesca Sostenible",
+                kcal: 410, prot: 44, carb: 12, gras: 18,
+                extrasDisponibles: [
+                    { id: 'ex_caviar', nombre: 'Caviar Oscietra Imperial (15g)', precio: 28.00, kcal: 40, prot: 4, carb: 1, gras: 3 },
+                    { id: 'ex_palta', nombre: 'Doble Palta Hass Tatemada', precio: 7.00, kcal: 120, prot: 2, carb: 6, gras: 11 },
+                    { id: 'ex_trufa', nombre: 'Aceite de Trufa Blanca Italiana', precio: 8.00, kcal: 45, prot: 0, carb: 0, gras: 5 }
+                ]
+            },
+            {
+                id: 2,
+                nombre: "Carpaccio de Pulpo al Olivo Criollo",
+                categoria: "entradas",
+                precioBase: 46.00,
+                desc: "Láminas finas de pulpo a baja temperatura, emulsión de aceitunas de botija y chips de masa madre.",
+                img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=85",
+                tag: "Entrada Fría",
+                kcal: 320, prot: 32, carb: 8, gras: 14,
+                extrasDisponibles: [
+                    { id: 'ex_tostadas', nombre: 'Chips Masa Madre Keto Extra', precio: 6.00, kcal: 90, prot: 4, carb: 5, gras: 6 },
+                    { id: 'ex_alcaparras', nombre: 'Alcaparras Crocantes Fritas', precio: 5.00, kcal: 25, prot: 1, carb: 2, gras: 2 }
+                ]
+            },
+            {
+                id: 3,
+                nombre: "Ribeye Black Angus 300g al Carbón",
+                categoria: "fondos",
+                precioBase: 78.00,
+                desc: "Corte selecto Angus de pastoreo, espárragos verdes grillados y puré de camote rústico.",
+                img: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&q=85",
+                tag: "Grass-Fed Angus",
+                kcal: 710, prot: 62, carb: 24, gras: 36,
+                extrasDisponibles: [
+                    { id: 'ex_mantequilla_trufa', nombre: 'Mantequilla de Trufa Negra', precio: 12.00, kcal: 110, prot: 1, carb: 0, gras: 12 },
+                    { id: 'ex_huevo_granja', nombre: 'Huevo Pochado de Granja Libre', precio: 6.00, kcal: 75, prot: 7, carb: 1, gras: 5 },
+                    { id: 'ex_chimichurri', nombre: 'Chimichurri Rústico de la Casa', precio: 5.00, kcal: 50, prot: 0, carb: 1, gras: 5 }
+                ]
+            },
+            {
+                id: 4,
+                nombre: "Salmón Salvaje con Costra de Hierbas",
+                categoria: "fondos",
+                precioBase: 64.00,
+                desc: "Filete de salmón salvaje atlántico, costra de eneldo y almendras, sobre quinoa negra orgánica.",
+                img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=85",
+                tag: "Omega-3 Puro",
+                kcal: 560, prot: 48, carb: 20, gras: 26,
+                extrasDisponibles: [
+                    { id: 'ex_extra_salmon', nombre: 'Porción Extra Salmón Salvaje (120g)', precio: 22.00, kcal: 220, prot: 26, carb: 0, gras: 13 },
+                    { id: 'ex_esparragos', nombre: 'Espárragos Salteados en Aceite de Oliva', precio: 9.00, kcal: 45, prot: 3, carb: 4, gras: 3 }
+                ]
+            },
+            {
+                id: 5,
+                nombre: "Bowl de Quinoa Orgánica, Pollo & Edamame",
+                categoria: "fondos",
+                precioBase: 42.00,
+                desc: "Pechuga de pollo orgánico a las brasas, edamame, palta, brotes microgreens y aderezo sésamo.",
+                img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=85",
+                tag: "High Protein",
+                kcal: 490, prot: 50, carb: 36, gras: 12,
+                extrasDisponibles: [
+                    { id: 'ex_doble_pollo', nombre: 'Doble Pechuga de Pollo Orgánico (150g)', precio: 14.00, kcal: 180, prot: 35, carb: 0, gras: 4 },
+                    { id: 'ex_queso_cabra', nombre: 'Queso de Cabra Curado Artesanal', precio: 8.00, kcal: 95, prot: 6, carb: 1, gras: 8 }
+                ]
+            },
+            {
+                id: 6,
+                nombre: "Té Blanco Imperial & Orquídeas",
+                categoria: "bebidas",
+                precioBase: 22.00,
+                desc: "Bebida botánica antioxidante infusionada en frío con pétalos de orquídea silvestre y menta fresca.",
+                img: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=800&q=85",
+                tag: "Elixir Botánico",
+                kcal: 35, prot: 1, carb: 6, gras: 0,
+                extrasDisponibles: [
+                    { id: 'ex_colageno', nombre: 'Shot de Colágeno Marino Hidrolizado', precio: 8.00, kcal: 35, prot: 9, carb: 0, gras: 0 },
+                    { id: 'ex_miel_cruda', nombre: 'Miel de Abejas Cruda de Bosque Nativo', precio: 4.00, kcal: 45, prot: 0, carb: 12, gras: 0 }
+                ]
+            },
+            {
+                id: 7,
+                nombre: "Mousse de Cacao 85% & Frutos Silvestres",
+                categoria: "postres",
+                precioBase: 32.00,
+                desc: "Cacao puro amazónico sin azúcar añadida con Isolate Whey Protein y coulis de frambuesas.",
+                img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=85",
+                tag: "Sugar-Free Luxe",
+                kcal: 310, prot: 22, carb: 16, gras: 14,
+                extrasDisponibles: [
+                    { id: 'ex_pistachos', nombre: 'Pistachos de Bronte Tostados', precio: 8.00, kcal: 85, prot: 3, carb: 4, gras: 7 },
+                    { id: 'ex_nibs', nombre: 'Nibs de Cacao Criollo Orgánico', precio: 4.00, kcal: 40, prot: 1, carb: 2, gras: 3 }
+                ]
+            }
         ];
 
-        let primeraCarga = true;
-        let dbMesasCache = {};
-        let stockAgotadosCache = {};
-        let vozActivada = true;
-        let ultimaComandaDictadaTexto = "No hay pedidos recientes.";
-        let mesaOrigenParaMover = null;
-        let advertenciasSlaDictadas = {}; // Registro para no spamear avisos SLA repetidos
+        let mesaActual = 'Mesa 04';
+        let platoModalActivo = null;
+        let cantidadModal = 1;
+        let extrasSeleccionadosModal = [];
+        let carritoRondaTemporal = [];
+        let totalConsumoBase = 0;
+        let porcentajePropina = 0;
+        let personasSplit = 1;
+        let stockAgotadosMap = {};
 
-        // MOTOR DE SÍNTESIS DE VOZ (WEB SPEECH API)
-        function hablarTexto(texto, velocidad = 1.0) {
-            if (!vozActivada || !('speechSynthesis' in window)) return;
-
-            window.speechSynthesis.cancel();
-
-            const locucion = new SpeechSynthesisUtterance(texto);
-            locucion.lang = 'es-ES';
-            locucion.rate = velocidad;
-            locucion.pitch = 1.0;
-            locucion.volume = 1.0;
-
-            const voces = window.speechSynthesis.getVoices();
-            const vozEspanol = voces.find(v => v.lang.startsWith('es'));
-            if (vozEspanol) locucion.voice = vozEspanol;
-
-            window.speechSynthesis.speak(locucion);
-        }
-
-        // CANTAR COMANDA CON JERARQUÍA Y PAUSAS CLARAS
-        function cantarComandaVozEstructurada(mesaId, items, asiento = "") {
-            let textoVoz = `¡Marcha ${mesaId}! `;
-            if (asiento) textoVoz += `Comensal ${asiento}. `;
-            textoVoz += `... `;
-
-            items.forEach(it => {
-                const cant = it.cantidad === 1 ? 'Un' : `${it.cantidad}`;
-                textoVoz += `${cant} ${it.nombre}. `;
-
-                if (it.extras && it.extras.length > 0) {
-                    const nombresExtras = it.extras.map(e => e.nombre).join(', ');
-                    textoVoz += `Con ${nombresExtras}. `;
-                }
-
-                if (it.notas && it.notas !== 'Sin notas especiales') {
-                    // Pausa y advertencia para la cocina
-                    textoVoz += `... Atención con la nota: ${it.notas}. `;
-                }
-                textoVoz += `... `;
-            });
-
-            ultimaComandaDictadaTexto = textoVoz;
-            hablarTexto(textoVoz);
-        }
-
-        function cantarAlertaVoz(mensaje) {
-            hablarTexto(`¡Atención salón! ${mensaje}`, 1.05);
-        }
-
-        function repetirUltimaComanda() {
-            reproducirGongCocina();
-            setTimeout(() => hablarTexto(ultimaComandaDictadaTexto), 500);
-        }
-
-        function toggleAsistenteVoz() {
-            vozActivada = !vozActivada;
-            const btn = document.getElementById('btnToggleVoz');
-            const icon = document.getElementById('iconoVoz');
-            const txt = document.getElementById('txtEstadoVoz');
-
-            if (vozActivada) {
-                btn.className = 'px-2.5 py-1 bg-luxe-gold/15 text-luxe-gold border border-luxe-gold/40 rounded-xl text-xs font-bold transition flex items-center gap-1.5';
-                icon.className = 'fa-solid fa-volume-high';
-                txt.innerText = 'Voz: ON';
-                hablarTexto("Asistente de voz activado");
-            } else {
-                window.speechSynthesis.cancel();
-                btn.className = 'px-2.5 py-1 bg-luxe-surface text-luxe-muted border border-luxe-border rounded-xl text-xs font-bold transition flex items-center gap-1.5';
-                icon.className = 'fa-solid fa-volume-xmark';
-                txt.innerText = 'Voz: OFF';
-            }
-        }
-
-        function reproducirGongCocina() {
+        function reproducirSonido(tipo) {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
                 const ctx = new AudioContext();
                 const now = ctx.currentTime;
-                [440, 554.37, 659.25, 880].forEach((f, i) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(f, now + (i * 0.04));
-                    gain.gain.setValueAtTime(0.12, now + (i * 0.04));
-                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.start(now + (i * 0.04));
-                    osc.stop(now + 1.2);
-                });
+
+                if (tipo === 'tap') {
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(550, now);
+                    gain.gain.setValueAtTime(0.06, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(now); osc.stop(now + 0.08);
+                } else if (tipo === 'extra') {
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(750, now);
+                    osc.frequency.exponentialRampToValueAtTime(1100, now + 0.09);
+                    gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(now); osc.stop(now + 0.14);
+                } else if (tipo === 'add') {
+                    const osc1 = ctx.createOscillator(); const gain1 = ctx.createGain();
+                    osc1.type = 'sine'; osc1.frequency.setValueAtTime(523.25, now);
+                    gain1.gain.setValueAtTime(0.12, now); gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                    osc1.connect(gain1); gain1.connect(ctx.destination);
+                    osc1.start(now); osc1.stop(now + 0.25);
+
+                    const osc2 = ctx.createOscillator(); const gain2 = ctx.createGain();
+                    osc2.type = 'sine'; osc2.frequency.setValueAtTime(783.99, now + 0.08);
+                    gain2.gain.setValueAtTime(0.15, now + 0.08);
+                    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc2.connect(gain2); gain2.connect(ctx.destination);
+                    osc2.start(now + 0.08); osc2.stop(now + 0.35);
+                } else if (tipo === 'order') {
+                    [440, 554.37, 659.25].forEach((f, i) => {
+                        const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                        osc.type = 'sine'; osc.frequency.setValueAtTime(f, now + (i * 0.04));
+                        gain.gain.setValueAtTime(0.1, now + (i * 0.04)); gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.0);
+                        osc.connect(gain); gain.connect(ctx.destination);
+                        osc.start(now + (i * 0.04)); osc.stop(now + 1.0);
+                    });
+                } else if (tipo === 'bell') {
+                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(1760, now);
+                    gain.gain.setValueAtTime(0.18, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(now); osc.stop(now + 0.7);
+                } else if (tipo === 'pay') {
+                    [587.33, 739.99, 880].forEach((freq, idx) => {
+                        const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                        osc.type = 'sine'; osc.frequency.setValueAtTime(freq, now + (idx * 0.05));
+                        gain.gain.setValueAtTime(0.09, now + (idx * 0.05)); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                        osc.connect(gain); gain.connect(ctx.destination);
+                        osc.start(now + (idx * 0.05)); osc.stop(now + 0.6);
+                    });
+                }
             } catch(e) {}
         }
 
-        function autenticarStaff() {
-            const pin = document.getElementById('inputPinStaff').value;
-            if (pin === '1234' || pin === '') {
-                sessionStorage.setItem('staff_auth', 'true');
-                document.getElementById('pantallaLoginCocina').classList.add('hidden');
-                document.getElementById('dashboardCocina').classList.remove('hidden');
-                iniciarKDS();
-                hablarTexto("Sistema de cocina listo");
-            } else {
-                alert('PIN Incorrecto. Usa 1234');
-            }
-        }
-
-        function cerrarSesionStaff() {
-            sessionStorage.removeItem('staff_auth');
-            location.reload();
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
-            if (sessionStorage.getItem('staff_auth') === 'true') {
-                document.getElementById('pantallaLoginCocina').classList.add('hidden');
-                document.getElementById('dashboardCocina').classList.remove('hidden');
-                iniciarKDS();
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramMesa = urlParams.get('mesa');
+            if (paramMesa) {
+                mesaActual = decodeURIComponent(paramMesa);
             }
 
-            setInterval(() => {
-                const r = document.getElementById('relojLive');
-                if (r) r.innerText = new Date().toLocaleTimeString();
-            }, 1000);
+            document.getElementById('lblMesaHeader').innerText = mesaActual;
+            document.getElementById('lblMesaHero').innerText = mesaActual;
 
-            // Bucle cada 30 segundos para recalcular SLA y alertar demoras
-            setInterval(verificarSlaComandas, 30000);
+            renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
+
+            const mesaKey = mesaActual.replace(/\s+/g, '_');
+            
+            // Escuchar cambios de mesa en vivo desde Firebase
+            db.ref('mesas/' + mesaKey).on('value', (snapshot) => {
+                const dataMesa = snapshot.val();
+                if (dataMesa && dataMesa.comandas && dataMesa.comandas.length > 0) {
+                    totalConsumoBase = dataMesa.totalAcumulado || 0;
+                    renderizarTicketEnVivoCliente(dataMesa);
+                    actualizarStepperProgreso(dataMesa);
+                    document.getElementById('subseccionMenu').classList.add('hidden');
+                    document.getElementById('subseccionTicket').classList.remove('hidden');
+                } else {
+                    totalConsumoBase = 0;
+                    document.getElementById('subseccionMenu').classList.remove('hidden');
+                    document.getElementById('subseccionTicket').classList.add('hidden');
+                }
+            });
+
+            // Escuchar stock de agotados en vivo desde Cocina
+            db.ref('stockAgotados').on('value', (snapshot) => {
+                stockAgotadosMap = snapshot.val() || {};
+                renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
+            });
         });
 
-        function iniciarKDS() {
-            if ('speechSynthesis' in window) window.speechSynthesis.getVoices();
-
-            let totalComandasAnterior = -1;
-
-            // Escuchar mesas en tiempo real
-            db.ref('mesas').on('value', (snapshot) => {
-                dbMesasCache = snapshot.val() || {};
-                renderizarTableroKDS(dbMesasCache);
-
-                let totalComandasActuales = 0;
-                let ultimaComandaNueva = null;
-                let mesaDeComanda = "";
-
-                Object.keys(dbMesasCache).forEach(k => {
-                    const m = dbMesasCache[k];
-                    if (m && m.comandas) {
-                        totalComandasActuales += m.comandas.length;
-                        m.comandas.forEach(c => {
-                            if (c.estado === 'nuevo') {
-                                ultimaComandaNueva = c;
-                                mesaDeComanda = m.mesaId;
-                            }
-                        });
-                    }
-                });
-
-                if (!primeraCarga && totalComandasActuales > totalComandasAnterior && ultimaComandaNueva) {
-                    reproducirGongCocina();
-                    setTimeout(() => {
-                        cantarComandaVozEstructurada(mesaDeComanda, ultimaComandaNueva.items, ultimaComandaNueva.asiento || "");
-                    }, 500);
-                }
-
-                totalComandasAnterior = totalComandasActuales;
-                primeraCarga = false;
-            });
-
-            // Escuchar alertas de salón en tiempo real
-            let totalAlertasAnterior = -1;
-            db.ref('alertas').on('value', (snapshot) => {
-                const dbAlertas = snapshot.val() || {};
-                renderizarAlertasStaff(dbAlertas);
-
-                const keys = Object.keys(dbAlertas);
-                if (!primeraCarga && keys.length > totalAlertasAnterior && keys.length > 0) {
-                    const ultimaAlerta = dbAlertas[keys[keys.length - 1]];
-                    reproducirGongCocina();
-                    setTimeout(() => cantarAlertaVoz(ultimaAlerta.mensaje), 400);
-                }
-                totalAlertasAnterior = keys.length;
-            });
-
-            // Escuchar stock de agotados en tiempo real
-            db.ref('stockAgotados').on('value', (snapshot) => {
-                stockAgotadosCache = snapshot.val() || {};
-                actualizarBadgeAgotados();
-            });
-        }
-
-        // VERIFICAR TIEMPO TRANSCURRIDO (SLA) Y LANZAR AVISO SONORO
-        function verificarSlaComandas() {
-            const ahora = Date.now();
-            Object.keys(dbMesasCache).forEach(mKey => {
-                const mesa = dbMesasCache[mKey];
-                if (mesa && mesa.comandas) {
-                    mesa.comandas.forEach(cmd => {
-                        if (cmd.estado === 'nuevo' || cmd.estado === 'preparacion') {
-                            const tiempoInicio = cmd.timestamp || ahora;
-                            const minutosTranscurridos = Math.floor((ahora - tiempoInicio) / 60000);
-
-                            // Si supera 15 min y no se ha avisado recientemente
-                            if (minutosTranscurridos >= 15 && !advertenciasSlaDictadas[cmd.id]) {
-                                advertenciasSlaDictadas[cmd.id] = true;
-                                hablarTexto(`¡Atención cocina! ${mesa.mesaId} pendiente hace ${minutosTranscurridos} minutos.`, 1.05);
-                            }
-                        }
-                    });
-                }
-            });
-            renderizarTableroKDS(dbMesasCache);
-        }
-
-        function renderizarTableroKDS(dbMesas) {
-            const colNuevos = document.getElementById('columnaNuevos');
-            const colPrep = document.getElementById('columnaPrep');
-            const colEntregados = document.getElementById('columnaEntregados');
-
-            colNuevos.innerHTML = '';
-            colPrep.innerHTML = '';
-            colEntregados.innerHTML = '';
-
-            let cN = 0, cP = 0, cE = 0;
-            const ahora = Date.now();
-
-            Object.keys(dbMesas).forEach(mKey => {
-                const mesa = dbMesas[mKey];
-
-                if (mesa && mesa.comandas) {
-                    mesa.comandas.forEach((cmd, cmdIdx) => {
-                        // Calcular SLA (Minutos transcurridos)
-                        const tiempoInicio = cmd.timestamp || ahora;
-                        const minutosTranscurridos = Math.floor((ahora - tiempoInicio) / 60000);
-
-                        let slaCardClass = 'border-luxe-border';
-                        let slaBadge = `<span class="text-[10px] text-luxe-muted font-bold font-mono"><i class="fa-regular fa-clock mr-1"></i>${cmd.hora}</span>`;
-
-                        if (cmd.estado !== 'entregado') {
-                            if (minutosTranscurridos >= 15) {
-                                slaCardClass = 'urgent-sla-pulse bg-rose-500/10 border-rose-500';
-                                slaBadge = `<span class="text-[10px] px-2 py-0.5 rounded-full bg-rose-500 text-white font-black animate-pulse"><i class="fa-solid fa-fire mr-1"></i>${minutosTranscurridos} min (Demora)</span>`;
-                            } else if (minutosTranscurridos >= 10) {
-                                slaCardClass = 'border-amber-500/80 bg-amber-500/5';
-                                slaBadge = `<span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold"><i class="fa-solid fa-hourglass-half mr-1"></i>${minutosTranscurridos} min</span>`;
-                            }
-                        }
-
-                        const card = document.createElement('div');
-                        card.className = `bg-luxe-card p-4 rounded-2xl border shadow-md flex flex-col justify-between transition-all ${slaCardClass}`;
-
-                        let itemsHtml = '';
-                        if (cmd.items) {
-                            cmd.items.forEach((it, itIdx) => {
-                                itemsHtml += `
-                                    <div class="py-1.5 border-b border-luxe-border/40 text-xs flex justify-between items-start">
-                                        <div class="flex-1 pr-2">
-                                            <span class="font-bold text-luxe-stone">${it.cantidad}x ${it.nombre}</span>
-                                            ${it.extras && it.extras.length > 0 ? `<p class="text-[10px] text-luxe-gold font-semibold">+ Extras: ${it.extras.map(e => e.nombre).join(', ')}</p>` : ''}
-                                            ${it.notas !== 'Sin notas especiales' ? `<p class="text-[10px] text-amber-300 font-semibold bg-luxe-surface px-2 py-0.5 rounded border border-luxe-border mt-0.5">⚠️ Nota: "${it.notas}"</p>` : ''}
-                                        </div>
-                                        <button onclick="cancelarItemDeComanda('${mKey}', ${cmdIdx}, ${itIdx})" class="text-slate-500 hover:text-rose-400 text-xs p-1" title="Cancelar este plato (Descuenta el saldo)">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </div>
-                                `;
-                            });
-                        }
-
-                        let actionBtn = '';
-                        if (cmd.estado === 'nuevo') {
-                            cN++;
-                            actionBtn = `<button onclick="cambiarEstadoComanda('${mKey}', ${cmdIdx}, 'preparacion')" class="w-full py-2.5 bg-amber-400 hover:bg-amber-300 text-black font-black text-xs rounded-xl transition shadow">Iniciar Preparación 👨‍🍳</button>`;
-                            colNuevos.appendChild(card);
-                        } else if (cmd.estado === 'preparacion') {
-                            cP++;
-                            actionBtn = `<button onclick="cambiarEstadoComanda('${mKey}', ${cmdIdx}, 'entregado')" class="w-full py-2.5 bg-emerald-400 hover:bg-emerald-300 text-black font-black text-xs rounded-xl transition shadow">Marcar como Servido 🚀</button>`;
-                            colPrep.appendChild(card);
-                        } else {
-                            cE++;
-                            actionBtn = `<span class="text-[11px] text-center block text-luxe-muted font-bold">✓ Entregado a comensal</span>`;
-                            colEntregados.appendChild(card);
-                        }
-
-                        const asientoTxt = cmd.asiento ? `<span class="text-[9px] bg-luxe-surface text-luxe-gold px-1.5 py-0.5 rounded border border-luxe-border">Comensal ${cmd.asiento}</span>` : '';
-
-                        card.innerHTML = `
-                            <div>
-                                <div class="flex justify-between items-start pb-2 mb-2 border-b border-luxe-border">
-                                    <div>
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="text-xs font-luxury-serif font-black text-luxe-gold bg-luxe-surface px-2.5 py-1 rounded-lg border border-luxe-border">${mesa.mesaId}</span>
-                                            ${asientoTxt}
-                                            <span class="text-[10px] text-luxe-muted font-bold">Ronda #${cmd.ronda}</span>
-                                        </div>
-                                    </div>
-                                    ${slaBadge}
-                                </div>
-                                <div class="space-y-1 mb-3">${itemsHtml}</div>
-                            </div>
-                            <div class="pt-2 border-t border-luxe-border">${actionBtn}</div>
-                        `;
-                    });
-
-                    // TARJETA DE CAJA CON IMPRESIÓN 80MM, MOVER MESA Y LIBERACIÓN
-                    if (mesa.comandas && mesa.comandas.length > 0) {
-                        const cajaBox = document.createElement('div');
-                        cajaBox.className = 'mt-3 bg-luxe-surface p-4 rounded-2xl border border-rose-500/40 shadow-lg space-y-2.5';
-                        
-                        const totalMesa = mesa.totalAcumulado || 0;
-                        const split2 = (totalMesa / 2).toFixed(2);
-                        const split4 = (totalMesa / 4).toFixed(2);
-
-                        cajaBox.innerHTML = `
-                            <div class="flex justify-between items-center border-b border-luxe-border/50 pb-2">
-                                <span class="text-xs font-luxury-serif font-black text-luxe-stone">${mesa.mesaId}</span>
-                                <span class="text-sm font-black text-luxe-gold font-luxury-serif">Total: S/ ${totalMesa.toFixed(2)}</span>
-                            </div>
-
-                            <div class="text-[10px] text-luxe-muted flex justify-between">
-                                <span>División sugerida:</span>
-                                <span class="text-amber-300 font-bold">2p: S/ ${split2} | 4p: S/ ${split4}</span>
-                            </div>
-
-                            <div class="grid grid-cols-3 gap-1.5 pt-1">
-                                <!-- BOTÓN MOVER MESA -->
-                                <button onclick="abrirModalMoverMesa('${mKey}', '${mesa.mesaId}')" class="py-2 bg-luxe-card hover:bg-luxe-cardHover text-sky-300 border border-luxe-border text-[11px] font-bold rounded-xl transition flex items-center justify-center gap-1 shadow" title="Transferir a otra mesa">
-                                    <i class="fa-solid fa-right-left"></i>
-                                    <span>Mover</span>
-                                </button>
-
-                                <!-- BOTÓN IMPRESIÓN TÉRMICA 80MM -->
-                                <button onclick="imprimirTicketTermico('${mKey}')" class="py-2 bg-luxe-card hover:bg-luxe-cardHover text-luxe-gold border border-luxe-border text-[11px] font-bold rounded-xl transition flex items-center justify-center gap-1 shadow" title="Imprimir ticket">
-                                    <i class="fa-solid fa-print"></i>
-                                    <span>80mm</span>
-                                </button>
-                                
-                                <!-- BOTÓN COBRAR Y LIBERAR MESA -->
-                                <button onclick="liberarMesaTotal('${mKey}', '${mesa.mesaId}')" class="py-2 bg-rose-600 hover:bg-rose-500 text-white font-black text-[11px] rounded-xl shadow transition flex items-center justify-center gap-1">
-                                    <i class="fa-solid fa-broom"></i>
-                                    <span>Cobrar</span>
-                                </button>
-                            </div>
-                        `;
-                        colEntregados.appendChild(cajaBox);
-                    }
-                }
-            });
-
-            document.getElementById('badgeNuevos').innerText = cN;
-            document.getElementById('badgePrep').innerText = cP;
-            document.getElementById('badgeEntregados').innerText = cE;
-        }
-
-        function cambiarEstadoComanda(mKey, cmdIdx, nuevoEstado) {
-            db.ref(`mesas/${mKey}/comandas/${cmdIdx}/estado`).set(nuevoEstado);
-        }
-
-        function cancelarItemDeComanda(mKey, cmdIdx, itIdx) {
-            const mesa = dbMesasCache[mKey];
-            if (!mesa || !mesa.comandas || !mesa.comandas[cmdIdx] || !mesa.comandas[cmdIdx].items[itIdx]) return;
-
-            const itemCancelado = mesa.comandas[cmdIdx].items[itIdx];
-            const conf = confirm(`¿Cancelar "${itemCancelado.cantidad}x ${itemCancelado.nombre}" de la ${mesa.mesaId}?\nSe restará S/ ${itemCancelado.subtotal.toFixed(2)} de la cuenta.`);
-            if (!conf) return;
-
-            mesa.totalAcumulado = Math.max(0, (mesa.totalAcumulado || 0) - itemCancelado.subtotal);
-            mesa.comandas[cmdIdx].items.splice(itIdx, 1);
-
-            if (mesa.comandas[cmdIdx].items.length === 0) {
-                mesa.comandas.splice(cmdIdx, 1);
+        // BUSCADOR EN VIVO
+        function buscarPlatosEnVivo(texto) {
+            const query = texto.toLowerCase().trim();
+            if (!query) {
+                renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
+                return;
             }
-
-            if (mesa.comandas.length === 0) {
-                db.ref('mesas/' + mKey).remove();
-            } else {
-                db.ref('mesas/' + mKey).set(mesa);
-            }
+            const filtrados = PRODUCTOS_CATALOGO.filter(p => 
+                p.nombre.toLowerCase().includes(query) || 
+                p.desc.toLowerCase().includes(query) ||
+                p.tag.toLowerCase().includes(query)
+            );
+            renderizarCatalogoMenu(filtrados);
         }
 
-        // =========================================================================
-        // MOVER / TRANSFERIR MESA EN VIVO EN FIREBASE
-        // =========================================================================
-        function abrirModalMoverMesa(mKey, mesaId) {
-            mesaOrigenParaMover = { key: mKey, id: mesaId };
-            document.getElementById('lblOrigenMesaMover').innerText = mesaId;
-            document.getElementById('modalMoverMesa').classList.remove('hidden');
-        }
+        function renderizarCatalogoMenu(platos) {
+            const grid = document.getElementById('gridCatalogoPlatos');
+            grid.innerHTML = '';
 
-        function cerrarModalMoverMesa() {
-            document.getElementById('modalMoverMesa').classList.add('hidden');
-            mesaOrigenParaMover = null;
-        }
-
-        function confirmarMoverMesa() {
-            if (!mesaOrigenParaMover) return;
-            const mesaDestinoNombre = document.getElementById('selectDestinoMesa').value;
-            const destinoKey = mesaDestinoNombre.replace(/\s+/g, '_');
-
-            if (destinoKey === mesaOrigenParaMover.key) {
-                alert("La mesa de destino debe ser diferente a la actual.");
+            if (platos.length === 0) {
+                grid.innerHTML = '<div class="col-span-2 text-center py-10 text-luxe-muted text-xs"><i class="fa-solid fa-utensils text-2xl mb-2 text-luxe-border block"></i>No encontramos platos con ese nombre.</div>';
                 return;
             }
 
-            const dataMesaOrigen = dbMesasCache[mesaOrigenParaMover.key];
-            if (!dataMesaOrigen) return;
+            platos.forEach(p => {
+                const estaAgotado = !!stockAgotadosMap[p.id];
 
-            // Actualizar nombre de mesa en todas las comandas
-            dataMesaOrigen.mesaId = mesaDestinoNombre;
-            if (dataMesaOrigen.comandas) {
-                dataMesaOrigen.comandas.forEach(c => c.mesaId = mesaDestinoNombre);
-            }
-
-            // Guardar en la nueva mesa y borrar la anterior
-            db.ref('mesas/' + destinoKey).set(dataMesaOrigen).then(() => {
-                db.ref('mesas/' + mesaOrigenParaMover.key).remove();
-
-                // Actualizar alertas
-                db.ref('alertas').once('value', snap => {
-                    const data = snap.val();
-                    if (data) {
-                        Object.keys(data).forEach(k => {
-                            if (data[k].mesa === mesaOrigenParaMover.id) {
-                                db.ref(`alertas/${k}/mesa`).set(mesaDestinoNombre);
-                                db.ref(`alertas/${k}/mensaje`).set(data[k].mensaje.replace(mesaOrigenParaMover.id, mesaDestinoNombre));
-                            }
-                        });
-                    }
-                });
-
-                cerrarModalMoverMesa();
-                hablarTexto(`Comanda trasladada a ${mesaDestinoNombre}`);
-            });
-        }
-
-        // =========================================================================
-        // CONTROL DE STOCK & PLATOS AGOTADOS ("SOLD OUT")
-        // =========================================================================
-        function abrirModalStock() {
-            renderizarListaStock();
-            document.getElementById('modalStockControl').classList.remove('hidden');
-        }
-
-        function cerrarModalStock() {
-            document.getElementById('modalStockControl').classList.add('hidden');
-        }
-
-        function renderizarListaStock() {
-            const cont = document.getElementById('listaPlatosStock');
-            cont.innerHTML = '';
-
-            CATALOGO_PLATOS_STOCK.forEach(p => {
-                const estaAgotado = !!stockAgotadosCache[p.id];
                 const card = document.createElement('div');
-                card.className = `p-3 rounded-2xl border flex justify-between items-center transition ${estaAgotado ? 'bg-rose-500/10 border-rose-500/40' : 'bg-luxe-card border-luxe-border'}`;
+                card.className = `bg-luxe-card/90 backdrop-blur-md rounded-3xl p-4 border transition-all duration-300 flex flex-col sm:flex-row gap-4 shadow-xl ${estaAgotado ? 'opacity-55 border-rose-500/30' : 'border-luxe-border hover:border-luxe-gold/40'}`;
                 
+                let botonPedir = `<button onclick="abrirModalDetallePlato(${p.id})" class="px-3.5 py-1.5 bg-luxe-gold hover:bg-luxe-goldLight text-black text-xs font-black rounded-xl transition flex items-center gap-1.5 shadow"><i class="fa-solid fa-plus text-[10px]"></i> Pedir</button>`;
+                let tagEstado = `<span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-luxe-base/85 backdrop-blur-md text-luxe-gold text-[8px] font-extrabold tracking-wider uppercase">${p.tag}</span>`;
+
+                if (estaAgotado) {
+                    botonPedir = `<button disabled class="px-3 py-1.5 bg-rose-500/20 text-rose-300 text-xs font-bold rounded-xl cursor-not-allowed border border-rose-500/30">Agotado</button>`;
+                    tagEstado = `<span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-rose-900/90 backdrop-blur-md text-white text-[8px] font-black tracking-wider uppercase border border-rose-500/40">🔴 AGOTADO</span>`;
+                }
+
                 card.innerHTML = `
-                    <div>
-                        <span class="text-xs font-bold text-luxe-stone block">${p.nombre}</span>
-                        <span class="text-[10px] text-luxe-muted">${p.cat} • Estado: <b class="${estaAgotado ? 'text-rose-400' : 'text-emerald-400'}">${estaAgotado ? '🔴 AGOTADO' : '🟢 Disponible'}</b></span>
+                    <div class="w-full sm:w-36 h-36 rounded-2xl overflow-hidden relative ${estaAgotado ? '' : 'cursor-pointer flex-shrink-0'}" onclick="${estaAgotado ? '' : `abrirModalDetallePlato(${p.id})`}">
+                        <img src="${p.img}" alt="${p.nombre}" class="w-full h-full object-cover ${estaAgotado ? 'grayscale' : 'hover:scale-105 transition-transform duration-500'}">
+                        ${tagEstado}
                     </div>
-                    <button onclick="toggleStockPlato(${p.id}, '${p.nombre}', ${estaAgotado})" class="px-3 py-1.5 rounded-xl text-xs font-black transition ${estaAgotado ? 'bg-rose-600 hover:bg-rose-500 text-white' : 'bg-luxe-surface hover:bg-luxe-cardHover text-luxe-stone border border-luxe-border'}">
-                        ${estaAgotado ? 'Desbloquear' : 'Marcar Agotado'}
-                    </button>
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start gap-2">
+                                <h4 onclick="${estaAgotado ? '' : `abrirModalDetallePlato(${p.id})`}" class="text-sm font-luxury-serif font-black text-luxe-stone ${estaAgotado ? 'line-through text-luxe-muted' : 'hover:text-luxe-gold cursor-pointer'} transition leading-snug">${p.nombre}</h4>
+                                <span class="text-sm font-luxury-serif font-black text-luxe-gold whitespace-nowrap">S/ ${p.precioBase.toFixed(2)}</span>
+                            </div>
+                            <p class="text-xs text-luxe-muted mt-1 line-clamp-2 leading-relaxed">${p.desc}</p>
+                            <div class="flex items-center gap-2 mt-2 text-[9px] font-bold">
+                                <span class="text-amber-300 bg-luxe-surface px-2 py-0.5 rounded-md border border-luxe-border">${p.kcal} kcal</span>
+                                <span class="text-luxe-gold bg-luxe-surface px-2 py-0.5 rounded-md border border-luxe-border">Prot: ${p.prot}g</span>
+                                <span class="text-luxe-muted bg-luxe-surface px-2 py-0.5 rounded-md border border-luxe-border">${p.extrasDisponibles.length} extras</span>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-luxe-border/60 flex items-center justify-between">
+                            ${estaAgotado ? '<span class="text-[11px] font-bold text-rose-400">No disponible por hoy</span>' : `<button onclick="abrirModalDetallePlato(${p.id})" class="text-[11px] font-bold text-luxe-muted hover:text-luxe-stone flex items-center gap-1"><span>Macros & Extras</span> <i class="fa-solid fa-arrow-right text-[9px]"></i></button>`}
+                            ${botonPedir}
+                        </div>
+                    </div>
                 `;
-                cont.appendChild(card);
+                grid.appendChild(card);
             });
         }
 
-        function toggleStockPlato(id, nombre, estadoAgotadoActual) {
-            if (estadoAgotadoActual) {
-                // Habilitar
-                db.ref('stockAgotados/' + id).remove().then(() => {
-                    hablarTexto(`${nombre} disponible`);
-                });
+        function filtrarCategoria(cat, event) {
+            reproducirSonido('tap');
+            document.querySelectorAll('.cat-pill').forEach(btn => {
+                btn.className = 'cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 text-luxe-stone border border-luxe-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm';
+            });
+            event.currentTarget.className = 'cat-pill active px-3.5 py-2 rounded-xl font-bold bg-luxe-gold text-black whitespace-nowrap transition shadow-md';
+
+            if (cat === 'todos') {
+                renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
             } else {
-                // Marcar como agotado
-                db.ref('stockAgotados/' + id).set({ id, nombre, agotado: true, fecha: new Date().toLocaleTimeString() }).then(() => {
-                    hablarTexto(`${nombre} marcado como agotado`);
-                });
+                renderizarCatalogoMenu(PRODUCTOS_CATALOGO.filter(p => p.categoria === cat));
             }
         }
 
-        function actualizarBadgeAgotados() {
-            const totalAgotados = Object.keys(stockAgotadosCache).length;
-            const badge = document.getElementById('badgeAgotadosCount');
-            if (totalAgotados > 0) {
-                badge.innerText = totalAgotados;
-                badge.classList.remove('hidden');
+        function abrirModalDetallePlato(id) {
+            reproducirSonido('tap');
+            const prod = PRODUCTOS_CATALOGO.find(p => p.id === id);
+            if (!prod || stockAgotadosMap[id]) return;
+
+            platoModalActivo = prod;
+            cantidadModal = 1;
+            extrasSeleccionadosModal = [];
+
+            document.getElementById('modalImgPlato').src = prod.img;
+            document.getElementById('modalTagPlato').innerText = prod.tag.toUpperCase();
+            document.getElementById('modalNombrePlato').innerText = prod.nombre;
+            document.getElementById('modalDescPlato').innerText = prod.desc;
+            document.getElementById('modalPrecioBasePlato').innerText = `S/ ${prod.precioBase.toFixed(2)}`;
+            document.getElementById('modalTxtCantidad').innerText = cantidadModal;
+            document.getElementById('modalInputNotas').value = '';
+
+            const contenedorExtras = document.getElementById('modalListaExtras');
+            contenedorExtras.innerHTML = '';
+
+            prod.extrasDisponibles.forEach(ex => {
+                const itemDiv = document.createElement('label');
+                itemDiv.className = 'flex items-center justify-between p-2.5 rounded-xl bg-luxe-card border border-luxe-border hover:border-luxe-gold/40 cursor-pointer transition';
+                itemDiv.innerHTML = `
+                    <div class="flex items-center space-x-2.5">
+                        <input type="checkbox" onchange="toggleExtraPlato('${ex.id}', this.checked)" class="accent-luxe-gold w-4 h-4 rounded cursor-pointer">
+                        <div>
+                            <span class="text-xs font-semibold text-luxe-stone block">${ex.nombre}</span>
+                            <span class="text-[10px] text-luxe-muted">+${ex.kcal} kcal | P: +${ex.prot}g | C: +${ex.carb}g | G: +${ex.gras}g</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-luxe-gold whitespace-nowrap ml-2">+ S/ ${ex.precio.toFixed(2)}</span>
+                `;
+                contenedorExtras.appendChild(itemDiv);
+            });
+
+            recalcularMacrosYPrecioModal();
+            document.getElementById('modalDetallePlato').classList.remove('hidden');
+        }
+
+        function cerrarModalDetalle() {
+            reproducirSonido('tap');
+            document.getElementById('modalDetallePlato').classList.add('hidden');
+        }
+
+        function toggleExtraPlato(extraId, isChecked) {
+            reproducirSonido('extra');
+            const extraObj = platoModalActivo.extrasDisponibles.find(e => e.id === extraId);
+            if (!extraObj) return;
+
+            if (isChecked) {
+                extrasSeleccionadosModal.push(extraObj);
             } else {
-                badge.classList.add('hidden');
+                extrasSeleccionadosModal = extrasSeleccionadosModal.filter(e => e.id !== extraId);
             }
-            if (!document.getElementById('modalStockControl').classList.contains('hidden')) {
-                renderizarListaStock();
+            recalcularMacrosYPrecioModal();
+        }
+
+        function recalcularMacrosYPrecioModal() {
+            if (!platoModalActivo) return;
+
+            let totalKcal = platoModalActivo.kcal;
+            let totalProt = platoModalActivo.prot;
+            let totalCarb = platoModalActivo.carb;
+            let totalGras = platoModalActivo.gras;
+            let sumaPrecioExtras = 0;
+
+            extrasSeleccionadosModal.forEach(e => {
+                totalKcal += e.kcal;
+                totalProt += e.prot;
+                totalCarb += e.carb;
+                totalGras += e.gras;
+                sumaPrecioExtras += e.precio;
+            });
+
+            const lblKcal = document.getElementById('modalKcalPlato');
+            const lblProt = document.getElementById('modalProtPlato');
+            const lblCarb = document.getElementById('modalCarbPlato');
+            const lblGras = document.getElementById('modalGrasPlato');
+            const badgeSumados = document.getElementById('badgeExtrasSumados');
+
+            lblKcal.innerText = `${totalKcal} kcal`;
+            lblProt.innerText = `${totalProt}g`;
+            lblCarb.innerText = `${totalCarb}g`;
+            lblGras.innerText = `${totalGras}g`;
+
+            [lblKcal, lblProt, lblCarb, lblGras].forEach(el => {
+                el.classList.remove('macro-pulse');
+                void el.offsetWidth;
+                el.classList.add('macro-pulse');
+            });
+
+            if (extrasSeleccionadosModal.length > 0) {
+                badgeSumados.classList.remove('hidden');
+            } else {
+                badgeSumados.classList.add('hidden');
+            }
+
+            const precioUnitario = platoModalActivo.precioBase + sumaPrecioExtras;
+            document.getElementById('modalBtnPrecioTotal').innerText = `S/ ${(precioUnitario * cantidadModal).toFixed(2)}`;
+        }
+
+        function insertarNotaRapida(texto) {
+            reproducirSonido('tap');
+            const input = document.getElementById('modalInputNotas');
+            input.value = input.value.trim() === '' ? texto : `${input.value}, ${texto}`;
+        }
+
+        function ajustarCantidadModal(delta) {
+            reproducirSonido('tap');
+            const nuevo = cantidadModal + delta;
+            if (nuevo >= 1) {
+                cantidadModal = nuevo;
+                document.getElementById('modalTxtCantidad').innerText = cantidadModal;
+                recalcularMacrosYPrecioModal();
             }
         }
 
-        // =========================================================================
-        // IMPRESIÓN TÉRMICA 80MM (WINDOW.PRINT)
-        // =========================================================================
-        function imprimirTicketTermico(mKey) {
-            const mesa = dbMesasCache[mKey];
-            if (!mesa) return;
+        function confirmarAgregarAlCarrito() {
+            if (!platoModalActivo) return;
+            reproducirSonido('add');
 
-            const area = document.getElementById('areaImpresionTermica');
-            const total = mesa.totalAcumulado || 0;
-            const subtotalSinIgv = total / 1.18;
-            const igv = total - subtotalSinIgv;
+            const notaUsuario = document.getElementById('modalInputNotas').value.trim();
+            const sumaExtras = extrasSeleccionadosModal.reduce((acc, e) => acc + e.precio, 0);
+            const precioUnitario = platoModalActivo.precioBase + sumaExtras;
 
-            let filasItems = '';
-            if (mesa.comandas) {
-                mesa.comandas.forEach(cmd => {
+            const totalKcal = platoModalActivo.kcal + extrasSeleccionadosModal.reduce((a, e) => a + e.kcal, 0);
+            const totalProt = platoModalActivo.prot + extrasSeleccionadosModal.reduce((a, e) => a + e.prot, 0);
+            const totalCarb = platoModalActivo.carb + extrasSeleccionadosModal.reduce((a, e) => a + e.carb, 0);
+            const totalGras = platoModalActivo.gras + extrasSeleccionadosModal.reduce((a, e) => a + e.gras, 0);
+
+            carritoRondaTemporal.push({
+                productoId: platoModalActivo.id,
+                nombre: platoModalActivo.nombre,
+                precioBase: platoModalActivo.precioBase,
+                extras: [...extrasSeleccionadosModal],
+                macrosFinales: { kcal: totalKcal, prot: totalProt, carb: totalCarb, gras: totalGras },
+                precioUnitario: precioUnitario,
+                cantidad: cantidadModal,
+                subtotal: precioUnitario * cantidadModal,
+                notas: notaUsuario || 'Sin notas especiales'
+            });
+
+            cerrarModalDetalle();
+            actualizarBarraCarritoFlotante();
+            mostrarToast(`Añadido: ${cantidadModal}x ${platoModalActivo.nombre}`, 'success');
+        }
+
+        function actualizarBarraCarritoFlotante() {
+            const barra = document.getElementById('barraFlotanteCarrito');
+            const totalCant = carritoRondaTemporal.reduce((acc, it) => acc + it.cantidad, 0);
+            const totalMonto = carritoRondaTemporal.reduce((acc, it) => acc + it.subtotal, 0);
+
+            if (totalCant > 0) {
+                barra.classList.remove('translate-y-36');
+                document.getElementById('txtCantCarritoFlotante').innerText = totalCant;
+                document.getElementById('txtTotalCarritoFlotante').innerText = `S/ ${totalMonto.toFixed(2)}`;
+            } else {
+                barra.classList.add('translate-y-36');
+            }
+        }
+
+        function abrirModalCarrito() {
+            reproducirSonido('tap');
+            const lista = document.getElementById('listaItemsModalCarrito');
+            lista.innerHTML = '';
+
+            carritoRondaTemporal.forEach((it, idx) => {
+                let extrasTxt = '';
+                if (it.extras && it.extras.length > 0) {
+                    extrasTxt = `<span class="text-[10px] text-luxe-gold block mt-0.5">+ Extras: ${it.extras.map(e => e.nombre).join(', ')}</span>`;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'p-3 bg-luxe-card rounded-2xl border border-luxe-border flex justify-between items-start';
+                card.innerHTML = `
+                    <div class="flex-1 pr-3">
+                        <span class="text-xs font-luxury-serif font-black text-luxe-stone block">${it.cantidad}x ${it.nombre}</span>
+                        ${extrasTxt}
+                        <span class="text-[10px] text-amber-300 font-semibold block mt-0.5">${it.macrosFinales.kcal} kcal | P: ${it.macrosFinales.prot}g (c/u)</span>
+                        <span class="text-[10px] text-luxe-muted block mt-0.5 italic">Nota: "${it.notas}"</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xs font-black text-luxe-gold font-luxury-serif">S/ ${it.subtotal.toFixed(2)}</span>
+                        <button onclick="eliminarItemCarro(${idx})" class="text-slate-500 hover:text-rose-400 text-xs">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                lista.appendChild(card);
+            });
+
+            const subtotal = carritoRondaTemporal.reduce((acc, it) => acc + it.subtotal, 0);
+            document.getElementById('modalCarroSubtotalVal').innerText = `S/ ${subtotal.toFixed(2)}`;
+            document.getElementById('modalCarrito').classList.remove('hidden');
+        }
+
+        function cerrarModalCarrito() {
+            reproducirSonido('tap');
+            document.getElementById('modalCarrito').classList.add('hidden');
+        }
+
+        function eliminarItemCarro(idx) {
+            reproducirSonido('tap');
+            carritoRondaTemporal.splice(idx, 1);
+            if (carritoRondaTemporal.length === 0) {
+                cerrarModalCarrito();
+            } else {
+                abrirModalCarrito();
+            }
+            actualizarBarraCarritoFlotante();
+        }
+
+        function enviarPedidoACocinaFinal() {
+            if (carritoRondaTemporal.length === 0) return;
+
+            const btnEnviar = document.getElementById('btnEnviarCocinaModal');
+            btnEnviar.disabled = true;
+            btnEnviar.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Enviando...';
+
+            reproducirSonido('order');
+            const horaEnvio = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const mesaKey = mesaActual.replace(/\s+/g, '_');
+
+            db.ref('mesas/' + mesaKey).once('value').then((snapshot) => {
+                let dataMesa = snapshot.val() || {
+                    mesaId: mesaActual,
+                    inicioServicio: horaEnvio,
+                    totalAcumulado: 0,
+                    contadorRondas: 0,
+                    comandas: []
+                };
+
+                if (!dataMesa.comandas) dataMesa.comandas = [];
+
+                dataMesa.contadorRondas = (dataMesa.contadorRondas || 0) + 1;
+                const totalRonda = carritoRondaTemporal.reduce((acc, it) => acc + it.subtotal, 0);
+                dataMesa.totalAcumulado = (dataMesa.totalAcumulado || 0) + totalRonda;
+
+                const nuevaComanda = {
+                    id: 'CMD-' + Math.floor(1000 + Math.random() * 9000),
+                    mesaId: mesaActual,
+                    ronda: dataMesa.contadorRondas,
+                    hora: horaEnvio,
+                    timestamp: Date.now(),
+                    estado: 'nuevo',
+                    items: [...carritoRondaTemporal]
+                };
+
+                dataMesa.comandas.push(nuevaComanda);
+                return db.ref('mesas/' + mesaKey).set(dataMesa);
+            }).then(() => {
+                btnEnviar.disabled = false;
+                btnEnviar.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Confirmar y Enviar a Cocina';
+
+                carritoRondaTemporal = [];
+                actualizarBarraCarritoFlotante();
+                cerrarModalCarrito();
+                mostrarToast(`¡Pedido de ${mesaActual} enviado a cocina!`, 'success');
+            }).catch((error) => {
+                btnEnviar.disabled = false;
+                btnEnviar.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Confirmar y Enviar a Cocina';
+                alert("Error al enviar pedido: " + error.message);
+            });
+        }
+
+        function actualizarStepperProgreso(dataMesa) {
+            if (!dataMesa.comandas || dataMesa.comandas.length === 0) return;
+            const ultComanda = dataMesa.comandas[dataMesa.comandas.length - 1];
+
+            const dot1 = document.getElementById('stepDot1');
+            const dot2 = document.getElementById('stepDot2');
+            const dot3 = document.getElementById('stepDot3');
+            const line1 = document.getElementById('stepLine1');
+            const line2 = document.getElementById('stepLine2');
+            const header = document.getElementById('lblStatusCocinaHeader');
+
+            if (ultComanda.estado === 'nuevo') {
+                header.innerText = '1. Comanda Recibida en Cocina';
+                dot1.className = 'w-4 h-4 rounded-full bg-luxe-gold text-black flex items-center justify-center text-[9px] mb-1 animate-pulse';
+                dot2.className = 'w-4 h-4 rounded-full bg-luxe-card border border-luxe-border text-luxe-muted flex items-center justify-center text-[9px] mb-1';
+                dot3.className = 'w-4 h-4 rounded-full bg-luxe-card border border-luxe-border text-luxe-muted flex items-center justify-center text-[9px] mb-1';
+                line1.className = 'h-[2px] flex-1 bg-luxe-border';
+                line2.className = 'h-[2px] flex-1 bg-luxe-border';
+            } else if (ultComanda.estado === 'preparacion') {
+                header.innerText = '2. ¡El Chef está en Fuego Preparando!';
+                dot1.className = 'w-4 h-4 rounded-full bg-luxe-gold text-black flex items-center justify-center text-[9px] mb-1';
+                dot2.className = 'w-4 h-4 rounded-full bg-amber-400 text-black flex items-center justify-center text-[9px] mb-1 animate-pulse';
+                dot3.className = 'w-4 h-4 rounded-full bg-luxe-card border border-luxe-border text-luxe-muted flex items-center justify-center text-[9px] mb-1';
+                line1.className = 'h-[2px] flex-1 bg-luxe-gold';
+                line2.className = 'h-[2px] flex-1 bg-luxe-border';
+            } else if (ultComanda.estado === 'entregado') {
+                header.innerText = '3. ¡Platos Servidos en tu Mesa!';
+                dot1.className = 'w-4 h-4 rounded-full bg-luxe-gold text-black flex items-center justify-center text-[9px] mb-1';
+                dot2.className = 'w-4 h-4 rounded-full bg-luxe-gold text-black flex items-center justify-center text-[9px] mb-1';
+                dot3.className = 'w-4 h-4 rounded-full bg-emerald-400 text-black flex items-center justify-center text-[9px] mb-1 animate-bounce';
+                line1.className = 'h-[2px] flex-1 bg-luxe-gold';
+                line2.className = 'h-[2px] flex-1 bg-luxe-gold';
+            }
+        }
+
+        function renderizarTicketEnVivoCliente(dataMesa) {
+            document.getElementById('lblTicketMesaTitle').innerText = `${dataMesa.mesaId} • Servicio iniciado a las ${dataMesa.inicioServicio}`;
+            const contenedor = document.getElementById('listaItemsTicketAcumulado');
+            contenedor.innerHTML = '';
+
+            let totalKcalMesa = 0;
+
+            if (dataMesa.comandas) {
+                dataMesa.comandas.forEach(cmd => {
+                    const bloque = document.createElement('div');
+                    bloque.className = 'pt-3 pb-2';
+
+                    let itemsHtml = '';
                     if (cmd.items) {
                         cmd.items.forEach(it => {
-                            let extras = it.extras && it.extras.length > 0 ? `<br>&nbsp;&nbsp;+ ${it.extras.map(e => e.nombre).join(', ')}` : '';
-                            let notas = it.notas !== 'Sin notas especiales' ? `<br>&nbsp;&nbsp;* Nota: ${it.notas}` : '';
+                            let txtExtras = '';
+                            if (it.extras && it.extras.length > 0) {
+                                txtExtras = `<span class="text-[10px] text-luxe-gold block">+ Extras: ${it.extras.map(e => e.nombre).join(', ')}</span>`;
+                            }
 
-                            filasItems += `
-                                <tr>
-                                    <td style="vertical-align: top;">${it.cantidad}</td>
-                                    <td style="vertical-align: top; padding-left: 4px;">${it.nombre}${extras}${notas}</td>
-                                    <td style="vertical-align: top; text-align: right; white-space: nowrap;">S/ ${it.subtotal.toFixed(2)}</td>
-                                </tr>
+                            if (it.macrosFinales) {
+                                totalKcalMesa += (it.macrosFinales.kcal * it.cantidad);
+                            }
+
+                            itemsHtml += `
+                                <div class="flex justify-between items-start py-1.5 text-xs">
+                                    <div>
+                                        <span class="text-luxe-stone font-bold">${it.cantidad}x ${it.nombre}</span>
+                                        ${txtExtras}
+                                        <span class="text-[10px] text-amber-300 font-semibold block">${it.macrosFinales ? it.macrosFinales.kcal : 0} kcal | P: ${it.macrosFinales ? it.macrosFinales.prot : 0}g</span>
+                                        ${it.notas !== 'Sin notas especiales' ? `<span class="text-[10px] text-luxe-muted block italic">Nota: "${it.notas}"</span>` : ''}
+                                    </div>
+                                    <span class="text-luxe-gold font-bold font-luxury-serif">S/ ${it.subtotal.toFixed(2)}</span>
+                                </div>
                             `;
                         });
                     }
+
+                    let statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 font-black rounded uppercase">En Comandera</span>';
+                    if (cmd.estado === 'preparacion') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-amber-500/10 text-amber-300 border border-amber-500/20 font-black rounded uppercase">En Fuego</span>';
+                    if (cmd.estado === 'entregado') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black rounded uppercase">Servido</span>';
+
+                    bloque.innerHTML = `
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[11px] font-luxury-serif font-black text-luxe-stone uppercase tracking-widest">Ronda #${cmd.ronda} (${cmd.hora})</span>
+                            ${statusBadge}
+                        </div>
+                        <div class="space-y-1 pl-1">${itemsHtml}</div>
+                    `;
+                    contenedor.appendChild(bloque);
                 });
             }
 
-            area.innerHTML = `
-                <div style="text-align: center; margin-bottom: 8px;">
-                    <h2 style="font-size: 14px; font-weight: bold; margin: 0; text-transform: uppercase;">AUREUS RESERVE</h2>
-                    <p style="margin: 2px 0; font-size: 10px;">R.U.C. 20601234567 • ALTA GASTRONOMÍA</p>
-                    <p style="margin: 2px 0; font-size: 10px;">Av. Gastronomía 123, Miraflores, Lima</p>
-                    <p style="margin: 4px 0 0 0; font-size: 11px; font-weight: bold;">TICKET DE CONSUMO: ${mesa.mesaId}</p>
-                    <p style="margin: 0; font-size: 10px;">Fecha: ${new Date().toLocaleDateString()} • Hora: ${new Date().toLocaleTimeString()}</p>
-                    <div style="border-bottom: 1px dashed #000; margin: 6px 0;"></div>
-                </div>
+            const total = dataMesa.totalAcumulado || 0;
+            const subtotalSinIgv = total / 1.18;
+            const igv = total - subtotalSinIgv;
 
-                <table style="width: 100%; border-collapse: collapse; font-size: 10px; line-height: 1.2;">
-                    <thead>
-                        <tr style="border-bottom: 1px dashed #000;">
-                            <th style="text-align: left; width: 20px;">Cant</th>
-                            <th style="text-align: left; padding-left: 4px;">Descripción</th>
-                            <th style="text-align: right;">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${filasItems}
-                    </tbody>
-                </table>
-
-                <div style="border-top: 1px dashed #000; margin: 6px 0;"></div>
-
-                <table style="width: 100%; font-size: 10px; line-height: 1.3;">
-                    <tr>
-                        <td>Op. Gravada:</td>
-                        <td style="text-align: right;">S/ ${subtotalSinIgv.toFixed(2)}</td>
-                    </tr>
-                    <tr>
-                        <td>I.G.V. (18%):</td>
-                        <td style="text-align: right;">S/ ${igv.toFixed(2)}</td>
-                    </tr>
-                    <tr style="font-size: 13px; font-weight: bold; border-top: 1px solid #000;">
-                        <td style="padding-top: 4px;">TOTAL A PAGAR:</td>
-                        <td style="text-align: right; padding-top: 4px;">S/ ${total.toFixed(2)}</td>
-                    </tr>
-                </table>
-
-                <div style="border-top: 1px dashed #000; margin: 6px 0;"></div>
-
-                <div style="font-size: 9px; text-align: center; line-height: 1.2;">
-                    <p style="margin: 2px 0;">División sugerida: 2p: S/ ${(total/2).toFixed(2)} | 4p: S/ ${(total/4).toFixed(2)}</p>
-                    <p style="margin: 4px 0 0 0; font-weight: bold;">¡GRACIAS POR SU PREFERENCIA!</p>
-                    <p style="margin: 2px 0;">Comprobante de consumo interno</p>
-                </div>
-            `;
-
-            window.print();
+            document.getElementById('ticketSubtotalNeto').innerText = `S/ ${subtotalSinIgv.toFixed(2)}`;
+            document.getElementById('ticketIgvCalculado').innerText = `S/ ${igv.toFixed(2)}`;
+            document.getElementById('ticketTotalAcumuladoSoles').innerText = `S/ ${total.toFixed(2)}`;
+            document.getElementById('ticketTotalMacrosResume').innerText = `${totalKcalMesa} kcal acumuladas`;
         }
 
-        function liberarMesaTotal(mKey, mesaNombre) {
-            const conf = confirm(`¿Confirmar cobro y liberar ${mesaNombre}?\nLa pantalla del cliente volverá a S/ 0.00.`);
-            if (!conf) return;
+        function volverAlMenuParaPedirMas() {
+            reproducirSonido('tap');
+            document.getElementById('subseccionMenu').classList.remove('hidden');
+            document.getElementById('subseccionTicket').classList.add('hidden');
+        }
 
-            db.ref('mesas/' + mKey).remove().then(() => {
-                db.ref('alertas').once('value', (snap) => {
-                    const data = snap.val();
-                    if (data) {
-                        Object.keys(data).forEach(k => {
-                            if (data[k].mesa === mesaNombre) {
-                                db.ref('alertas/' + k).remove();
-                            }
-                        });
-                    }
-                });
+        function navegarInicioCliente() {
+            reproducirSonido('tap');
+            const mesaKey = mesaActual.replace(/\s+/g, '_');
+            db.ref('mesas/' + mesaKey).once('value').then((snap) => {
+                const dataMesa = snap.val();
+                if (dataMesa && dataMesa.comandas && dataMesa.comandas.length > 0) {
+                    document.getElementById('subseccionMenu').classList.add('hidden');
+                    document.getElementById('subseccionTicket').classList.remove('hidden');
+                } else {
+                    document.getElementById('subseccionMenu').classList.remove('hidden');
+                    document.getElementById('subseccionTicket').classList.add('hidden');
+                }
             });
         }
 
-        function renderizarAlertasStaff(alertasObj) {
-            const cont = document.getElementById('contenedorAlertasStaff');
-            cont.innerHTML = '';
+        function solicitarAsistenciaMozo() {
+            reproducirSonido('bell');
+            const alerta = {
+                id: 'ALT-' + Date.now(),
+                mesa: mesaActual,
+                tipo: 'mozo',
+                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                mensaje: `🔔 Mozo solicitado en ${mesaActual}`
+            };
+            db.ref('alertas').push(alerta).then(() => {
+                mostrarToast('Asistencia solicitada. El personal se acerca a tu mesa.', 'success');
+            });
+        }
 
-            const keys = Object.keys(alertasObj);
-            if (keys.length === 0) {
-                cont.innerHTML = '<span class="text-[10px] text-luxe-muted italic">Sin llamadas pendientes</span>';
-                return;
+        function seleccionarPropina(porcentaje) {
+            reproducirSonido('tap');
+            porcentajePropina = porcentaje;
+            document.querySelectorAll('.btn-tip').forEach(btn => {
+                btn.className = 'btn-tip flex-1 py-1 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-[11px]';
+            });
+            event.currentTarget.className = 'btn-tip active flex-1 py-1 rounded-lg bg-luxe-surface border border-luxe-gold text-luxe-gold font-bold text-[11px]';
+
+            recalcularTotalesConPropinaYSplit();
+        }
+
+        function calcularSplitBill(personas) {
+            reproducirSonido('tap');
+            personasSplit = personas;
+            document.querySelectorAll('.btn-split').forEach(btn => {
+                btn.className = 'btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-border text-luxe-stone font-bold text-xs';
+            });
+            event.currentTarget.className = 'btn-split active flex-1 py-1.5 rounded-lg bg-luxe-surface border border-luxe-gold text-luxe-gold font-bold text-xs';
+
+            recalcularTotalesConPropinaYSplit();
+        }
+
+        function recalcularTotalesConPropinaYSplit() {
+            const montoPropina = (totalConsumoBase * (porcentajePropina / 100));
+            const totalConPropina = totalConsumoBase + montoPropina;
+
+            document.getElementById('lblModalPagarTotal').innerText = `S/ ${totalConPropina.toFixed(2)}`;
+
+            const desglosePropina = document.getElementById('lblPropinaDesglose');
+            if (porcentajePropina > 0) {
+                desglosePropina.innerText = `+ S/ ${montoPropina.toFixed(2)} (${porcentajePropina}% servicio sugerido)`;
+                desglosePropina.classList.remove('hidden');
+            } else {
+                desglosePropina.classList.add('hidden');
             }
 
-            keys.slice(-4).reverse().forEach(k => {
-                const alt = alertasObj[k];
-                const tag = document.createElement('div');
-                tag.className = 'px-3 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-300 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm';
-                tag.innerHTML = `
-                    <span>${alt.mensaje} (${alt.hora})</span>
-                    <button onclick="eliminarAlerta('${k}')" class="text-luxe-muted hover:text-white" title="Marcar atendido"><i class="fa-solid fa-check"></i></button>
-                `;
-                cont.appendChild(tag);
+            const boxSplit = document.getElementById('boxResultadoSplit');
+            if (personasSplit > 1 && totalConPropina > 0) {
+                const porPersona = totalConPropina / personasSplit;
+                document.getElementById('lblMontoPorPersona').innerText = `S/ ${porPersona.toFixed(2)} c/u (${personasSplit} comensales)`;
+                boxSplit.classList.remove('hidden');
+            } else {
+                boxSplit.classList.add('hidden');
+            }
+        }
+
+        function abrirModalPedirCuenta() {
+            reproducirSonido('pay');
+            const mesaKey = mesaActual.replace(/\s+/g, '_');
+            db.ref('mesas/' + mesaKey).once('value').then((snap) => {
+                const data = snap.val();
+                if (!data || !data.totalAcumulado || data.totalAcumulado <= 0) {
+                    mostrarToast('No hay consumo registrado en esta mesa', 'warning');
+                    return;
+                }
+
+                totalConsumoBase = data.totalAcumulado;
+                porcentajePropina = 0;
+                personasSplit = 1;
+                document.getElementById('lblModalPagarMesa').innerText = mesaActual;
+                recalcularTotalesConPropinaYSplit();
+                document.getElementById('modalPagarCuenta').classList.remove('hidden');
             });
         }
 
-        function eliminarAlerta(key) {
-            db.ref('alertas/' + key).remove();
+        function cerrarModalPedirCuenta() {
+            reproducirSonido('tap');
+            document.getElementById('modalPagarCuenta').classList.add('hidden');
+        }
+
+        function toggleMetodoQR(isYape) {
+            reproducirSonido('tap');
+            document.getElementById('boxQrYapePlin').style.display = isYape ? 'flex' : 'none';
+        }
+
+        function confirmarSolicitudDeCuenta() {
+            reproducirSonido('pay');
+            const metodo = document.querySelector('input[name="radioMetodoPago"]:checked').value;
+            const mesaKey = mesaActual.replace(/\s+/g, '_');
+            const montoPropina = (totalConsumoBase * (porcentajePropina / 100));
+            const totalFinal = totalConsumoBase + montoPropina;
+
+            const alerta = {
+                id: 'ALT-' + Date.now(),
+                mesa: mesaActual,
+                tipo: 'cuenta',
+                metodo: metodo,
+                propina: montoPropina,
+                total: totalFinal,
+                split: personasSplit,
+                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                mensaje: `💳 Cuenta solicitada: ${mesaActual} — ${metodo} (S/ ${totalFinal.toFixed(2)}${personasSplit > 1 ? ` | ${personasSplit} personas` : ''})`
+            };
+
+            db.ref('alertas').push(alerta).then(() => {
+                cerrarModalPedirCuenta();
+                mostrarToast(`Cuenta solicitada con método: ${metodo}`, 'success');
+            });
+        }
+
+        function mostrarToast(msg, tipo = 'info') {
+            const toast = document.getElementById('toastNotification');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = msg;
+            if (tipo === 'success') {
+                toastIcon.className = 'fa-solid fa-circle-check text-emerald-400 text-base';
+            } else {
+                toastIcon.className = 'fa-solid fa-circle-info text-luxe-gold text-base';
+            }
+
+            toast.classList.remove('translate-x-96');
+            setTimeout(() => {
+                toast.classList.add('translate-x-96');
+            }, 3000);
         }
     </script>
 </body>
