@@ -101,8 +101,8 @@
         </div>
     </div>
 
-    <!-- HEADER CLIENTE CON SELECTOR DE MESA / MODO MOZO -->
-    <header class="sticky top-0 z-40 bg-luxe-surface/85 dark:bg-luxe-surface/85 bg-white/90 backdrop-blur-xl border-b border-luxe-border dark:border-luxe-border border-luz-border px-3.5 py-2.5 shadow-xl transition-colors">
+    <!-- HEADER: LOGO, MODO MOZO, IDIOMA, MESA Y MODO DÍA/NOCHE -->
+    <header class="sticky top-0 z-40 bg-luxe-surface/90 dark:bg-luxe-surface/90 bg-white/95 backdrop-blur-xl border-b border-luxe-border dark:border-luxe-border border-luz-border px-3.5 py-2.5 shadow-xl transition-colors">
         <div class="max-w-4xl mx-auto flex justify-between items-center gap-2">
             
             <!-- Logo y Marca -->
@@ -123,7 +123,13 @@
             <!-- CONTROLES SUPERIORES -->
             <div class="flex items-center space-x-1.5">
                 
-                <!-- SELECTOR DE IDIOMA -->
+                <!-- BOTÓN MODO MOZO DESTACADO -->
+                <button onclick="toggleModoMozoStaff()" id="btnModoMozoHeader" class="px-2.5 py-1 bg-luxe-card dark:bg-luxe-card bg-luz-base hover:border-emerald-400 border border-luxe-border dark:border-luxe-border border-luz-border text-emerald-400 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-sm" title="Activar Comandera de Mozo">
+                    <i class="fa-solid fa-user-tie text-[10px]"></i>
+                    <span id="txtModoMozoBtn" class="hidden sm:inline">Modo Mozo</span>
+                </button>
+
+                <!-- Selector de Idioma -->
                 <div class="relative bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 rounded-xl px-1.5 py-1 flex items-center shadow-sm">
                     <span class="text-[11px] mr-1" id="flagIcon">🇪🇸</span>
                     <select id="selectIdioma" onchange="cambiarIdioma(this.value)" class="bg-transparent text-[11px] font-bold text-luxe-stone dark:text-luxe-stone text-luz-text focus:outline-none cursor-pointer">
@@ -134,23 +140,10 @@
                     </select>
                 </div>
 
-                <!-- Botón WiFi Rápido -->
-                <button onclick="copiarWifiLocal()" class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl text-luxe-gold flex items-center gap-1 text-[11px] font-bold shadow-sm" title="Copiar contraseña de WiFi">
-                    <i class="fa-solid fa-wifi text-[10px]"></i>
-                    <span class="hidden sm:inline">WiFi</span>
-                </button>
-
-                <!-- Identificador de Asiento / Mozo -->
-                <button onclick="abrirModalAsiento()" class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl flex items-center gap-1 shadow-sm text-[11px]" title="Asignar mi nombre o Mozo">
-                    <i class="fa-solid fa-user text-luxe-gold text-[9px]"></i>
-                    <span id="lblAsientoHeader" class="font-bold text-luxe-stone dark:text-luxe-stone text-luz-text">Asiento 1</span>
-                </button>
-
-                <!-- SELECTOR DE MESA RÁPIDO (MODO MOZO & SALÓN) -->
-                <button onclick="abrirModalSelectorMesaMozo()" class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 hover:border-luxe-gold px-2.5 py-1 rounded-xl flex items-center gap-1 shadow-sm text-[11px] cursor-pointer" title="Tocar para cambiar de mesa (Modo Mozo)">
+                <!-- Mesa ID -->
+                <button onclick="abrirModalCambioMesa()" class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl flex items-center gap-1 shadow-sm text-[11px]">
                     <i class="fa-solid fa-chair text-luxe-gold text-[9px]"></i>
                     <span id="lblMesaHeader" class="font-black font-luxury-serif text-luxe-stone dark:text-luxe-stone text-luz-text">Mesa 04</span>
-                    <i class="fa-solid fa-chevron-down text-[8px] text-luxe-muted ml-0.5"></i>
                 </button>
 
                 <!-- Toggle Modo Día / Noche -->
@@ -160,6 +153,23 @@
             </div>
         </div>
     </header>
+
+    <!-- BARRA FLOTANTE DE EXPERIENCIA: AUTO-PEDIDO O ATENCIÓN POR MOZO -->
+    <div id="barraModoAtencion" class="bg-luxe-surface/95 dark:bg-luxe-surface/95 bg-white border-b border-luxe-border dark:border-luxe-border border-luz-border px-4 py-2 relative z-20 shadow-sm">
+        <div class="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span class="text-luxe-muted dark:text-luxe-muted text-luz-muted text-[11px] font-medium flex items-center gap-1">
+                <i class="fa-solid fa-hand-sparkles text-luxe-gold"></i> ¿Cómo deseas ser atendido hoy?
+            </span>
+            <div class="flex items-center gap-1 bg-luxe-card dark:bg-luxe-card bg-luz-base p-1 rounded-xl border border-luxe-border dark:border-luxe-border border-luz-border">
+                <button onclick="setTipoAtencion('auto')" id="btnAtencionAuto" class="px-3 py-1 rounded-lg text-xs font-bold transition bg-luxe-gold text-black shadow">
+                    📱 Pedir yo mismo
+                </button>
+                <button onclick="setTipoAtencion('mozo')" id="btnAtencionMozo" class="px-3 py-1 rounded-lg text-xs font-bold transition text-luxe-stone dark:text-luxe-stone text-luz-text hover:text-luxe-gold">
+                    🤵 Que me atienda un Mozo
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- CUERPO PRINCIPAL CLIENTE -->
     <main class="flex-1 max-w-4xl mx-auto w-full px-4 py-4 pb-32 relative z-10">
@@ -180,7 +190,7 @@
                         <p class="text-[11px] text-slate-300 max-w-sm" data-i18n="hero_subtitle">Ingredientes de origen certificado, pesca del día y recetas peruanas de alta cocina.</p>
                     </div>
 
-                    <!-- Botón Compartir Mesa por WhatsApp -->
+                    <!-- Botón Compartir Mesa -->
                     <button onclick="compartirMesaWhatsApp()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-black shadow-lg flex items-center gap-1.5 transition">
                         <i class="fa-brands fa-whatsapp text-sm"></i>
                         <span class="hidden sm:inline">Invitar Amigo</span>
@@ -206,7 +216,7 @@
             <!-- Grilla de Platos -->
             <div id="gridCatalogoPlatos" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
 
-            <!-- MARCA DE AGUA COMERCIAL: KEYMAR SYSTEMS -->
+            <!-- MARCA DE AGUA COMERCIAL -->
             <div class="pt-6 pb-2 text-center">
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-luxe-card/60 dark:bg-luxe-card/60 bg-white/80 border border-luxe-border/80 dark:border-luxe-border/80 border-luz-border shadow-sm cursor-pointer hover:border-luxe-gold transition" onclick="abrirModalKeyMar()">
                     <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted">Powered by</span>
@@ -217,10 +227,9 @@
 
         </div>
 
-        <!-- SUBSECCIÓN B: TICKET ACUMULADO (EN VIVO CON STEPPER) -->
+        <!-- SUBSECCIÓN B: TICKET ACUMULADO (EN VIVO) -->
         <div id="subseccionTicket" class="hidden space-y-4 max-w-2xl mx-auto">
             
-            <!-- Banner Status Cocina con Stepper -->
             <div class="bg-luxe-card/90 dark:bg-luxe-card/90 bg-white backdrop-blur-md p-5 rounded-3xl border border-luxe-gold/30 shadow-2xl relative overflow-hidden">
                 <div class="flex items-center space-x-4 mb-4">
                     <div class="w-12 h-12 rounded-2xl bg-luxe-surface dark:bg-luxe-surface bg-amber-50 border border-luxe-gold/40 text-luxe-gold flex items-center justify-center font-black text-xl gold-glow">
@@ -232,7 +241,6 @@
                     </div>
                 </div>
 
-                <!-- Stepper de Progreso -->
                 <div class="bg-luxe-surface/80 dark:bg-luxe-surface/80 bg-luz-base p-3 rounded-2xl border border-luxe-border/60 dark:border-luxe-border/60 border-luz-border">
                     <div class="flex justify-between items-center text-[10px] font-bold text-center">
                         <div class="flex-1 flex flex-col items-center">
@@ -322,7 +330,7 @@
 
     </main>
 
-    <!-- BARRA FLOTANTE DE CARRITO -->
+    <!-- BARRA FLOTANTE DE CARRITO (ADAPTADA SEGÚN MODO DE ATENCIÓN) -->
     <div id="barraFlotanteCarrito" class="fixed bottom-5 left-4 right-4 max-w-xl mx-auto bg-luxe-card/95 dark:bg-luxe-card/95 bg-white/95 backdrop-blur-2xl border border-luxe-gold/40 p-3.5 rounded-2xl shadow-2xl flex justify-between items-center z-30 transform translate-y-36 transition-transform duration-300 gold-glow">
         <div class="flex items-center space-x-3 pl-2">
             <div class="w-10 h-10 rounded-xl bg-luxe-gold text-black flex items-center justify-center font-black text-sm shadow">
@@ -448,15 +456,17 @@
                     <span class="text-luxe-muted dark:text-luxe-muted text-luz-muted font-semibold uppercase tracking-wider" data-i18n="cart_round_total">Subtotal esta ronda:</span>
                     <span id="modalCarroSubtotalVal" class="text-lg font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
                 </div>
-                <button id="btnEnviarCocinaModal" onclick="enviarPedidoACocinaFinal()" class="w-full py-4 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-paper-plane"></i>
-                    <span data-i18n="cart_send_btn">Confirmar y Enviar a Cocina</span>
+                
+                <!-- BOTÓN DE ENVÍO DINÁMICO SEGÚN TIPO DE SERVICIO -->
+                <button id="btnEnviarCocinaModal" onclick="ejecutarAccionPedidoSegunModo()" class="w-full py-4 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                    <i id="iconoBtnEnviarModal" class="fa-solid fa-paper-plane"></i>
+                    <span id="txtBtnEnviarModal" data-i18n="cart_send_btn">Confirmar y Enviar a Cocina</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL PEDIR LA CUENTA: CON PROPINA Y DIVISIÓN EXACTA (1, 2, 3, 4, 5+) -->
+    <!-- MODAL PEDIR LA CUENTA -->
     <div id="modalPagarCuenta" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-luxe-surface dark:bg-luxe-surface bg-white w-full max-w-md rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto custom-scroll">
             <button onclick="cerrarModalPedirCuenta()" class="absolute top-4 right-4 text-luxe-muted dark:text-luxe-muted text-luz-muted hover:text-luxe-gold">
@@ -471,14 +481,14 @@
                 <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted"><span id="lblModalPagarMesa" class="text-luxe-gold font-bold">Mesa 04</span></p>
             </div>
 
-            <!-- TOTAL GLOBAL CON PROPINA INTEGRADA -->
+            <!-- TOTAL GLOBAL -->
             <div class="bg-luxe-card dark:bg-luxe-card bg-luz-base p-4 rounded-2xl border border-luxe-border dark:border-luxe-border border-luz-border text-center mb-3 shadow-sm">
                 <span class="text-[9px] uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted font-extrabold block" data-i18n="bill_total_label">Total a Pagar</span>
                 <span id="lblModalPagarTotal" class="text-3xl font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
                 <span id="lblPropinaDesglose" class="text-[10px] text-amber-500 block mt-0.5 hidden">+ S/ 0.00</span>
             </div>
 
-            <!-- SELECTOR DE PROPINA SUGERIDA -->
+            <!-- Propina -->
             <div class="bg-luxe-card/80 dark:bg-luxe-card/80 bg-luz-base p-3 rounded-2xl border border-luxe-border/80 dark:border-luxe-border/80 border-luz-border mb-3">
                 <span class="text-[9px] font-black uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted block mb-1.5 text-center" data-i18n="tip_label">
                     ✨ Servicio Sugerido al Personal
@@ -491,7 +501,7 @@
                 </div>
             </div>
 
-            <!-- DIVISIÓN DE CUENTA 100% SIMÉTRICA (1, 2, 3, 4, 5+) -->
+            <!-- División Simétrica -->
             <div class="bg-luxe-card/80 dark:bg-luxe-card/80 bg-luz-base p-3 rounded-2xl border border-luxe-border/80 dark:border-luxe-border/80 border-luz-border mb-4">
                 <span class="text-[9px] font-black uppercase tracking-widest text-luxe-gold block mb-1.5 text-center" data-i18n="split_label">
                     <i class="fa-solid fa-users mr-1"></i> Dividir Cuenta en Partes Iguales
@@ -509,7 +519,7 @@
                 </div>
             </div>
 
-            <!-- MÉTODOS DE PAGO -->
+            <!-- Métodos -->
             <div class="space-y-1.5 mb-4">
                 <label class="flex items-center p-2.5 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border cursor-pointer hover:border-luxe-gold/50 transition">
                     <input type="radio" name="radioMetodoPago" value="Yape / Plin (QR)" checked onchange="toggleMetodoQR(true)" class="accent-luxe-gold mr-3">
@@ -554,14 +564,14 @@
         </div>
     </div>
 
-    <!-- MODAL SELECTOR DE MESA RÁPIDO (MODO MOZO / SALÓN) -->
+    <!-- MODAL CAMBIO RÁPIDO DE MESA -->
     <div id="modalSelectorMesaMozo" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-luxe-surface dark:bg-luxe-surface bg-white w-full max-w-sm rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border p-6 shadow-2xl text-center">
             <div class="w-12 h-12 rounded-2xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-3 text-lg">
                 <i class="fa-solid fa-chair"></i>
             </div>
-            <h3 class="text-base font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text">Seleccionar Mesa (Modo Mozo)</h3>
-            <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 mb-4">Elige la mesa para tomar la orden o ver su cuenta:</p>
+            <h3 class="text-base font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text">Seleccionar Mesa</h3>
+            <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 mb-4">Elige la mesa en la que te encuentras:</p>
 
             <select id="selectCambiarMesaMozo" class="w-full bg-luxe-card dark:bg-luxe-card bg-luz-base text-center text-xs font-bold text-luxe-stone dark:text-luxe-stone text-luz-text p-3 rounded-xl border border-luxe-border dark:border-luxe-border border-luz-border focus:border-luxe-gold focus:outline-none mb-4">
                 <option value="Mesa 01">Mesa 01</option>
@@ -584,25 +594,7 @@
         </div>
     </div>
 
-    <!-- MODAL ASIENTO (MESAS COMPARTIDAS) -->
-    <div id="modalAsientoComensal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
-        <div class="bg-luxe-surface dark:bg-luxe-surface bg-white w-full max-w-xs rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border p-6 shadow-2xl text-center">
-            <div class="w-12 h-12 rounded-2xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-3 text-lg">
-                <i class="fa-solid fa-user-tag"></i>
-            </div>
-            <h3 class="text-base font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text" data-i18n="seat_modal_title">Identificador de Comensal</h3>
-            <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 mb-4" data-i18n="seat_modal_desc">¿Quién pide desde este teléfono? (Separa los platos de la mesa):</p>
-
-            <input type="text" id="inputNombreAsiento" placeholder="Ej: Asiento 1, Carlos, Ana, Mozo..." class="w-full bg-luxe-card dark:bg-luxe-card bg-luz-base text-center text-xs font-bold text-luxe-stone dark:text-luxe-stone text-luz-text p-3 rounded-xl border border-luxe-border dark:border-luxe-border border-luz-border focus:border-luxe-gold focus:outline-none mb-4">
-
-            <div class="grid grid-cols-2 gap-2">
-                <button onclick="cerrarModalAsiento()" class="py-2.5 bg-luxe-card dark:bg-luxe-card bg-luz-base text-luxe-muted dark:text-luxe-muted text-luz-muted text-xs font-bold rounded-xl" data-i18n="btn_cancel">Cancelar</button>
-                <button onclick="guardarAsientoComensal()" class="py-2.5 bg-luxe-gold text-black text-xs font-black rounded-xl shadow" data-i18n="btn_save">Guardar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL LEAD: CONTACTAR A KEYMAR SYSTEMS -->
+    <!-- MODAL LEAD: KEYMAR SYSTEMS -->
     <div id="modalKeyMarLead" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-luxe-surface dark:bg-luxe-surface bg-white w-full max-w-sm rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border p-6 text-center shadow-2xl">
             <div class="w-12 h-12 rounded-2xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-3 text-lg">
@@ -626,9 +618,8 @@
         <span id="toastMsg" class="text-xs font-bold block">Notificación</span>
     </div>
 
-    <!-- JAVASCRIPT MULTILINGÜE Y MODO MOZO -->
+    <!-- JAVASCRIPT MULTILINGÜE Y EXPERIENCIA DUAL (COMENSAL / MOZO) -->
     <script>
-        // 1. DICCIONARIOS MULTILINGÜES (DECLARADOS AL INICIO)
         const DICCIONARIO = {
             es: {
                 live_menu: "En Vivo",
@@ -676,10 +667,6 @@
                 pay_cash: "Efectivo",
                 pay_cash_desc: "Pago en billetes",
                 bill_confirm_btn: "Confirmar y Llamar al Mozo",
-                seat_modal_title: "Identificador de Comensal",
-                seat_modal_desc: "¿Quién pide desde este teléfono? (Separa los platos de la mesa):",
-                btn_cancel: "Cancelar",
-                btn_save: "Guardar",
                 sold_out_tag: "🔴 AGOTADO",
                 sold_out_btn: "Agotado",
                 sold_out_msg: "No disponible por hoy"
@@ -730,10 +717,6 @@
                 pay_cash: "Cash",
                 pay_cash_desc: "Cash payment",
                 bill_confirm_btn: "Confirm & Request Waiter",
-                seat_modal_title: "Guest Seat Tag",
-                seat_modal_desc: "Who is ordering from this device? (Helps kitchen separate dishes):",
-                btn_cancel: "Cancel",
-                btn_save: "Save",
                 sold_out_tag: "🔴 SOLD OUT",
                 sold_out_btn: "Sold Out",
                 sold_out_msg: "Currently unavailable"
@@ -761,94 +744,85 @@
                 btn_order_more: "➕ Commander d'autres plats",
                 btn_call_waiter: "Appeler le Serveur",
                 btn_ask_bill: "Demander l'Addition",
-                cart_round_total: "Sous-total de la tournée:",
+                cart_round_total: "Sous-total:",
                 cart_review_btn: "Vérifier la Commande",
                 label_ingredients: "Ingrédients Principaux",
                 label_spicy: "Niveau Épicé:",
                 label_allergens: "Allergènes:",
                 label_pairing: "Accord suggéré par le Sommelier",
-                label_extras: "Suppléments & Personnalisation",
+                label_extras: "Suppléments",
                 label_optional: "Optionnel",
-                label_chef_notes: "Instructions pour la Cuisine",
+                label_chef_notes: "Instructions Cuisine",
                 btn_add: "Ajouter",
                 cart_modal_title: "Vérification",
                 cart_send_btn: "Envoyer en Cuisine",
                 bill_modal_title: "Demande d'Addition",
                 bill_total_label: "Total à Payer",
                 tip_label: "✨ Pourboire Suggéré",
-                split_label: "Diviser l'Addition à Parts Égales",
+                split_label: "Diviser l'Addition",
                 split_per_person: "Montant par personne:",
-                pay_qr_desc: "QR Numérique instantané",
+                pay_qr_desc: "QR Numérique",
                 pay_card: "Carte Bancaire",
                 pay_card_desc: "Le serveur apporte le TPE",
                 pay_cash: "Espèces",
                 pay_cash_desc: "Paiement en espèces",
-                bill_confirm_btn: "Confirmer et Appeler",
-                seat_modal_title: "Nom du Convive",
-                seat_modal_desc: "Qui commande depuis ce téléphone?",
-                btn_cancel: "Annuler",
-                btn_save: "Enregistrer",
+                bill_confirm_btn: "Confirmer",
                 sold_out_tag: "🔴 ÉPUISÉ",
                 sold_out_btn: "Épuisé",
-                sold_out_msg: "Non disponible aujourd'hui"
+                sold_out_msg: "Non disponible"
             },
             pt: {
                 live_menu: "Ao Vivo",
                 hero_badge: "Gastronomia Peruana Autoral",
                 hero_title: "Experiência na",
                 hero_subtitle: "Ingredientes certificados, pesca fresca do dia e alta culinária peruana.",
-                search_placeholder: "Buscar prato, ingrediente ou alérgeno...",
+                search_placeholder: "Buscar prato, ingrediente...",
                 cat_all: "Menu Completo",
                 cat_starters: "Entradas & Ceviches",
                 cat_mains: "Pratos Principais",
                 cat_drinks: "Bebidas & Vinhos",
                 cat_desserts: "Sobremesas",
-                order_status_header: "Status do seu Pedido",
+                order_status_header: "Status do Pedido",
                 step_1: "Recebido",
                 step_2: "No Fogo",
                 step_3: "Na Mesa",
-                ticket_title: "Conta Acumulada da Mesa",
+                ticket_title: "Conta Acumulada",
                 ticket_badge_open: "Conta Aberta",
                 subtotal_neto: "Subtotal líquido",
-                igv_tax: "Imposto (18% incluso)",
+                igv_tax: "Imposto (18%)",
                 total_accumulated: "TOTAL A PAGAR",
                 btn_order_more: "➕ Pedir mais itens",
                 btn_call_waiter: "Chamar Garçom",
                 btn_ask_bill: "Pedir a Conta",
-                cart_round_total: "Subtotal desta rodada:",
+                cart_round_total: "Subtotal:",
                 cart_review_btn: "Revisar Pedido",
                 label_ingredients: "Ingredientes Principais",
                 label_spicy: "Pimenta:",
                 label_allergens: "Alérgenos:",
-                label_pairing: "Harmonização Sugerida pelo Sommelier",
-                label_extras: "Adicionais e Personalizações",
+                label_pairing: "Harmonização Sugerida",
+                label_extras: "Adicionais",
                 label_optional: "Opcional",
-                label_chef_notes: "Instruções para a Cozinha",
+                label_chef_notes: "Instruções Cozinha",
                 btn_add: "Adicionar",
-                cart_modal_title: "Revisão do Pedido",
+                cart_modal_title: "Revisão",
                 cart_send_btn: "Enviar para a Cozinha",
                 bill_modal_title: "Solicitação de Conta",
                 bill_total_label: "Total a Pagar",
                 tip_label: "✨ Gorjeta Sugerida",
-                split_label: "Dividir a Conta em Partes Iguais",
+                split_label: "Dividir a Conta",
                 split_per_person: "Valor por pessoa:",
-                pay_qr_desc: "QR Digital instantâneo",
+                pay_qr_desc: "QR Digital",
                 pay_card: "Cartão (Maquininha)",
                 pay_card_desc: "O garçom traz a maquininha",
                 pay_cash: "Dinheiro",
                 pay_cash_desc: "Pagamento em dinheiro",
-                bill_confirm_btn: "Confirmar e Chamar Garçom",
-                seat_modal_title: "Identificador do Cliente",
-                seat_modal_desc: "Quem está pedindo deste telefone?",
-                btn_cancel: "Cancelar",
-                btn_save: "Salvar",
+                bill_confirm_btn: "Confirmar",
                 sold_out_tag: "🔴 ESGOTADO",
                 sold_out_btn: "Esgotado",
-                sold_out_msg: "Indisponível hoje"
+                sold_out_msg: "Indisponível"
             }
         };
 
-        // 2. CATÁLOGO DE PLATOS MULTILINGÜE
         const PRODUCTOS_CATALOGO = [
             {
                 id: 1,
@@ -1007,10 +981,10 @@
             }
         ];
 
-        // 3. VARIABLES DE ESTADO
         let idiomaActual = 'es';
         let mesaActual = 'Mesa 04';
-        let miAsientoNombre = 'Asiento 1';
+        let tipoAtencion = 'auto'; // 'auto' (envia a cocina) | 'mozo' (llama mozo para ordenar)
+        let esModoMozoStaff = false; // Si el mozo está usando el teléfono como comandera
         let platoModalActivo = null;
         let cantidadModal = 1;
         let extrasSeleccionadosModal = [];
@@ -1020,7 +994,6 @@
         let personasSplit = 1;
         let stockAgotadosMap = {};
 
-        // 4. INICIALIZACIÓN FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyAOdDt5smefZAZHcMZA2spWVRwT8xaAAq4",
             authDomain: "work-9d40e.firebaseapp.com",
@@ -1036,7 +1009,52 @@
         }
         const db = firebase.database();
 
-        // 5. MOTOR DE TRADUCCIÓN i18n
+        // CONTROL DE EXPERIENCIA DUAL (AUTO VS MOZO)
+        function setTipoAtencion(tipo) {
+            reproducirSonido('tap');
+            tipoAtencion = tipo;
+            const btnAuto = document.getElementById('btnAtencionAuto');
+            const btnMozo = document.getElementById('btnAtencionMozo');
+            const txtBtnEnviar = document.getElementById('txtBtnEnviarModal');
+            const iconoBtn = document.getElementById('iconoBtnEnviarModal');
+
+            if (tipo === 'auto') {
+                btnAuto.className = 'px-3 py-1 rounded-lg text-xs font-bold transition bg-luxe-gold text-black shadow';
+                btnMozo.className = 'px-3 py-1 rounded-lg text-xs font-bold transition text-luxe-stone dark:text-luxe-stone text-luz-text hover:text-luxe-gold';
+                txtBtnEnviar.innerText = 'Confirmar y Enviar a Cocina';
+                iconoBtn.className = 'fa-solid fa-paper-plane';
+                mostrarToast('Modo Auto-Pedido: Tu orden irá directo a cocina', 'info');
+            } else {
+                btnMozo.className = 'px-3 py-1 rounded-lg text-xs font-bold transition bg-emerald-500 text-black shadow';
+                btnAuto.className = 'px-3 py-1 rounded-lg text-xs font-bold transition text-luxe-stone dark:text-luxe-stone text-luz-text hover:text-luxe-gold';
+                txtBtnEnviar.innerText = '🔔 Llamar Mozo con mi Elección Lista';
+                iconoBtn.className = 'fa-solid fa-bell';
+                mostrarToast('Atención por Mozo: El mozo vendrá a tu mesa a confirmar', 'info');
+            }
+        }
+
+        // MODO MOZO STAFF (COMANDERA DE BOLSILLO)
+        function toggleModoMozoStaff() {
+            reproducirSonido('tap');
+            esModoMozoStaff = !esModoMozoStaff;
+            const btn = document.getElementById('btnModoMozoHeader');
+            const txt = document.getElementById('txtModoMozoBtn');
+            const barraAtencion = document.getElementById('barraModoAtencion');
+
+            if (esModoMozoStaff) {
+                btn.className = 'px-2.5 py-1 bg-emerald-500 text-black border border-emerald-400 rounded-xl text-xs font-black transition flex items-center gap-1 shadow-lg';
+                txt.innerText = 'Modo Mozo ON';
+                barraAtencion.classList.add('hidden'); // Oculta barra cliente
+                setTipoAtencion('auto');
+                mostrarToast('🤵 Modo Mozo Activo: Toca la mesa para cambiar de comanda', 'success');
+            } else {
+                btn.className = 'px-2.5 py-1 bg-luxe-card dark:bg-luxe-card bg-luz-base hover:border-emerald-400 border border-luxe-border text-emerald-400 rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-sm';
+                txt.innerText = 'Modo Mozo';
+                barraAtencion.classList.remove('hidden');
+                mostrarToast('Modo Comensal restaurado', 'info');
+            }
+        }
+
         function cambiarIdioma(lang) {
             idiomaActual = lang;
             const flags = { es: '🇪🇸', en: '🇬🇧', fr: '🇫🇷', pt: '🇧🇷' };
@@ -1059,15 +1077,13 @@
             const passWifi = "AureusGourmet2026";
             navigator.clipboard.writeText(passWifi).then(() => {
                 mostrarToast(`WiFi copiado: ${passWifi}`, 'success');
-            }).catch(() => {
-                mostrarToast(`Clave WiFi: ${passWifi}`, 'info');
             });
         }
 
         function compartirMesaWhatsApp() {
             reproducirSonido('tap');
             const urlMesa = window.location.href;
-            const texto = `¡Hola! Estoy en Aureus Reserve en la ${mesaActual}. Puedes ver la carta y unirte a la mesa aquí: ${urlMesa}`;
+            const texto = `¡Hola! Estoy en Aureus Reserve en la ${mesaActual}. Puedes ver la carta aquí: ${urlMesa}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank');
         }
 
@@ -1080,8 +1096,7 @@
             document.getElementById('modalKeyMarLead').classList.add('hidden');
         }
 
-        // CONTROL MODO MOZO: CAMBIO RÁPIDO DE MESA
-        function abrirModalSelectorMesaMozo() {
+        function abrirModalCambioMesa() {
             reproducirSonido('tap');
             document.getElementById('selectCambiarMesaMozo').value = mesaActual;
             document.getElementById('modalSelectorMesaMozo').classList.remove('hidden');
@@ -1097,15 +1112,13 @@
             document.getElementById('lblMesaHeader').innerText = mesaActual;
             document.getElementById('lblMesaHero').innerText = mesaActual;
             
-            // Actualizar URL sin recargar
             const url = new URL(window.location);
             url.searchParams.set('mesa', mesaActual);
             window.history.replaceState({}, '', url);
 
-            // Reconectar listener de Firebase para la nueva mesa
             conectarListenerFirebaseMesa();
             cerrarModalSelectorMesaMozo();
-            mostrarToast(`Conectado a la ${mesaActual} (Modo Mozo)`, 'success');
+            mostrarToast(`Conectado a ${mesaActual}`, 'success');
         }
 
         function reproducirSonido(tipo) {
@@ -1127,13 +1140,6 @@
                     gain1.gain.setValueAtTime(0.12, now); gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
                     osc1.connect(gain1); gain1.connect(ctx.destination);
                     osc1.start(now); osc1.stop(now + 0.25);
-
-                    const osc2 = ctx.createOscillator(); const gain2 = ctx.createGain();
-                    osc2.type = 'sine'; osc2.frequency.setValueAtTime(783.99, now + 0.08);
-                    gain2.gain.setValueAtTime(0.15, now + 0.08);
-                    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-                    osc2.connect(gain2); gain2.connect(ctx.destination);
-                    osc2.start(now + 0.08); osc2.stop(now + 0.35);
                 } else if (tipo === 'order') {
                     [440, 554.37, 659.25].forEach((f, i) => {
                         const osc = ctx.createOscillator(); const gain = ctx.createGain();
@@ -1215,12 +1221,6 @@
                 mesaActual = decodeURIComponent(paramMesa);
             }
 
-            const asientoGuardado = sessionStorage.getItem('mi_asiento_comensal');
-            if (asientoGuardado) {
-                miAsientoNombre = asientoGuardado;
-            }
-            document.getElementById('lblAsientoHeader').innerText = miAsientoNombre;
-
             document.getElementById('lblMesaHeader').innerText = mesaActual;
             document.getElementById('lblMesaHero').innerText = mesaActual;
 
@@ -1232,27 +1232,6 @@
                 renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
             });
         });
-
-        function abrirModalAsiento() {
-            reproducirSonido('tap');
-            document.getElementById('inputNombreAsiento').value = miAsientoNombre;
-            document.getElementById('modalAsientoComensal').classList.remove('hidden');
-        }
-
-        function cerrarModalAsiento() {
-            document.getElementById('modalAsientoComensal').classList.add('hidden');
-        }
-
-        function guardarAsientoComensal() {
-            const val = document.getElementById('inputNombreAsiento').value.trim();
-            if (val) {
-                miAsientoNombre = val;
-                sessionStorage.setItem('mi_asiento_comensal', miAsientoNombre);
-                document.getElementById('lblAsientoHeader').innerText = miAsientoNombre;
-                mostrarToast(`Asiento: ${miAsientoNombre}`, 'success');
-            }
-            cerrarModalAsiento();
-        }
 
         function buscarPlatosEnVivo(texto) {
             const query = texto.toLowerCase().trim();
@@ -1309,7 +1288,6 @@
                             </div>
                             <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 line-clamp-2 leading-relaxed">${desc}</p>
                             
-                            <!-- Badges de Picante & Alérgenos -->
                             <div class="flex flex-wrap items-center gap-1.5 mt-2 text-[9px] font-bold">
                                 <span class="text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">${p.picante}</span>
                                 <span class="text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-md border border-rose-500/20">⚠️ ${p.alergenos}</span>
@@ -1522,9 +1500,40 @@
             actualizarBarraCarritoFlotante();
         }
 
-        function enviarPedidoACocinaFinal() {
+        // ACCIÓN SEGÚN EXPERIENCIA (AUTO O LLAMAR MOZO)
+        function ejecutarAccionPedidoSegunModo() {
             if (carritoRondaTemporal.length === 0) return;
 
+            if (tipoAtencion === 'auto' || esModoMozoStaff) {
+                enviarPedidoACocinaFinal();
+            } else {
+                // LLAMAR AL MOZO CON LA PRE-SELECCIÓN
+                llamarMozoConPreSeleccion();
+            }
+        }
+
+        function llamarMozoConPreSeleccion() {
+            reproducirSonido('bell');
+            const horaEnvio = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const totalPreseleccion = carritoRondaTemporal.reduce((acc, it) => acc + it.subtotal, 0);
+            const nombresPlatos = carritoRondaTemporal.map(i => `${i.cantidad}x ${i.nombre}`).join(', ');
+
+            const alerta = {
+                id: 'ALT-' + Date.now(),
+                mesa: mesaActual,
+                asiento: miAsientoNombre,
+                tipo: 'mozo_orden',
+                hora: horaEnvio,
+                mensaje: `🤵 ${mesaActual} lista para ordenar con el mozo (${nombresPlatos})`
+            };
+
+            db.ref('alertas').push(alerta).then(() => {
+                cerrarModalCarrito();
+                mostrarToast('El mozo se acerca a tu mesa con tu pedido listo', 'success');
+            });
+        }
+
+        function enviarPedidoACocinaFinal() {
             const btnEnviar = document.getElementById('btnEnviarCocinaModal');
             btnEnviar.disabled = true;
             btnEnviar.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Enviando...';
@@ -1551,7 +1560,7 @@
                 const nuevaComanda = {
                     id: 'CMD-' + Math.floor(1000 + Math.random() * 9000),
                     mesaId: mesaActual,
-                    asiento: miAsientoNombre,
+                    asiento: esModoMozoStaff ? 'Mozo en Mesa' : 'Comensal',
                     ronda: dataMesa.contadorRondas,
                     hora: horaEnvio,
                     timestamp: Date.now(),
@@ -1568,7 +1577,7 @@
                 carritoRondaTemporal = [];
                 actualizarBarraCarritoFlotante();
                 cerrarModalCarrito();
-                mostrarToast(`¡Pedido de ${miAsientoNombre} enviado!`, 'success');
+                mostrarToast(`¡Pedido de ${mesaActual} enviado a cocina!`, 'success');
             }).catch((error) => {
                 btnEnviar.disabled = false;
                 btnEnviar.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Confirmar y Enviar a Cocina';
@@ -1637,7 +1646,7 @@
                                     <div>
                                         <span class="text-luxe-stone dark:text-luxe-stone text-luz-text font-bold">${it.cantidad}x ${it.nombre}</span>
                                         ${txtExtras}
-                                        ${it.notas !== 'Sin notas especiales' ? `<span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted block italic">Nota: "${it.notas}"</span>` : ''}
+                                        <span class="text-[10px] text-amber-500 font-semibold block">${it.notas !== 'Sin notas especiales' ? `Nota: "${it.notas}"` : ''}</span>
                                     </div>
                                     <span class="text-luxe-gold font-bold font-luxury-serif">S/ ${it.subtotal.toFixed(2)}</span>
                                 </div>
@@ -1649,14 +1658,9 @@
                     if (cmd.estado === 'preparacion') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-amber-500/10 text-amber-300 border border-amber-500/20 font-black rounded uppercase">En Fuego</span>';
                     if (cmd.estado === 'entregado') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black rounded uppercase">Servido</span>';
 
-                    const asientoTag = cmd.asiento ? `<span class="text-[9px] bg-luxe-card dark:bg-luxe-card bg-luz-base px-2 py-0.5 rounded text-luxe-gold font-bold border border-luxe-border">${cmd.asiento}</span>` : '';
-
                     bloque.innerHTML = `
                         <div class="flex justify-between items-center mb-1.5">
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-[11px] font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text uppercase tracking-widest">Ronda #${cmd.ronda}</span>
-                                ${asientoTag}
-                            </div>
+                            <span class="text-[11px] font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text uppercase tracking-widest">Ronda #${cmd.ronda} (${cmd.hora})</span>
                             ${statusBadge}
                         </div>
                         <div class="space-y-1 pl-1">${itemsHtml}</div>
@@ -1701,10 +1705,9 @@
             const alerta = {
                 id: 'ALT-' + Date.now(),
                 mesa: mesaActual,
-                asiento: miAsientoNombre,
                 tipo: 'mozo',
                 hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                mensaje: `🔔 Mozo solicitado en ${mesaActual} (${miAsientoNombre})`
+                mensaje: `🔔 Mozo solicitado en ${mesaActual}`
             };
             db.ref('alertas').push(alerta).then(() => {
                 mostrarToast('Mozo en camino', 'success');
@@ -1796,7 +1799,6 @@
             const alerta = {
                 id: 'ALT-' + Date.now(),
                 mesa: mesaActual,
-                asiento: miAsientoNombre,
                 tipo: 'cuenta',
                 metodo: metodo,
                 propina: montoPropina,
