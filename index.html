@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="es" class="dark" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AUREUS RESERVE — Multilingual Culinary & QR Dining</title>
+    <title>AUREUS RESERVE — Powered by KeyMar Systems</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -101,11 +100,10 @@
         </div>
     </div>
 
-    <!-- HEADER: IDIOMA, MESA, ASIENTO Y MODO DÍA/NOCHE -->
-    <header class="sticky top-0 z-40 bg-luxe-surface/85 dark:bg-luxe-surface/85 bg-white/90 backdrop-blur-xl border-b border-luxe-border dark:border-luxe-border border-luz-border px-4 py-2.5 shadow-xl transition-colors">
+    <!-- HEADER: LOGO, IDIOMA, WIFI, MESA, ASIENTO Y MODO DÍA/NOCHE -->
+    <header class="sticky top-0 z-40 bg-luxe-surface/85 dark:bg-luxe-surface/85 bg-white/90 backdrop-blur-xl border-b border-luxe-border dark:border-luxe-border border-luz-border px-3.5 py-2.5 shadow-xl transition-colors">
         <div class="max-w-4xl mx-auto flex justify-between items-center gap-2">
             
-            <!-- Logo y Marca -->
             <div class="flex items-center space-x-2 cursor-pointer" onclick="navegarInicioCliente()">
                 <div class="w-8 h-8 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 flex items-center justify-center shadow-md">
                     <i class="fa-solid fa-crown text-luxe-gold text-xs"></i>
@@ -123,10 +121,10 @@
             <!-- CONTROLES SUPERIORES -->
             <div class="flex items-center space-x-1.5">
                 
-                <!-- SELECTOR DE IDIOMA (ES, EN, FR, PT) -->
-                <div class="relative bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 rounded-xl px-2 py-1 flex items-center shadow-sm">
-                    <span class="text-xs mr-1" id="flagIcon">🇪🇸</span>
-                    <select id="selectIdioma" onchange="cambiarIdioma(this.value)" class="bg-transparent text-xs font-bold text-luxe-stone dark:text-luxe-stone text-luz-text focus:outline-none cursor-pointer">
+                <!-- SELECTOR DE IDIOMA -->
+                <div class="relative bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 rounded-xl px-1.5 py-1 flex items-center shadow-sm">
+                    <span class="text-[11px] mr-1" id="flagIcon">🇪🇸</span>
+                    <select id="selectIdioma" onchange="cambiarIdioma(this.value)" class="bg-transparent text-[11px] font-bold text-luxe-stone dark:text-luxe-stone text-luz-text focus:outline-none cursor-pointer">
                         <option value="es" class="bg-luxe-card text-white">ES</option>
                         <option value="en" class="bg-luxe-card text-white">EN</option>
                         <option value="fr" class="bg-luxe-card text-white">FR</option>
@@ -134,42 +132,56 @@
                     </select>
                 </div>
 
+                <!-- Botón WiFi Rápido -->
+                <button onclick="copiarWifiLocal()" class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl text-luxe-gold flex items-center gap-1 text-[11px] font-bold shadow-sm" title="Copiar contraseña de WiFi del local">
+                    <i class="fa-solid fa-wifi text-[10px]"></i>
+                    <span class="hidden sm:inline">WiFi</span>
+                </button>
+
                 <!-- Asiento / Comensal -->
-                <button onclick="abrirModalAsiento()" class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl flex items-center gap-1 shadow-sm text-xs" title="Asignar mi nombre">
-                    <i class="fa-solid fa-user text-luxe-gold text-[10px]"></i>
-                    <span id="lblAsientoHeader" class="font-bold text-[10px] text-luxe-stone dark:text-luxe-stone text-luz-text">Asiento 1</span>
+                <button onclick="abrirModalAsiento()" class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl flex items-center gap-1 shadow-sm text-[11px]" title="Asignar mi nombre">
+                    <i class="fa-solid fa-user text-luxe-gold text-[9px]"></i>
+                    <span id="lblAsientoHeader" class="font-bold text-luxe-stone dark:text-luxe-stone text-luz-text">Asiento 1</span>
                 </button>
 
                 <!-- Mesa ID -->
-                <div class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl flex items-center gap-1 shadow-sm text-xs">
-                    <i class="fa-solid fa-chair text-luxe-gold text-[10px]"></i>
-                    <span id="lblMesaHeader" class="font-black font-luxury-serif text-[10px] text-luxe-stone dark:text-luxe-stone text-luz-text">Mesa 04</span>
+                <div class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl flex items-center gap-1 shadow-sm text-[11px]">
+                    <i class="fa-solid fa-chair text-luxe-gold text-[9px]"></i>
+                    <span id="lblMesaHeader" class="font-black font-luxury-serif text-luxe-stone dark:text-luxe-stone text-luz-text">Mesa 04</span>
                 </div>
 
                 <!-- Toggle Modo Día / Noche -->
-                <button onclick="toggleModoDiaNoche()" class="w-7 h-7 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border text-luxe-gold flex items-center justify-center text-xs shadow-sm hover:scale-105 transition" title="Cambiar tema Día/Noche">
-                    <i id="iconoTema" class="fa-solid fa-sun text-[11px]"></i>
+                <button onclick="toggleModoDiaNoche()" class="w-7 h-7 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border text-luxe-gold flex items-center justify-center text-xs shadow-sm hover:scale-105 transition" title="Cambiar tema">
+                    <i id="iconoTema" class="fa-solid fa-sun text-[10px]"></i>
                 </button>
             </div>
         </div>
     </header>
 
     <!-- CUERPO PRINCIPAL CLIENTE -->
-    <main class="flex-1 max-w-4xl mx-auto w-full px-4 py-5 pb-32 relative z-10">
+    <main class="flex-1 max-w-4xl mx-auto w-full px-4 py-4 pb-32 relative z-10">
         
         <!-- SUBSECCIÓN A: MENÚ GASTRONÓMICO -->
         <div id="subseccionMenu" class="space-y-4">
             
             <!-- Hero Banner -->
             <div class="relative overflow-hidden rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border shadow-2xl h-44 flex items-end p-5 bg-cover bg-center" style="background-image: linear-gradient(to top, rgba(17,16,14,0.95) 15%, rgba(17,16,14,0.4) 65%, rgba(17,16,14,0.1) 100%), url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85');">
-                <div class="relative z-10">
-                    <span class="px-3 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-[0.2em] bg-luxe-surface/90 text-luxe-gold border border-luxe-border inline-block mb-1 backdrop-blur-md" data-i18n="hero_badge">
-                        Gastronomía Peruana de Autor
-                    </span>
-                    <h2 class="text-lg sm:text-xl font-luxury-serif font-black text-white">
-                        <span data-i18n="hero_title">Experiencia en</span> <span id="lblMesaHero" class="text-luxe-gold">Mesa 04</span>
-                    </h2>
-                    <p class="text-[11px] text-slate-300 max-w-sm" data-i18n="hero_subtitle">Ingredientes de origen certificado, pesca del día y recetas peruanas de alta cocina.</p>
+                <div class="relative z-10 w-full flex justify-between items-end">
+                    <div>
+                        <span class="px-3 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-[0.2em] bg-luxe-surface/90 text-luxe-gold border border-luxe-border inline-block mb-1 backdrop-blur-md" data-i18n="hero_badge">
+                            Gastronomía Peruana de Autor
+                        </span>
+                        <h2 class="text-lg sm:text-xl font-luxury-serif font-black text-white">
+                            <span data-i18n="hero_title">Experiencia en</span> <span id="lblMesaHero" class="text-luxe-gold">Mesa 04</span>
+                        </h2>
+                        <p class="text-[11px] text-slate-300 max-w-sm" data-i18n="hero_subtitle">Ingredientes de origen certificado, pesca del día y recetas peruanas de alta cocina.</p>
+                    </div>
+
+                    <!-- Botón Compartir Mesa por WhatsApp -->
+                    <button onclick="compartirMesaWhatsApp()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-black shadow-lg flex items-center gap-1.5 transition">
+                        <i class="fa-brands fa-whatsapp text-sm"></i>
+                        <span class="hidden sm:inline">Invitar Amigo</span>
+                    </button>
                 </div>
             </div>
 
@@ -190,10 +202,22 @@
 
             <!-- Grilla de Platos -->
             <div id="gridCatalogoPlatos" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+            <!-- ========================================================================= -->
+            <!-- MARCA DE AGUA COMERCIAL: KEYMAR SYSTEMS (GENERADOR DE CLIENTES)           -->
+            <!-- ========================================================================= -->
+            <div class="pt-6 pb-2 text-center">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-luxe-card/60 dark:bg-luxe-card/60 bg-white/80 border border-luxe-border/80 dark:border-luxe-border/80 border-luz-border shadow-sm cursor-pointer hover:border-luxe-gold transition" onclick="abrirModalKeyMar()">
+                    <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted">Powered by</span>
+                    <span class="text-xs font-black font-luxury-serif text-luxe-gold">KeyMar Systems</span>
+                    <span class="text-[9px] px-2 py-0.5 rounded-full bg-luxe-gold/15 text-luxe-gold font-bold">Solicitar Software</span>
+                </div>
+            </div>
+
         </div>
 
         <!-- SUBSECCIÓN B: TICKET ACUMULADO (EN VIVO) -->
-        <div id="subseccionTicket" class="hidden space-y-5 max-w-2xl mx-auto">
+        <div id="subseccionTicket" class="hidden space-y-4 max-w-2xl mx-auto">
             
             <!-- Banner Status Cocina con Stepper -->
             <div class="bg-luxe-card/90 dark:bg-luxe-card/90 bg-white backdrop-blur-md p-5 rounded-3xl border border-luxe-gold/30 shadow-2xl relative overflow-hidden">
@@ -228,6 +252,20 @@
                 </div>
             </div>
 
+            <!-- BANNER IMPULSOR DE RESEÑAS EN GOOGLE MAPS (5 ESTRELLAS) -->
+            <div class="bg-gradient-to-r from-amber-500/15 via-luxe-card to-luxe-card border border-luxe-gold/40 p-4 rounded-2xl flex items-center justify-between shadow-md">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl">⭐</span>
+                    <div>
+                        <span class="text-xs font-black text-luxe-stone dark:text-luxe-stone text-luz-text block">¿Disfrutando tu experiencia?</span>
+                        <span class="text-[10px] text-luxe-muted">Déjanos 5 estrellas en Google Maps</span>
+                    </div>
+                </div>
+                <a href="https://maps.google.com" target="_blank" class="px-3 py-1.5 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow transition">
+                    Calificar
+                </a>
+            </div>
+
             <!-- Tarjeta de Ticket -->
             <div class="bg-luxe-card/90 dark:bg-luxe-card/90 bg-white backdrop-blur-md rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border shadow-2xl overflow-hidden">
                 <div class="p-5 bg-luxe-surface/90 dark:bg-luxe-surface/90 bg-luz-base border-b border-luxe-border dark:border-luxe-border border-luz-border flex justify-between items-center">
@@ -254,7 +292,7 @@
                     <div class="pt-3 border-t border-luxe-border dark:border-luxe-border border-luz-border flex justify-between items-center">
                         <div>
                             <span class="text-[10px] font-black uppercase tracking-[0.2em] text-luxe-muted dark:text-luxe-muted text-luz-muted block" data-i18n="total_accumulated">TOTAL ACUMULADO</span>
-                            <span id="ticketTotalItemsResume" class="text-[11px] text-luxe-gold font-semibold">0 platos pedidos</span>
+                            <span id="ticketTotalItemsResume" class="text-[11px] text-luxe-gold font-semibold">0 platos ordenados</span>
                         </div>
                         <span id="ticketTotalAcumuladoSoles" class="text-2xl font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
                     </div>
@@ -300,7 +338,7 @@
         </button>
     </div>
 
-    <!-- MODAL DETALLE DE PLATO: INGREDIENTES, PICANTE, ALÉRGENOS & MARIDAJE -->
+    <!-- MODAL DETALLE DE PLATO -->
     <div id="modalDetallePlato" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-luxe-surface dark:bg-luxe-surface bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border overflow-hidden max-h-[92vh] flex flex-col shadow-2xl">
             
@@ -325,10 +363,8 @@
                     <span id="modalPrecioBasePlato" class="text-lg font-black text-luxe-gold whitespace-nowrap ml-3 font-luxury-serif">S/ 0.00</span>
                 </div>
 
-                <!-- FICHA TÉCNICA: INGREDIENTES, PICANTE & ALÉRGENOS (REEMPLAZO DE MACROS) -->
+                <!-- FICHA TÉCNICA: INGREDIENTES, PICANTE & ALÉRGENOS -->
                 <div class="bg-luxe-card/90 dark:bg-luxe-card/90 bg-luz-base p-4 rounded-2xl border border-luxe-border dark:border-luxe-border border-luz-border space-y-3 shadow-sm">
-                    
-                    <!-- Ingredientes Principales -->
                     <div>
                         <span class="text-[10px] font-black uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted block mb-1 flex items-center gap-1">
                             <i class="fa-solid fa-seedling text-emerald-500"></i> <span data-i18n="label_ingredients">Ingredientes Principales</span>
@@ -336,7 +372,6 @@
                         <p id="modalIngredientesPlato" class="text-xs text-luxe-stone dark:text-luxe-stone text-luz-text font-medium leading-relaxed">Lista de ingredientes</p>
                     </div>
 
-                    <!-- Nivel de Picante & Alérgenos -->
                     <div class="pt-2 border-t border-luxe-border/50 flex flex-wrap gap-2 items-center justify-between text-xs">
                         <div class="flex items-center gap-1.5">
                             <span class="text-[10px] text-luxe-muted font-bold" data-i18n="label_spicy">Picante:</span>
@@ -348,17 +383,17 @@
                         </div>
                     </div>
 
-                    <!-- Maridaje Sugerido (Upselling) -->
+                    <!-- Maridaje -->
                     <div id="boxMaridajeSugerido" class="pt-2 border-t border-luxe-border/50 text-xs flex items-center gap-2">
                         <i class="fa-solid fa-wine-glass text-luxe-gold text-sm"></i>
                         <div>
-                            <span class="text-[9px] font-bold text-luxe-gold uppercase tracking-wider block" data-i18n="label_pairing">Maridaje Recomendado por el Sommelier</span>
+                            <span class="text-[9px] font-bold text-luxe-gold uppercase tracking-wider block" data-i18n="label_pairing">Maridaje Sugerido por el Sommelier</span>
                             <span id="modalMaridajePlato" class="text-[11px] text-luxe-stone dark:text-luxe-stone text-luz-text font-semibold">Copa de Vino</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Lista de Extras Personalizables -->
+                <!-- Extras -->
                 <div>
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-[10px] font-black uppercase tracking-widest text-luxe-gold" data-i18n="label_extras">Extras y Personalizaciones</span>
@@ -367,7 +402,7 @@
                     <div id="modalListaExtras" class="space-y-2"></div>
                 </div>
 
-                <!-- Notas Especiales -->
+                <!-- Notas -->
                 <div>
                     <span class="text-[10px] font-black uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted block mb-2" data-i18n="label_chef_notes">Instrucciones para la Cocina</span>
                     <div class="flex flex-wrap gap-1.5 mb-2">
@@ -421,7 +456,7 @@
         </div>
     </div>
 
-    <!-- MODAL PEDIR LA CUENTA: PROPINA Y DIVISIÓN EXACTA -->
+    <!-- MODAL PEDIR LA CUENTA -->
     <div id="modalPagarCuenta" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-luxe-surface dark:bg-luxe-surface bg-white w-full max-w-md rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto custom-scroll">
             <button onclick="cerrarModalPedirCuenta()" class="absolute top-4 right-4 text-luxe-muted dark:text-luxe-muted text-luz-muted hover:text-luxe-gold">
@@ -436,14 +471,13 @@
                 <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted"><span id="lblModalPagarMesa" class="text-luxe-gold font-bold">Mesa 04</span></p>
             </div>
 
-            <!-- TOTAL GLOBAL -->
             <div class="bg-luxe-card dark:bg-luxe-card bg-luz-base p-4 rounded-2xl border border-luxe-border dark:border-luxe-border border-luz-border text-center mb-3 shadow-sm">
                 <span class="text-[9px] uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted font-extrabold block" data-i18n="bill_total_label">Total a Pagar</span>
                 <span id="lblModalPagarTotal" class="text-3xl font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
                 <span id="lblPropinaDesglose" class="text-[10px] text-amber-500 block mt-0.5 hidden">+ S/ 0.00</span>
             </div>
 
-            <!-- SELECTOR DE PROPINA SUGERIDA -->
+            <!-- Propina -->
             <div class="bg-luxe-card/80 dark:bg-luxe-card/80 bg-luz-base p-3 rounded-2xl border border-luxe-border/80 dark:border-luxe-border/80 border-luz-border mb-3">
                 <span class="text-[9px] font-black uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted block mb-1.5 text-center" data-i18n="tip_label">
                     ✨ Servicio Sugerido al Personal
@@ -456,7 +490,7 @@
                 </div>
             </div>
 
-            <!-- DIVISIÓN DE CUENTA 100% SIMÉTRICA (1, 2, 3, 4, 5+) -->
+            <!-- División Simétrica -->
             <div class="bg-luxe-card/80 dark:bg-luxe-card/80 bg-luz-base p-3 rounded-2xl border border-luxe-border/80 dark:border-luxe-border/80 border-luz-border mb-4">
                 <span class="text-[9px] font-black uppercase tracking-widest text-luxe-gold block mb-1.5 text-center" data-i18n="split_label">
                     <i class="fa-solid fa-users mr-1"></i> Dividir Cuenta en Partes Iguales
@@ -474,7 +508,7 @@
                 </div>
             </div>
 
-            <!-- MÉTODOS DE PAGO -->
+            <!-- Métodos -->
             <div class="space-y-1.5 mb-4">
                 <label class="flex items-center p-2.5 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border cursor-pointer hover:border-luxe-gold/50 transition">
                     <input type="radio" name="radioMetodoPago" value="Yape / Plin (QR)" checked onchange="toggleMetodoQR(true)" class="accent-luxe-gold mr-3">
@@ -537,6 +571,24 @@
         </div>
     </div>
 
+    <!-- MODAL LEAD: CONTACTAR A KEYMAR SYSTEMS -->
+    <div id="modalKeyMarLead" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-luxe-surface dark:bg-luxe-surface bg-white w-full max-w-sm rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border p-6 text-center shadow-2xl">
+            <div class="w-12 h-12 rounded-2xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-3 text-lg">
+                <i class="fa-solid fa-laptop-code"></i>
+            </div>
+            <h3 class="text-base font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text">KeyMar Systems</h3>
+            <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 mb-4">¿Quieres modernizar tu restaurante con carta interactiva, KDS y división de cuentas?</p>
+
+            <a href="https://wa.me/51999999999?text=Hola%20KeyMar%20Systems,%20vi%20su%20carta%20digital%20y%20quiero%20información%20para%20mi%20restaurante." target="_blank" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 mb-2 transition">
+                <i class="fa-brands fa-whatsapp text-base"></i>
+                <span>Hablar con un Asesor</span>
+            </a>
+            
+            <button onclick="cerrarModalKeyMar()" class="w-full py-2 bg-luxe-card dark:bg-luxe-card bg-luz-base text-luxe-muted text-xs font-bold rounded-xl">Cerrar</button>
+        </div>
+    </div>
+
     <!-- TOAST -->
     <div id="toastNotification" class="fixed top-5 right-5 z-50 bg-luxe-card/95 dark:bg-luxe-card/95 bg-white text-luxe-stone dark:text-luxe-stone text-luz-text px-4 py-3 rounded-2xl shadow-2xl border border-luxe-border flex items-center space-x-3 transform translate-x-96 transition-transform duration-300">
         <i id="toastIcon" class="fa-solid fa-circle-check text-luxe-gold text-base"></i>
@@ -560,399 +612,6 @@
         }
         const db = firebase.database();
 
-        // DICCIONARIO MULTILINGÜE (i18n)
-        const DICCIONARIO = {
-            es: {
-                live_menu: "En Vivo",
-                hero_badge: "Gastronomía Peruana de Autor",
-                hero_title: "Experiencia en",
-                hero_subtitle: "Ingredientes de origen certificado, pesca del día y recetas peruanas de alta cocina.",
-                search_placeholder: "Buscar por plato, ingrediente o alérgeno...",
-                cat_all: "Toda la Carta",
-                cat_starters: "Entradas & Ceviches",
-                cat_mains: "Fondos & Brasas",
-                cat_drinks: "Bebidas & Vinos",
-                cat_desserts: "Postres",
-                order_status_header: "Estado de tu Pedido",
-                step_1: "Recibido",
-                step_2: "En Fuego",
-                step_3: "En Mesa",
-                ticket_title: "Cuenta Acumulada de la Mesa",
-                ticket_badge_open: "Cuenta Abierta",
-                subtotal_neto: "Subtotal neto",
-                igv_tax: "IGV (18% incluido)",
-                total_accumulated: "TOTAL ACUMULADO",
-                btn_order_more: "➕ Pedir algo más (Añadir nuevo plato o bebida)",
-                btn_call_waiter: "Llamar al Mozo",
-                btn_ask_bill: "Pedir la Cuenta",
-                cart_round_total: "Subtotal esta ronda:",
-                cart_review_btn: "Revisar Pedido",
-                label_ingredients: "Ingredientes Principales",
-                label_spicy: "Picante:",
-                label_allergens: "Alérgenos:",
-                label_pairing: "Maridaje Sugerido por el Sommelier",
-                label_extras: "Extras y Personalizaciones",
-                label_optional: "Opcional",
-                label_chef_notes: "Instrucciones para la Cocina",
-                btn_add: "Añadir",
-                cart_modal_title: "Revisión de Pedido",
-                cart_send_btn: "Confirmar y Enviar a Cocina",
-                bill_modal_title: "Solicitud de Cuenta",
-                bill_total_label: "Total a Pagar",
-                tip_label: "✨ Servicio Sugerido al Personal",
-                split_label: "Dividir Cuenta en Partes Iguales",
-                split_per_person: "Monto por comensal:",
-                pay_qr_desc: "QR Digital al instante",
-                pay_card: "Tarjeta (POS)",
-                pay_card_desc: "El mozo trae el terminal",
-                pay_cash: "Efectivo",
-                pay_cash_desc: "Pago en billetes",
-                bill_confirm_btn: "Confirmar y Llamar al Mozo",
-                seat_modal_title: "Identificador de Comensal",
-                seat_modal_desc: "¿Quién pide desde este teléfono? (Separa los platos de la mesa):",
-                btn_cancel: "Cancelar",
-                btn_save: "Guardar",
-                sold_out_tag: "🔴 AGOTADO",
-                sold_out_btn: "Agotado",
-                sold_out_msg: "No disponible por hoy"
-            },
-            en: {
-                live_menu: "Live Service",
-                hero_badge: "Signature Peruvian Gastronomy",
-                hero_title: "Dining at",
-                hero_subtitle: "Certified origin ingredients, fresh catch of the day, and fine Peruvian cuisine.",
-                search_placeholder: "Search by dish, ingredient or allergen...",
-                cat_all: "Full Menu",
-                cat_starters: "Starters & Ceviches",
-                cat_mains: "Mains & Grill",
-                cat_drinks: "Drinks & Wines",
-                cat_desserts: "Desserts",
-                order_status_header: "Your Order Live Status",
-                step_1: "Received",
-                step_2: "In Fire",
-                step_3: "Served",
-                ticket_title: "Table Accumulated Check",
-                ticket_badge_open: "Open Tab",
-                subtotal_neto: "Net Subtotal",
-                igv_tax: "Tax (18% included)",
-                total_accumulated: "TOTAL BALANCE",
-                btn_order_more: "➕ Order more items (Add another dish/drink)",
-                btn_call_waiter: "Call Waiter",
-                btn_ask_bill: "Ask for Bill",
-                cart_round_total: "Round Subtotal:",
-                cart_review_btn: "Review Order",
-                label_ingredients: "Key Ingredients",
-                label_spicy: "Spicy Level:",
-                label_allergens: "Allergens:",
-                label_pairing: "Sommelier Recommended Pairing",
-                label_extras: "Extras & Customizations",
-                label_optional: "Optional",
-                label_chef_notes: "Kitchen Special Instructions",
-                btn_add: "Add to Order",
-                cart_modal_title: "Order Review",
-                cart_send_btn: "Send Order to Kitchen",
-                bill_modal_title: "Bill Request",
-                bill_total_label: "Total Due",
-                tip_label: "✨ Suggested Staff Gratuity",
-                split_label: "Split Bill in Equal Parts",
-                split_per_person: "Amount per guest:",
-                pay_qr_desc: "Instant Digital QR",
-                pay_card: "Credit / Debit Card",
-                pay_card_desc: "Waiter brings wireless POS",
-                pay_cash: "Cash",
-                pay_cash_desc: "Cash payment",
-                bill_confirm_btn: "Confirm & Request Waiter",
-                seat_modal_title: "Guest Seat Tag",
-                seat_modal_desc: "Who is ordering from this device? (Helps kitchen separate dishes):",
-                btn_cancel: "Cancel",
-                btn_save: "Save",
-                sold_out_tag: "🔴 SOLD OUT",
-                sold_out_btn: "Sold Out",
-                sold_out_msg: "Currently unavailable"
-            },
-            fr: {
-                live_menu: "En Direct",
-                hero_badge: "Gastronomie Péruvienne d'Auteur",
-                hero_title: "Expérience à",
-                hero_subtitle: "Ingrédients d'origine certifiée, pêche du jour et haute cuisine péruvienne.",
-                search_placeholder: "Rechercher un plat, ingrédient ou allergène...",
-                cat_all: "Tout le Menu",
-                cat_starters: "Entrées & Ceviches",
-                cat_mains: "Plats & Grillades",
-                cat_drinks: "Boissons & Vins",
-                cat_desserts: "Desserts",
-                order_status_header: "Statut de votre commande",
-                step_1: "Reçu",
-                step_2: "En Cuisine",
-                step_3: "À Table",
-                ticket_title: "Addition Cumulée de la Table",
-                ticket_badge_open: "Compte Ouvert",
-                subtotal_neto: "Sous-total net",
-                igv_tax: "TVA (18% incluse)",
-                total_accumulated: "TOTAL À PAYER",
-                btn_order_more: "➕ Commander d'autres plats",
-                btn_call_waiter: "Appeler le Serveur",
-                btn_ask_bill: "Demander l'Addition",
-                cart_round_total: "Sous-total de la tournée:",
-                cart_review_btn: "Vérifier la Commande",
-                label_ingredients: "Ingrédients Principaux",
-                label_spicy: "Niveau Épicé:",
-                label_allergens: "Allergènes:",
-                label_pairing: "Accord suggéré par le Sommelier",
-                label_extras: "Suppléments & Personnalisation",
-                label_optional: "Optionnel",
-                label_chef_notes: "Instructions pour la Cuisine",
-                btn_add: "Ajouter",
-                cart_modal_title: "Vérification",
-                cart_send_btn: "Envoyer en Cuisine",
-                bill_modal_title: "Demande d'Addition",
-                bill_total_label: "Total à Payer",
-                tip_label: "✨ Pourboire Suggéré",
-                split_label: "Diviser l'Addition à Parts Égales",
-                split_per_person: "Montant par personne:",
-                pay_qr_desc: "QR Numérique instantané",
-                pay_card: "Carte Bancaire",
-                pay_card_desc: "Le serveur apporte le TPE",
-                pay_cash: "Espèces",
-                pay_cash_desc: "Paiement en espèces",
-                bill_confirm_btn: "Confirmer et Appeler",
-                seat_modal_title: "Nom du Convive",
-                seat_modal_desc: "Qui commande depuis ce téléphone?",
-                btn_cancel: "Annuler",
-                btn_save: "Enregistrer",
-                sold_out_tag: "🔴 ÉPUISÉ",
-                sold_out_btn: "Épuisé",
-                sold_out_msg: "Non disponible aujourd'hui"
-            },
-            pt: {
-                live_menu: "Ao Vivo",
-                hero_badge: "Gastronomia Peruana Autoral",
-                hero_title: "Experiência na",
-                hero_subtitle: "Ingredientes certificados, pesca fresca do dia e alta culinária peruana.",
-                search_placeholder: "Buscar prato, ingrediente ou alérgeno...",
-                cat_all: "Menu Completo",
-                cat_starters: "Entradas & Ceviches",
-                cat_mains: "Pratos Principais",
-                cat_drinks: "Bebidas & Vinhos",
-                cat_desserts: "Sobremesas",
-                order_status_header: "Status do seu Pedido",
-                step_1: "Recebido",
-                step_2: "No Fogo",
-                step_3: "Na Mesa",
-                ticket_title: "Conta Acumulada da Mesa",
-                ticket_badge_open: "Conta Aberta",
-                subtotal_neto: "Subtotal líquido",
-                igv_tax: "Imposto (18% incluso)",
-                total_accumulated: "TOTAL A PAGAR",
-                btn_order_more: "➕ Pedir mais itens",
-                btn_call_waiter: "Chamar Garçom",
-                btn_ask_bill: "Pedir a Conta",
-                cart_round_total: "Subtotal desta rodada:",
-                cart_review_btn: "Revisar Pedido",
-                label_ingredients: "Ingredientes Principais",
-                label_spicy: "Pimenta:",
-                label_allergens: "Alérgenos:",
-                label_pairing: "Harmonização Sugerida pelo Sommelier",
-                label_extras: "Adicionais e Personalizações",
-                label_optional: "Opcional",
-                label_chef_notes: "Instruções para a Cozinha",
-                btn_add: "Adicionar",
-                cart_modal_title: "Revisão do Pedido",
-                cart_send_btn: "Enviar para a Cozinha",
-                bill_modal_title: "Solicitação de Conta",
-                bill_total_label: "Total a Pagar",
-                tip_label: "✨ Gorjeta Sugerida",
-                split_label: "Dividir a Conta em Partes Iguais",
-                split_per_person: "Valor por pessoa:",
-                pay_qr_desc: "QR Digital instantâneo",
-                pay_card: "Cartão (Maquininha)",
-                pay_card_desc: "O garçom traz a maquininha",
-                pay_cash: "Dinheiro",
-                pay_cash_desc: "Pagamento em dinheiro",
-                bill_confirm_btn: "Confirmar e Chamar Garçom",
-                seat_modal_title: "Identificador do Cliente",
-                seat_modal_desc: "Quem está pedindo deste telefone?",
-                btn_cancel: "Cancelar",
-                btn_save: "Salvar",
-                sold_out_tag: "🔴 ESGOTADO",
-                sold_out_btn: "Esgotado",
-                sold_out_msg: "Indisponível hoje"
-            }
-        };
-
-        let idiomaActual = 'es';
-
-        // CATÁLOGO PERUANO MULTILINGÜE CON INGREDIENTES, PICANTE, ALÉRGENOS & MARIDAJE
-        const PRODUCTOS_CATALOGO = [
-            {
-                id: 1,
-                nombre: { es: "Ceviche Clásico de Pesca del Día", en: "Classic Fresh Catch Ceviche", fr: "Ceviche Classique Pêche du Jour", pt: "Ceviche Clássico do Dia" },
-                categoria: "entradas",
-                precioBase: 48.00,
-                desc: {
-                    es: "Corvina fresca en leche de tigre al ají limo piurano, camote glaseado y choclo cuzqueño.",
-                    en: "Fresh wild corvina cured in spicy lime tiger's milk, glazed sweet potato, and Andean corn.",
-                    fr: "Courbine fraîche marinée au lait de tigre au piment limo, patate douce et maïs géant.",
-                    pt: "Corvina fresca marinada em leche de tigre com ají limo, batata doce glaceada e milho andino."
-                },
-                img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=85",
-                tag: { es: "Plato Bandera", en: "Signature Dish", fr: "Plat Emblématique", pt: "Prato Principal" },
-                ingredientes: {
-                    es: "Corvina fresca, limón sutil, ají limo, cebolla morada, camote, choclo.",
-                    en: "Wild corvina, Key lime, limo chili, red onion, sweet potato, giant corn.",
-                    fr: "Courbine sauvage, citron vert, piment limo, oignon rouge, patate douce.",
-                    pt: "Corvina selvagem, limão, pimenta limo, cebola roxa, batata doce."
-                },
-                picante: "🌶️🌶️ Medio / Medium",
-                alergenos: "Pescado / Fish",
-                maridaje: { es: "Pisco Sour Clásico Quebranta (S/ 26)", en: "Classic Quebranta Pisco Sour (S/ 26)" },
-                extrasDisponibles: [
-                    { id: 'ex_chicharron', nombre: { es: "Chicharrón de Calamar Crocante", en: "Crispy Calamari Chicharrón" }, precio: 14.00 },
-                    { id: 'ex_cancha', nombre: { es: "Porción Extra Cancha Serrana", en: "Extra Andean Toasted Corn" }, precio: 4.00 }
-                ]
-            },
-            {
-                id: 2,
-                nombre: { es: "Lomo Saltado Criollo al Wok", en: "Criollo Lomo Saltado Wok Tenderloin", fr: "Lomo Saltado au Wok", pt: "Lomo Saltado Tradicional no Wok" },
-                categoria: "fondos",
-                precioBase: 58.00,
-                desc: {
-                    es: "Lomo fino flambeado al pisco en wok con cebolla, tomate, papas amarillas fritas y arroz con choclo.",
-                    en: "Prime beef tenderloin wok-flambéed with pisco, red onions, tomatoes, crispy native fries, and rice.",
-                    fr: "Filet de bœuf sauté au wok et flambé au pisco, oignons rouges, frites de pommes de terre indigènes et riz.",
-                    pt: "Filé mignon flambado ao pisco no wok com cebola, tomate, batata frita e arroz."
-                },
-                img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=85",
-                tag: { es: "Tradición Criolla", en: "Peruvian Classic", fr: "Classique", pt: "Clássico" },
-                ingredientes: {
-                    es: "Lomo fino Angus, cebolla roja, tomate, ají amarillo, sillao, vinagre tinto, papa amarilla.",
-                    en: "Angus beef tenderloin, red onion, tomato, yellow chili, soy sauce, red vinegar, native potato.",
-                    fr: "Filet de bœuf Angus, oignon rouge, tomate, piment jaune, sauce soja, pommes de terre.",
-                    pt: "Filé mignon Angus, cebola roxa, tomate, ají amarillo, molho de soja, batatas."
-                },
-                picante: "🌶️ Suave / Mild",
-                alergenos: "Soya / Gluten (Sillao)",
-                maridaje: { es: "Copa de Malbec Gran Reserva (S/ 28)", en: "Glass of Malbec Gran Reserva (S/ 28)" },
-                extrasDisponibles: [
-                    { id: 'ex_huevo_frito', nombre: { es: "Huevo Frito de Granja a Caballo", en: "Farm Fried Egg on Top" }, precio: 5.00 },
-                    { id: 'ex_platano', nombre: { es: "Plátano Bellaco Frito", en: "Fried Sweet Plantain" }, precio: 6.00 }
-                ]
-            },
-            {
-                id: 3,
-                nombre: { es: "Ribeye Black Angus 300g a la Brasa", en: "Grilled Black Angus Ribeye 300g", fr: "Ribeye Black Angus Braisé", pt: "Ribeye Black Angus na Brasa" },
-                categoria: "fondos",
-                precioBase: 78.00,
-                desc: {
-                    es: "Corte selecto Angus de libre pastoreo sellado al carbón de quebracho con espárragos y puré rústico.",
-                    en: "Prime grass-fed Angus ribeye seared over charcoal wood, served with asparagus and potato mash.",
-                    fr: "Ribeye Angus grillé au feu de bois, asperges vertes et purée de pommes de terre maison.",
-                    pt: "Corte Angus grelhado no carvão com aspargos verdes e purê rústico."
-                },
-                img: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&q=85",
-                tag: { es: "Corte Premium", en: "Prime Cut", fr: "Pièce Noble", pt: "Corte Nobre" },
-                ingredientes: {
-                    es: "Bife Ancho Angus 300g, espárragos verdes, mantequilla clarificada, sal de Maras.",
-                    en: "Angus Ribeye 300g, green asparagus, clarified butter, Maras pink salt.",
-                    fr: "Ribeye Angus 300g, asperges vertes, beurre clarifié, sel de Maras.",
-                    pt: "Ribeye Angus 300g, aspargos verdes, manteiga clarificada, sal de Maras."
-                },
-                picante: "Sin picante / None",
-                alergenos: "Lactosa / Dairy (Mantequilla)",
-                maridaje: { es: "Cabernet Sauvignon Reserva (S/ 32)", en: "Cabernet Sauvignon Reserva (S/ 32)" },
-                extrasDisponibles: [
-                    { id: 'ex_mantequilla_trufa', nombre: { es: "Mantequilla de Trufa Negra", en: "Black Truffle Butter" }, precio: 12.00 },
-                    { id: 'ex_chimichurri', nombre: { es: "Chimichurri Rústico de Hierbas", en: "Rustic Herb Chimichurri" }, precio: 5.00 }
-                ]
-            },
-            {
-                id: 4,
-                nombre: { es: "Causa Limeña con Pulpa de Cangrejo", en: "Limeña Causa with Crab Meat", fr: "Causa Limeña au Crabe", pt: "Causa Limeña com Caranguejo" },
-                categoria: "entradas",
-                precioBase: 44.00,
-                desc: {
-                    es: "Masa de papa amarilla al limón y ají amarillo, palta hass y abundante pulpa de cangrejo fresca.",
-                    en: "Layered yellow potato terrine seasoned with lime and ají amarillo, Hass avocado, and fresh crab.",
-                    fr: "Terrine de pommes de terre jaunes au citron vert et piment doux, avocat et chair de crabe.",
-                    pt: "Massa de batata amarela temperada com limão e ají amarillo, abacate e carne de caranguejo."
-                },
-                img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=85",
-                tag: { es: "Entrada Fría", en: "Cold Starter", fr: "Entrée", pt: "Entrada" },
-                ingredientes: {
-                    es: "Papa amarilla, ají amarillo, limón sutil, palta Hass, pulpa de cangrejo, huevo de codorniz.",
-                    en: "Yellow potato, yellow chili, lime, Hass avocado, crab meat, quail egg.",
-                    fr: "Pommes de terre, piment jaune, citron vert, avocat, crabe, œuf de caille.",
-                    pt: "Batata amarela, ají amarillo, limão, abacate, caranguejo, ovo de codorna."
-                },
-                picante: "🌶️ Suave / Mild",
-                alergenos: "Mariscos / Seafood, Huevo / Egg",
-                maridaje: { es: "Chilcano de Pisco Acholado (S/ 24)", en: "Acholado Pisco Chilcano (S/ 24)" },
-                extrasDisponibles: [
-                    { id: 'ex_langostinos', nombre: { es: "Langostinos al Panko Extra", en: "Extra Panko Shrimp" }, precio: 12.00 }
-                ]
-            },
-            {
-                id: 5,
-                nombre: { es: "Chicha Morada Clásica de la Casa (1L)", en: "House Brewed Chicha Morada (1L)", fr: "Chicha Morada Maison (1L)", pt: "Chicha Morada da Casa (1L)" },
-                categoria: "bebidas",
-                precioBase: 16.00,
-                desc: {
-                    es: "Elaborada artesanalmente con maíz morado cuzqueño, piña, manzana verde, clavo de olor y canela.",
-                    en: "Traditional Peruvian antioxidant drink brewed from purple corn, pineapple, green apple, and spices.",
-                    fr: "Boisson artisanale au maïs violet andin, ananas, pomme verte et épices.",
-                    pt: "Bebida tradicional de milho roxo com abacaxi, maçã verde, cravo e canela."
-                },
-                img: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=800&q=85",
-                tag: { es: "100% Natural", en: "100% Natural", fr: "Naturel", pt: "Natural" },
-                ingredientes: {
-                    es: "Maíz morado, cáscara de piña, manzana verde, canela, clavo de olor, limón sutil.",
-                    en: "Purple corn, pineapple peel, green apple, cinnamon, clove, Key lime.",
-                    fr: "Maïs violet, ananas, pomme verte, cannelle, clou de girofle, citron vert.",
-                    pt: "Milho roxo, abacaxi, maçã verde, canela, cravo, limão."
-                },
-                picante: "Sin picante / None",
-                alergenos: "Ninguno / None",
-                maridaje: { es: "Ideal con Lomo Saltado o Ceviche", en: "Perfect with Lomo Saltado or Ceviche" },
-                extrasDisponibles: []
-            },
-            {
-                id: 6,
-                nombre: { es: "Suspiro a la Limeña Tradicional", en: "Traditional Suspiro a la Limeña", fr: "Suspiro a la Limeña Traditionnel", pt: "Suspiro a la Limeña Tradicional" },
-                categoria: "postres",
-                precioBase: 24.00,
-                desc: {
-                    es: "Dulce de leche condensada y evaporada con yemas de huevo, coronado con merengue al oporto y canela.",
-                    en: "Velvety caramel milk custard enriched with egg yolks, topped with Port wine meringue and cinnamon.",
-                    fr: "Crème onctueuse au lait caramélisé et jaunes d'œufs, surmontée d'une meringue au vin de Porto.",
-                    pt: "Doce de leite aveludado com gemas, coroado com merengue ao vinho do Porto e canela."
-                },
-                img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=85",
-                tag: { es: "Postre Limeño", en: "Traditional Dessert", fr: "Dessert", pt: "Sobremesa" },
-                ingredientes: {
-                    es: "Leche evaporada, leche condensada, yemas de huevo, azúcar, vino oporto, canela en polvo.",
-                    en: "Evaporated milk, condensed milk, egg yolks, sugar, Port wine, cinnamon.",
-                    fr: "Lait concentré, jaunes d'œufs, sucre, vin de Porto, cannelle.",
-                    pt: "Leite evaporado, leite condensado, gemas, açúcar, vinho do Porto, canela."
-                },
-                picante: "Sin picante / None",
-                alergenos: "Lactosa / Dairy, Huevo / Egg",
-                maridaje: { es: "Copa de Pisco Mosto Verde Torontel", en: "Pisco Mosto Verde Torontel Glass" },
-                extrasDisponibles: []
-            }
-        ];
-
-        let mesaActual = 'Mesa 04';
-        let miAsientoNombre = 'Asiento 1';
-        let platoModalActivo = null;
-        let cantidadModal = 1;
-        let extrasSeleccionadosModal = [];
-        let carritoRondaTemporal = [];
-        let totalConsumoBase = 0;
-        let porcentajePropina = 0;
-        let personasSplit = 1;
-        let stockAgotadosMap = {};
-
-        // MOTOR DE TRADUCCIÓN i18n
         function cambiarIdioma(lang) {
             idiomaActual = lang;
             const flags = { es: '🇪🇸', en: '🇬🇧', fr: '🇫🇷', pt: '🇧🇷' };
@@ -966,9 +625,34 @@
             });
 
             document.getElementById('inputBuscadorPlatos').placeholder = t.search_placeholder;
-
             renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
             reproducirSonido('tap');
+        }
+
+        function copiarWifiLocal() {
+            reproducirSonido('tap');
+            const passWifi = "AureusGourmet2026"; // Clave demo
+            navigator.clipboard.writeText(passWifi).then(() => {
+                mostrarToast(`WiFi copiado: ${passWifi}`, 'success');
+            }).catch(() => {
+                mostrarToast(`Clave WiFi: ${passWifi}`, 'info');
+            });
+        }
+
+        function compartirMesaWhatsApp() {
+            reproducirSonido('tap');
+            const urlMesa = window.location.href;
+            const texto = `¡Hola! Estoy en Aureus Reserve en la ${mesaActual}. Puedes ver la carta y unirte a la mesa aquí: ${urlMesa}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank');
+        }
+
+        function abrirModalKeyMar() {
+            reproducirSonido('tap');
+            document.getElementById('modalKeyMarLead').classList.remove('hidden');
+        }
+
+        function cerrarModalKeyMar() {
+            document.getElementById('modalKeyMarLead').classList.add('hidden');
         }
 
         function reproducirSonido(tipo) {
@@ -990,6 +674,13 @@
                     gain1.gain.setValueAtTime(0.12, now); gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
                     osc1.connect(gain1); gain1.connect(ctx.destination);
                     osc1.start(now); osc1.stop(now + 0.25);
+
+                    const osc2 = ctx.createOscillator(); const gain2 = ctx.createGain();
+                    osc2.type = 'sine'; osc2.frequency.setValueAtTime(783.99, now + 0.08);
+                    gain2.gain.setValueAtTime(0.15, now + 0.08);
+                    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc2.connect(gain2); gain2.connect(ctx.destination);
+                    osc2.start(now + 0.08); osc2.stop(now + 0.35);
                 } else if (tipo === 'order') {
                     [440, 554.37, 659.25].forEach((f, i) => {
                         const osc = ctx.createOscillator(); const gain = ctx.createGain();
@@ -1016,7 +707,6 @@
             } catch(e) {}
         }
 
-        // CONTROL MODO DÍA / NOCHE
         function toggleModoDiaNoche() {
             reproducirSonido('tap');
             const root = document.getElementById('htmlRoot');
@@ -1026,10 +716,10 @@
             const esOscuro = root.classList.contains('dark');
 
             if (esOscuro) {
-                icon.className = 'fa-solid fa-sun text-[11px]';
+                icon.className = 'fa-solid fa-sun text-[10px]';
                 localStorage.setItem('tema_preferido', 'dark');
             } else {
-                icon.className = 'fa-solid fa-moon text-amber-600 text-[11px]';
+                icon.className = 'fa-solid fa-moon text-amber-600 text-[10px]';
                 localStorage.setItem('tema_preferido', 'light');
             }
         }
@@ -1042,10 +732,10 @@
 
             if (temaGuardado === 'light' || (!temaGuardado && hora >= 7 && hora < 18)) {
                 root.classList.remove('dark');
-                icon.className = 'fa-solid fa-moon text-amber-600 text-[11px]';
+                icon.className = 'fa-solid fa-moon text-amber-600 text-[10px]';
             } else {
                 root.classList.add('dark');
-                icon.className = 'fa-solid fa-sun text-[11px]';
+                icon.className = 'fa-solid fa-sun text-[10px]';
             }
 
             const urlParams = new URLSearchParams(window.location.search);
@@ -1088,7 +778,6 @@
             });
         });
 
-        // MODAL ASIENTO
         function abrirModalAsiento() {
             reproducirSonido('tap');
             document.getElementById('inputNombreAsiento').value = miAsientoNombre;
@@ -1165,7 +854,6 @@
                             </div>
                             <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 line-clamp-2 leading-relaxed">${desc}</p>
                             
-                            <!-- Badges de Picante & Alérgenos -->
                             <div class="flex flex-wrap items-center gap-1.5 mt-2 text-[9px] font-bold">
                                 <span class="text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">${p.picante}</span>
                                 <span class="text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-md border border-rose-500/20">⚠️ ${p.alergenos}</span>
@@ -1240,7 +928,7 @@
                     contenedorExtras.appendChild(itemDiv);
                 });
             } else {
-                contenedorExtras.innerHTML = '<span class="text-[11px] text-luxe-muted italic">Sin extras adicionales para este plato</span>';
+                contenedorExtras.innerHTML = '<span class="text-[11px] text-luxe-muted italic">Sin extras adicionales</span>';
             }
 
             recalcularPrecioModal();
@@ -1467,7 +1155,7 @@
         }
 
         function renderizarTicketEnVivoCliente(dataMesa) {
-            document.getElementById('lblTicketMesaTitle').innerText = `${dataMesa.mesaId} • Servicio: ${dataMesa.inicioServicio}`;
+            document.getElementById('lblTicketMesaTitle').innerText = `${dataMesa.mesaId} • ${dataMesa.inicioServicio}`;
             const contenedor = document.getElementById('listaItemsTicketAcumulado');
             contenedor.innerHTML = '';
             let totalPlatosCount = 0;
@@ -1501,7 +1189,7 @@
                     }
 
                     let statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 font-black rounded uppercase">En Comandera</span>';
-                    if (cmd.estado === 'preparacion') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 font-black rounded uppercase">En Fuego</span>';
+                    if (cmd.estado === 'preparacion') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-amber-500/10 text-amber-300 border border-amber-500/20 font-black rounded uppercase">En Fuego</span>';
                     if (cmd.estado === 'entregado') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black rounded uppercase">Servido</span>';
 
                     const asientoTag = cmd.asiento ? `<span class="text-[9px] bg-luxe-card dark:bg-luxe-card bg-luz-base px-2 py-0.5 rounded text-luxe-gold font-bold border border-luxe-border">${cmd.asiento}</span>` : '';
@@ -1562,7 +1250,7 @@
                 mensaje: `🔔 Mozo solicitado en ${mesaActual} (${miAsientoNombre})`
             };
             db.ref('alertas').push(alerta).then(() => {
-                mostrarToast('Mozo en camino a tu mesa', 'success');
+                mostrarToast('Mozo en camino', 'success');
             });
         }
 
