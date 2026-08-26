@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es" class="dark" id="htmlRoot">
 <head>
@@ -133,7 +134,7 @@
                 </div>
 
                 <!-- Botón WiFi Rápido -->
-                <button onclick="copiarWifiLocal()" class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl text-luxe-gold flex items-center gap-1 text-[11px] font-bold shadow-sm" title="Copiar contraseña de WiFi del local">
+                <button onclick="copiarWifiLocal()" class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl text-luxe-gold flex items-center gap-1 text-[11px] font-bold shadow-sm" title="Copiar contraseña de WiFi">
                     <i class="fa-solid fa-wifi text-[10px]"></i>
                     <span class="hidden sm:inline">WiFi</span>
                 </button>
@@ -147,7 +148,7 @@
                 <!-- Mesa ID -->
                 <div class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl flex items-center gap-1 shadow-sm text-[11px]">
                     <i class="fa-solid fa-chair text-luxe-gold text-[9px]"></i>
-                    <span id="lblMesaHeader" class="font-black font-luxury-serif text-luxe-stone dark:text-luxe-stone text-luz-text">Mesa 04</span>
+                    <span id="lblMesaHeader" class="font-black font-luxury-serif text-[10px] text-luxe-stone dark:text-luxe-stone text-luz-text">Mesa 04</span>
                 </div>
 
                 <!-- Toggle Modo Día / Noche -->
@@ -203,9 +204,7 @@
             <!-- Grilla de Platos -->
             <div id="gridCatalogoPlatos" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
 
-            <!-- ========================================================================= -->
-            <!-- MARCA DE AGUA COMERCIAL: KEYMAR SYSTEMS (GENERADOR DE CLIENTES)           -->
-            <!-- ========================================================================= -->
+            <!-- MARCA DE AGUA COMERCIAL: KEYMAR SYSTEMS -->
             <div class="pt-6 pb-2 text-center">
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-luxe-card/60 dark:bg-luxe-card/60 bg-white/80 border border-luxe-border/80 dark:border-luxe-border/80 border-luz-border shadow-sm cursor-pointer hover:border-luxe-gold transition" onclick="abrirModalKeyMar()">
                     <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted">Powered by</span>
@@ -216,10 +215,9 @@
 
         </div>
 
-        <!-- SUBSECCIÓN B: TICKET ACUMULADO (EN VIVO) -->
+        <!-- SUBSECCIÓN B: TICKET ACUMULADO -->
         <div id="subseccionTicket" class="hidden space-y-4 max-w-2xl mx-auto">
             
-            <!-- Banner Status Cocina con Stepper -->
             <div class="bg-luxe-card/90 dark:bg-luxe-card/90 bg-white backdrop-blur-md p-5 rounded-3xl border border-luxe-gold/30 shadow-2xl relative overflow-hidden">
                 <div class="flex items-center space-x-4 mb-4">
                     <div class="w-12 h-12 rounded-2xl bg-luxe-surface dark:bg-luxe-surface bg-amber-50 border border-luxe-gold/40 text-luxe-gold flex items-center justify-center font-black text-xl gold-glow">
@@ -252,7 +250,7 @@
                 </div>
             </div>
 
-            <!-- BANNER IMPULSOR DE RESEÑAS EN GOOGLE MAPS (5 ESTRELLAS) -->
+            <!-- Reseñas Google Maps -->
             <div class="bg-gradient-to-r from-amber-500/15 via-luxe-card to-luxe-card border border-luxe-gold/40 p-4 rounded-2xl flex items-center justify-between shadow-md">
                 <div class="flex items-center space-x-3">
                     <span class="text-2xl">⭐</span>
@@ -383,7 +381,6 @@
                         </div>
                     </div>
 
-                    <!-- Maridaje -->
                     <div id="boxMaridajeSugerido" class="pt-2 border-t border-luxe-border/50 text-xs flex items-center gap-2">
                         <i class="fa-solid fa-wine-glass text-luxe-gold text-sm"></i>
                         <div>
@@ -595,8 +592,401 @@
         <span id="toastMsg" class="text-xs font-bold block">Notificación</span>
     </div>
 
-    <!-- JAVASCRIPT MULTILINGÜE -->
+    <!-- JAVASCRIPT CORREGIDO -->
     <script>
+        // 1. DICCIONARIOS MULTILINGÜES (DECLARADOS AL INICIO)
+        const DICCIONARIO = {
+            es: {
+                live_menu: "En Vivo",
+                hero_badge: "Gastronomía Peruana de Autor",
+                hero_title: "Experiencia en",
+                hero_subtitle: "Ingredientes de origen certificado, pesca del día y recetas peruanas de alta cocina.",
+                search_placeholder: "Buscar por plato, ingrediente o alérgeno...",
+                cat_all: "Toda la Carta",
+                cat_starters: "Entradas & Ceviches",
+                cat_mains: "Fondos & Brasas",
+                cat_drinks: "Bebidas & Vinos",
+                cat_desserts: "Postres",
+                order_status_header: "Estado de tu Pedido",
+                step_1: "Recibido",
+                step_2: "En Fuego",
+                step_3: "En Mesa",
+                ticket_title: "Cuenta Acumulada de la Mesa",
+                ticket_badge_open: "Cuenta Abierta",
+                subtotal_neto: "Subtotal neto",
+                igv_tax: "IGV (18% incluido)",
+                total_accumulated: "TOTAL ACUMULADO",
+                btn_order_more: "➕ Pedir algo más (Añadir nuevo plato o bebida)",
+                btn_call_waiter: "Llamar al Mozo",
+                btn_ask_bill: "Pedir la Cuenta",
+                cart_round_total: "Subtotal esta ronda:",
+                cart_review_btn: "Revisar Pedido",
+                label_ingredients: "Ingredientes Principales",
+                label_spicy: "Picante:",
+                label_allergens: "Alérgenos:",
+                label_pairing: "Maridaje Sugerido por el Sommelier",
+                label_extras: "Extras y Personalizaciones",
+                label_optional: "Opcional",
+                label_chef_notes: "Instrucciones para la Cocina",
+                btn_add: "Añadir",
+                cart_modal_title: "Revisión de Pedido",
+                cart_send_btn: "Confirmar y Enviar a Cocina",
+                bill_modal_title: "Solicitud de Cuenta",
+                bill_total_label: "Total a Pagar",
+                tip_label: "✨ Servicio Sugerido al Personal",
+                split_label: "Dividir Cuenta en Partes Iguales",
+                split_per_person: "Monto por comensal:",
+                pay_qr_desc: "QR Digital al instante",
+                pay_card: "Tarjeta (POS)",
+                pay_card_desc: "El mozo trae el terminal",
+                pay_cash: "Efectivo",
+                pay_cash_desc: "Pago en billetes",
+                bill_confirm_btn: "Confirmar y Llamar al Mozo",
+                seat_modal_title: "Identificador de Comensal",
+                seat_modal_desc: "¿Quién pide desde este teléfono? (Separa los platos de la mesa):",
+                btn_cancel: "Cancelar",
+                btn_save: "Guardar",
+                sold_out_tag: "🔴 AGOTADO",
+                sold_out_btn: "Agotado",
+                sold_out_msg: "No disponible por hoy"
+            },
+            en: {
+                live_menu: "Live Service",
+                hero_badge: "Signature Peruvian Gastronomy",
+                hero_title: "Dining at",
+                hero_subtitle: "Certified origin ingredients, fresh catch of the day, and fine Peruvian cuisine.",
+                search_placeholder: "Search by dish, ingredient or allergen...",
+                cat_all: "Full Menu",
+                cat_starters: "Starters & Ceviches",
+                cat_mains: "Mains & Grill",
+                cat_drinks: "Drinks & Wines",
+                cat_desserts: "Desserts",
+                order_status_header: "Your Order Live Status",
+                step_1: "Received",
+                step_2: "In Fire",
+                step_3: "Served",
+                ticket_title: "Table Accumulated Check",
+                ticket_badge_open: "Open Tab",
+                subtotal_neto: "Net Subtotal",
+                igv_tax: "Tax (18% included)",
+                total_accumulated: "TOTAL BALANCE",
+                btn_order_more: "➕ Order more items (Add another dish/drink)",
+                btn_call_waiter: "Call Waiter",
+                btn_ask_bill: "Ask for Bill",
+                cart_round_total: "Round Subtotal:",
+                cart_review_btn: "Review Order",
+                label_ingredients: "Key Ingredients",
+                label_spicy: "Spicy Level:",
+                label_allergens: "Allergens:",
+                label_pairing: "Sommelier Recommended Pairing",
+                label_extras: "Extras & Customizations",
+                label_optional: "Optional",
+                label_chef_notes: "Kitchen Special Instructions",
+                btn_add: "Add to Order",
+                cart_modal_title: "Order Review",
+                cart_send_btn: "Send Order to Kitchen",
+                bill_modal_title: "Bill Request",
+                bill_total_label: "Total Due",
+                tip_label: "✨ Suggested Staff Gratuity",
+                split_label: "Split Bill in Equal Parts",
+                split_per_person: "Amount per guest:",
+                pay_qr_desc: "Instant Digital QR",
+                pay_card: "Credit / Debit Card",
+                pay_card_desc: "Waiter brings wireless POS",
+                pay_cash: "Cash",
+                pay_cash_desc: "Cash payment",
+                bill_confirm_btn: "Confirm & Request Waiter",
+                seat_modal_title: "Guest Seat Tag",
+                seat_modal_desc: "Who is ordering from this device? (Helps kitchen separate dishes):",
+                btn_cancel: "Cancel",
+                btn_save: "Save",
+                sold_out_tag: "🔴 SOLD OUT",
+                sold_out_btn: "Sold Out",
+                sold_out_msg: "Currently unavailable"
+            },
+            fr: {
+                live_menu: "En Direct",
+                hero_badge: "Gastronomie Péruvienne d'Auteur",
+                hero_title: "Expérience à",
+                hero_subtitle: "Ingrédients d'origine certifiée, pêche du jour et haute cuisine péruvienne.",
+                search_placeholder: "Rechercher un plat, ingrédient ou allergène...",
+                cat_all: "Tout le Menu",
+                cat_starters: "Entrées & Ceviches",
+                cat_mains: "Plats & Grillades",
+                cat_drinks: "Boissons & Vins",
+                cat_desserts: "Desserts",
+                order_status_header: "Statut de votre commande",
+                step_1: "Reçu",
+                step_2: "En Cuisine",
+                step_3: "À Table",
+                ticket_title: "Addition Cumulée de la Table",
+                ticket_badge_open: "Compte Ouvert",
+                subtotal_neto: "Sous-total net",
+                igv_tax: "TVA (18% incluse)",
+                total_accumulated: "TOTAL À PAYER",
+                btn_order_more: "➕ Commander d'autres plats",
+                btn_call_waiter: "Appeler le Serveur",
+                btn_ask_bill: "Demander l'Addition",
+                cart_round_total: "Sous-total de la tournée:",
+                cart_review_btn: "Vérifier la Commande",
+                label_ingredients: "Ingrédients Principaux",
+                label_spicy: "Niveau Épicé:",
+                label_allergens: "Allergènes:",
+                label_pairing: "Accord suggéré par le Sommelier",
+                label_extras: "Suppléments & Personnalisation",
+                label_optional: "Optionnel",
+                label_chef_notes: "Instructions pour la Cuisine",
+                btn_add: "Ajouter",
+                cart_modal_title: "Vérification",
+                cart_send_btn: "Envoyer en Cuisine",
+                bill_modal_title: "Demande d'Addition",
+                bill_total_label: "Total à Payer",
+                tip_label: "✨ Pourboire Suggéré",
+                split_label: "Diviser l'Addition à Parts Égales",
+                split_per_person: "Montant par personne:",
+                pay_qr_desc: "QR Numérique instantané",
+                pay_card: "Carte Bancaire",
+                pay_card_desc: "Le serveur apporte le TPE",
+                pay_cash: "Espèces",
+                pay_cash_desc: "Paiement en espèces",
+                bill_confirm_btn: "Confirmer et Appeler",
+                seat_modal_title: "Nom du Convive",
+                seat_modal_desc: "Qui commande depuis ce téléphone?",
+                btn_cancel: "Annuler",
+                btn_save: "Enregistrer",
+                sold_out_tag: "🔴 ÉPUISÉ",
+                sold_out_btn: "Épuisé",
+                sold_out_msg: "Non disponible aujourd'hui"
+            },
+            pt: {
+                live_menu: "Ao Vivo",
+                hero_badge: "Gastronomia Peruana Autoral",
+                hero_title: "Experiência na",
+                hero_subtitle: "Ingredientes certificados, pesca fresca do dia e alta culinária peruana.",
+                search_placeholder: "Buscar prato, ingrediente ou alérgeno...",
+                cat_all: "Menu Completo",
+                cat_starters: "Entradas & Ceviches",
+                cat_mains: "Pratos Principais",
+                cat_drinks: "Bebidas & Vinhos",
+                cat_desserts: "Sobremesas",
+                order_status_header: "Status do seu Pedido",
+                step_1: "Recebido",
+                step_2: "No Fogo",
+                step_3: "Na Mesa",
+                ticket_title: "Conta Acumulada da Mesa",
+                ticket_badge_open: "Conta Aberta",
+                subtotal_neto: "Subtotal líquido",
+                igv_tax: "Imposto (18% incluso)",
+                total_accumulated: "TOTAL A PAGAR",
+                btn_order_more: "➕ Pedir mais itens",
+                btn_call_waiter: "Chamar Garçom",
+                btn_ask_bill: "Pedir a Conta",
+                cart_round_total: "Subtotal desta rodada:",
+                cart_review_btn: "Revisar Pedido",
+                label_ingredients: "Ingredientes Principais",
+                label_spicy: "Pimenta:",
+                label_allergens: "Alérgenos:",
+                label_pairing: "Harmonização Sugerida pelo Sommelier",
+                label_extras: "Adicionais e Personalizações",
+                label_optional: "Opcional",
+                label_chef_notes: "Instruções para a Cozinha",
+                btn_add: "Adicionar",
+                cart_modal_title: "Revisão do Pedido",
+                cart_send_btn: "Enviar para a Cozinha",
+                bill_modal_title: "Solicitação de Conta",
+                bill_total_label: "Total a Pagar",
+                tip_label: "✨ Gorjeta Sugerida",
+                split_label: "Dividir a Conta em Partes Iguais",
+                split_per_person: "Valor por pessoa:",
+                pay_qr_desc: "QR Digital instantâneo",
+                pay_card: "Cartão (Maquininha)",
+                pay_card_desc: "O garçom traz a maquininha",
+                pay_cash: "Dinheiro",
+                pay_cash_desc: "Pagamento em dinheiro",
+                bill_confirm_btn: "Confirmar e Chamar Garçom",
+                seat_modal_title: "Identificador do Cliente",
+                seat_modal_desc: "Quem está pedindo deste telefone?",
+                btn_cancel: "Cancelar",
+                btn_save: "Salvar",
+                sold_out_tag: "🔴 ESGOTADO",
+                sold_out_btn: "Esgotado",
+                sold_out_msg: "Indisponível hoje"
+            }
+        };
+
+        // 2. CATÁLOGO DE PLATOS MULTILINGÜE
+        const PRODUCTOS_CATALOGO = [
+            {
+                id: 1,
+                nombre: { es: "Ceviche Clásico de Pesca del Día", en: "Classic Fresh Catch Ceviche", fr: "Ceviche Classique Pêche du Jour", pt: "Ceviche Clássico do Dia" },
+                categoria: "entradas",
+                precioBase: 48.00,
+                desc: {
+                    es: "Corvina fresca en leche de tigre al ají limo piurano, camote glaseado y choclo cuzqueño.",
+                    en: "Fresh wild corvina cured in spicy lime tiger's milk, glazed sweet potato, and Andean corn.",
+                    fr: "Courbine fraîche marinée au lait de tigre au piment limo, patate douce et maïs géant.",
+                    pt: "Corvina fresca marinada em leche de tigre com ají limo, batata doce glaceada e milho andino."
+                },
+                img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "Plato Bandera", en: "Signature Dish", fr: "Plat Emblématique", pt: "Prato Principal" },
+                ingredientes: {
+                    es: "Corvina fresca, limón sutil, ají limo, cebolla morada, camote, choclo.",
+                    en: "Wild corvina, Key lime, limo chili, red onion, sweet potato, giant corn.",
+                    fr: "Courbine sauvage, citron vert, piment limo, oignon rouge, patate douce.",
+                    pt: "Corvina selvagem, limão, pimenta limo, cebola roxa, batata doce."
+                },
+                picante: "🌶️🌶️ Medio / Medium",
+                alergenos: "Pescado / Fish",
+                maridaje: { es: "Pisco Sour Clásico Quebranta (S/ 26)", en: "Classic Quebranta Pisco Sour (S/ 26)", fr: "Pisco Sour Classique", pt: "Pisco Sour Tradicional" },
+                extrasDisponibles: [
+                    { id: 'ex_chicharron', nombre: { es: "Chicharrón de Calamar Crocante", en: "Crispy Calamari Chicharrón" }, precio: 14.00 },
+                    { id: 'ex_cancha', nombre: { es: "Porción Extra Cancha Serrana", en: "Extra Andean Toasted Corn" }, precio: 4.00 }
+                ]
+            },
+            {
+                id: 2,
+                nombre: { es: "Lomo Saltado Criollo al Wok", en: "Criollo Lomo Saltado Wok Tenderloin", fr: "Lomo Saltado au Wok", pt: "Lomo Saltado Tradicional no Wok" },
+                categoria: "fondos",
+                precioBase: 58.00,
+                desc: {
+                    es: "Lomo fino flambeado al pisco en wok con cebolla, tomate, papas amarillas fritas y arroz con choclo.",
+                    en: "Prime beef tenderloin wok-flambéed with pisco, red onions, tomatoes, crispy native fries, and rice.",
+                    fr: "Filet de bœuf sauté au wok et flambé au pisco, oignons rouges, frites de pommes de terre indigènes et riz.",
+                    pt: "Filé mignon flambado ao pisco no wok com cebola, tomate, batata frita e arroz."
+                },
+                img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "Tradición Criolla", en: "Peruvian Classic", fr: "Classique", pt: "Clássico" },
+                ingredientes: {
+                    es: "Lomo fino Angus, cebolla roja, tomate, ají amarillo, sillao, vinagre tinto, papa amarilla.",
+                    en: "Angus beef tenderloin, red onion, tomato, yellow chili, soy sauce, red vinegar, native potato.",
+                    fr: "Filet de bœuf Angus, oignon rouge, tomate, piment jaune, sauce soja, pommes de terre.",
+                    pt: "Filé mignon Angus, cebola roxa, tomate, ají amarillo, molho de soja, batatas."
+                },
+                picante: "🌶️ Suave / Mild",
+                alergenos: "Soya / Gluten (Sillao)",
+                maridaje: { es: "Copa de Malbec Gran Reserva (S/ 28)", en: "Glass of Malbec Gran Reserva (S/ 28)", fr: "Verre de Malbec Gran Reserva", pt: "Taça de Malbec Gran Reserva" },
+                extrasDisponibles: [
+                    { id: 'ex_huevo_frito', nombre: { es: "Huevo Frito de Granja a Caballo", en: "Farm Fried Egg on Top" }, precio: 5.00 },
+                    { id: 'ex_platano', nombre: { es: "Plátano Bellaco Frito", en: "Fried Sweet Plantain" }, precio: 6.00 }
+                ]
+            },
+            {
+                id: 3,
+                nombre: { es: "Ribeye Black Angus 300g a la Brasa", en: "Grilled Black Angus Ribeye 300g", fr: "Ribeye Black Angus Braisé", pt: "Ribeye Black Angus na Brasa" },
+                categoria: "fondos",
+                precioBase: 78.00,
+                desc: {
+                    es: "Corte selecto Angus de libre pastoreo sellado al carbón de quebracho con espárragos y puré rústico.",
+                    en: "Prime grass-fed Angus ribeye seared over charcoal wood, served with asparagus and potato mash.",
+                    fr: "Ribeye Angus grillé au feu de bois, asperges vertes et purée de pommes de terre maison.",
+                    pt: "Corte Angus grelhado no carvão com aspargos verdes e purê rústico."
+                },
+                img: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "Corte Premium", en: "Prime Cut", fr: "Pièce Noble", pt: "Corte Nobre" },
+                ingredientes: {
+                    es: "Bife Ancho Angus 300g, espárragos verdes, mantequilla clarificada, sal de Maras.",
+                    en: "Angus Ribeye 300g, green asparagus, clarified butter, Maras pink salt.",
+                    fr: "Ribeye Angus 300g, asperges vertes, beurre clarifié, sel de Maras.",
+                    pt: "Ribeye Angus 300g, aspargos verdes, manteiga clarificada, sal de Maras."
+                },
+                picante: "Sin picante / None",
+                alergenos: "Lactosa / Dairy (Mantequilla)",
+                maridaje: { es: "Cabernet Sauvignon Reserva (S/ 32)", en: "Cabernet Sauvignon Reserva (S/ 32)", fr: "Cabernet Sauvignon Reserva", pt: "Cabernet Sauvignon Reserva" },
+                extrasDisponibles: [
+                    { id: 'ex_mantequilla_trufa', nombre: { es: "Mantequilla de Trufa Negra", en: "Black Truffle Butter" }, precio: 12.00 },
+                    { id: 'ex_chimichurri', nombre: { es: "Chimichurri Rústico de Hierbas", en: "Rustic Herb Chimichurri" }, precio: 5.00 }
+                ]
+            },
+            {
+                id: 4,
+                nombre: { es: "Causa Limeña con Pulpa de Cangrejo", en: "Limeña Causa with Crab Meat", fr: "Causa Limeña au Crabe", pt: "Causa Limeña com Caranguejo" },
+                categoria: "entradas",
+                precioBase: 44.00,
+                desc: {
+                    es: "Masa de papa amarilla al limón y ají amarillo, palta hass y abundante pulpa de cangrejo fresca.",
+                    en: "Layered yellow potato terrine seasoned with lime and ají amarillo, Hass avocado, and fresh crab.",
+                    fr: "Terrine de pommes de terre jaunes au citron vert et piment doux, avocat et chair de crabe.",
+                    pt: "Massa de batata amarela temperada com limão e ají amarillo, abacate e carne de caranguejo."
+                },
+                img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "Entrada Fría", en: "Cold Starter", fr: "Entrée", pt: "Entrada" },
+                ingredientes: {
+                    es: "Papa amarilla, ají amarillo, limón sutil, palta Hass, pulpa de cangrejo, huevo de codorniz.",
+                    en: "Yellow potato, yellow chili, lime, Hass avocado, crab meat, quail egg.",
+                    fr: "Pommes de terre, piment jaune, citron vert, avocat, crabe, œuf de caille.",
+                    pt: "Batata amarela, ají amarillo, limão, abacate, caranguejo, ovo de codorna."
+                },
+                picante: "🌶️ Suave / Mild",
+                alergenos: "Mariscos / Seafood, Huevo / Egg",
+                maridaje: { es: "Chilcano de Pisco Acholado (S/ 24)", en: "Acholado Pisco Chilcano (S/ 24)", fr: "Chilcano de Pisco", pt: "Chilcano de Pisco" },
+                extrasDisponibles: [
+                    { id: 'ex_langostinos', nombre: { es: "Langostinos al Panko Extra", en: "Extra Panko Shrimp" }, precio: 12.00 }
+                ]
+            },
+            {
+                id: 5,
+                nombre: { es: "Chicha Morada Clásica de la Casa (1L)", en: "House Brewed Chicha Morada (1L)", fr: "Chicha Morada Maison (1L)", pt: "Chicha Morada da Casa (1L)" },
+                categoria: "bebidas",
+                precioBase: 16.00,
+                desc: {
+                    es: "Elaborada artesanalmente con maíz morado cuzqueño, piña, manzana verde, clavo de olor y canela.",
+                    en: "Traditional Peruvian antioxidant drink brewed from purple corn, pineapple, green apple, and spices.",
+                    fr: "Boisson artisanale au maïs violet andin, ananas, pomme verte et épices.",
+                    pt: "Bebida tradicional de milho roxo com abacaxi, maçã verde, cravo e canela."
+                },
+                img: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "100% Natural", en: "100% Natural", fr: "Naturel", pt: "Natural" },
+                ingredientes: {
+                    es: "Maíz morado, cáscara de piña, manzana verde, canela, clavo de olor, limón sutil.",
+                    en: "Purple corn, pineapple peel, green apple, cinnamon, clove, Key lime.",
+                    fr: "Maïs violet, ananas, pomme verte, cannelle, clou de girofle, citron vert.",
+                    pt: "Milho roxo, abacaxi, maçã verde, canela, cravo, limão."
+                },
+                picante: "Sin picante / None",
+                alergenos: "Ninguno / None",
+                maridaje: { es: "Ideal con Lomo Saltado o Ceviche", en: "Perfect with Lomo Saltado or Ceviche", fr: "Idéal avec Ceviche", pt: "Ideal com Ceviche" },
+                extrasDisponibles: []
+            },
+            {
+                id: 6,
+                nombre: { es: "Suspiro a la Limeña Tradicional", en: "Traditional Suspiro a la Limeña", fr: "Suspiro a la Limeña Traditionnel", pt: "Suspiro a la Limeña Tradicional" },
+                categoria: "postres",
+                precioBase: 24.00,
+                desc: {
+                    es: "Dulce de leche condensada y evaporada con yemas de huevo, coronado con merengue al oporto y canela.",
+                    en: "Velvety caramel milk custard enriched with egg yolks, topped with Port wine meringue and cinnamon.",
+                    fr: "Crème onctueuse au lait caramélisé et jaunes d'œufs, surmontée d'une meringue au vin de Porto.",
+                    pt: "Doce de leite aveludado com gemas, coroado com merengue ao vinho do Porto e canela."
+                },
+                img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "Postre Limeño", en: "Traditional Dessert", fr: "Dessert", pt: "Sobremesa" },
+                ingredientes: {
+                    es: "Leche evaporada, leche condensada, yemas de huevo, azúcar, vino oporto, canela en polvo.",
+                    en: "Evaporated milk, condensed milk, egg yolks, sugar, Port wine, cinnamon.",
+                    fr: "Lait concentré, jaunes d'œufs, sucre, vin de Porto, cannelle.",
+                    pt: "Leite evaporado, leite condensado, gemas, açúcar, vinho do Porto, canela."
+                },
+                picante: "Sin picante / None",
+                alergenos: "Lactosa / Dairy, Huevo / Egg",
+                maridaje: { es: "Copa de Pisco Mosto Verde Torontel", en: "Pisco Mosto Verde Torontel Glass", fr: "Pisco Mosto Verde", pt: "Pisco Mosto Verde" },
+                extrasDisponibles: []
+            }
+        ];
+
+        // 3. VARIABLES DE ESTADO
+        let idiomaActual = 'es';
+        let mesaActual = 'Mesa 04';
+        let miAsientoNombre = 'Asiento 1';
+        let platoModalActivo = null;
+        let cantidadModal = 1;
+        let extrasSeleccionadosModal = [];
+        let carritoRondaTemporal = [];
+        let totalConsumoBase = 0;
+        let porcentajePropina = 0;
+        let personasSplit = 1;
+        let stockAgotadosMap = {};
+
+        // 4. INICIALIZACIÓN FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyAOdDt5smefZAZHcMZA2spWVRwT8xaAAq4",
             authDomain: "work-9d40e.firebaseapp.com",
@@ -612,6 +1002,7 @@
         }
         const db = firebase.database();
 
+        // 5. MOTOR DE TRADUCCIÓN i18n
         function cambiarIdioma(lang) {
             idiomaActual = lang;
             const flags = { es: '🇪🇸', en: '🇬🇧', fr: '🇫🇷', pt: '🇧🇷' };
@@ -631,7 +1022,7 @@
 
         function copiarWifiLocal() {
             reproducirSonido('tap');
-            const passWifi = "AureusGourmet2026"; // Clave demo
+            const passWifi = "AureusGourmet2026";
             navigator.clipboard.writeText(passWifi).then(() => {
                 mostrarToast(`WiFi copiado: ${passWifi}`, 'success');
             }).catch(() => {
@@ -753,6 +1144,7 @@
             document.getElementById('lblMesaHeader').innerText = mesaActual;
             document.getElementById('lblMesaHero').innerText = mesaActual;
 
+            // RENDER INMEDIATO DE LA CARTA
             renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
 
             const mesaKey = mesaActual.replace(/\s+/g, '_');
@@ -819,16 +1211,16 @@
             grid.innerHTML = '';
             const t = DICCIONARIO[idiomaActual] || DICCIONARIO.es;
 
-            if (platos.length === 0) {
+            if (!platos || platos.length === 0) {
                 grid.innerHTML = `<div class="col-span-2 text-center py-10 text-luxe-muted dark:text-luxe-muted text-luz-muted text-xs"><i class="fa-solid fa-utensils text-2xl mb-2 text-luxe-border block"></i>Sin resultados.</div>`;
                 return;
             }
 
             platos.forEach(p => {
                 const estaAgotado = !!stockAgotadosMap[p.id];
-                const nom = p.nombre[idiomaActual] || p.nombre.es;
-                const desc = p.desc[idiomaActual] || p.desc.es;
-                const tag = p.tag[idiomaActual] || p.tag.es;
+                const nom = (p.nombre && (p.nombre[idiomaActual] || p.nombre.es)) || p.nombre || "Plato";
+                const desc = (p.desc && (p.desc[idiomaActual] || p.desc.es)) || p.desc || "";
+                const tag = (p.tag && (p.tag[idiomaActual] || p.tag.es)) || p.tag || "Gourmet";
 
                 const card = document.createElement('div');
                 card.className = `bg-luxe-card/90 dark:bg-luxe-card/90 bg-white backdrop-blur-md rounded-3xl p-4 border transition-all duration-300 flex flex-col sm:flex-row gap-4 shadow-md ${estaAgotado ? 'opacity-50 border-rose-500/40 bg-rose-500/5' : 'border-luxe-border dark:border-luxe-border border-luz-border hover:border-luxe-gold/40'}`;
@@ -854,6 +1246,7 @@
                             </div>
                             <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 line-clamp-2 leading-relaxed">${desc}</p>
                             
+                            <!-- Badges de Picante & Alérgenos -->
                             <div class="flex flex-wrap items-center gap-1.5 mt-2 text-[9px] font-bold">
                                 <span class="text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">${p.picante}</span>
                                 <span class="text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-md border border-rose-500/20">⚠️ ${p.alergenos}</span>
@@ -896,7 +1289,7 @@
             const desc = prod.desc[idiomaActual] || prod.desc.es;
             const ing = prod.ingredientes[idiomaActual] || prod.ingredientes.es;
             const tag = prod.tag[idiomaActual] || prod.tag.es;
-            const maridajeTxt = prod.maridaje[idiomaActual] || prod.maridaje.es || 'Copa de Vino Recomendada';
+            const maridajeTxt = (prod.maridaje && (prod.maridaje[idiomaActual] || prod.maridaje.es)) || 'Copa de Vino Recomendada';
 
             document.getElementById('modalImgPlato').src = prod.img;
             document.getElementById('modalTagPlato').innerText = tag.toUpperCase();
@@ -928,7 +1321,7 @@
                     contenedorExtras.appendChild(itemDiv);
                 });
             } else {
-                contenedorExtras.innerHTML = '<span class="text-[11px] text-luxe-muted italic">Sin extras adicionales</span>';
+                contenedorExtras.innerHTML = '<span class="text-[11px] text-luxe-muted italic">Sin extras adicionales para este plato</span>';
             }
 
             recalcularPrecioModal();
@@ -1189,7 +1582,7 @@
                     }
 
                     let statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 font-black rounded uppercase">En Comandera</span>';
-                    if (cmd.estado === 'preparacion') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-amber-500/10 text-amber-300 border border-amber-500/20 font-black rounded uppercase">En Fuego</span>';
+                    if (cmd.estado === 'preparacion') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 font-black rounded uppercase">En Fuego</span>';
                     if (cmd.estado === 'entregado') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black rounded uppercase">Servido</span>';
 
                     const asientoTag = cmd.asiento ? `<span class="text-[9px] bg-luxe-card dark:bg-luxe-card bg-luz-base px-2 py-0.5 rounded text-luxe-gold font-bold border border-luxe-border">${cmd.asiento}</span>` : '';
