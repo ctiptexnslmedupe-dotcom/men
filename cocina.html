@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AUREUS KDS — Monitor de Cocina, Salón & Caja</title>
+    <title>AUREUS KDS — Monitor de Cocina Anti-Colapso & Caja</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -75,7 +75,6 @@
             100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.05; }
         }
 
-        /* FORMATO DE IMPRESIÓN TÉRMICA 80MM (WINDOW.PRINT) */
         @media print {
             body * { visibility: hidden; }
             #areaImpresionTermica, #areaImpresionTermica * { visibility: visible; }
@@ -89,11 +88,17 @@
             }
             @page { size: 80mm auto; margin: 0; }
         }
+
+        .estacion-btn.active {
+            background: #d4af37;
+            color: #000000;
+            font-weight: 800;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-luxe-gold selection:text-black relative">
 
-    <!-- FONDO VISUAL CON MARCA DE AGUA -->
+    <!-- FONDO VISUAL -->
     <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[750px] h-[550px] bg-gradient-to-b from-amber-600/15 via-luxe-gold/8 to-transparent rounded-full blur-3xl"></div>
         <div class="absolute -bottom-40 right-[-10%] w-[600px] h-[600px] bg-amber-900/10 rounded-full blur-[140px]"></div>
@@ -108,7 +113,7 @@
         </div>
     </div>
 
-    <!-- 1. PANTALLA DE LOGIN POR PIN -->
+    <!-- 1. PANTALLA LOGIN PIN -->
     <div id="pantallaLoginCocina" class="fixed inset-0 z-50 bg-luxe-base flex items-center justify-center p-4">
         <div class="bg-luxe-surface w-full max-w-sm rounded-3xl border border-luxe-border p-8 text-center shadow-2xl relative overflow-hidden">
             <div class="w-16 h-16 rounded-2xl bg-luxe-card border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-4 text-2xl gold-glow">
@@ -129,37 +134,50 @@
     <!-- 2. DASHBOARD KDS -->
     <div id="dashboardCocina" class="hidden flex-1 flex flex-col relative z-10">
         
-        <!-- HEADER KDS CON REPORTES Y CONTROL DE ESTADOS -->
-        <header class="bg-luxe-surface/90 backdrop-blur-xl border-b border-luxe-border px-6 py-3 flex flex-wrap justify-between items-center gap-3 shadow-xl">
+        <!-- HEADER KDS CON HERRAMIENTAS ANTI-COLAPSO -->
+        <header class="bg-luxe-surface/90 backdrop-blur-xl border-b border-luxe-border px-4 sm:px-6 py-3 flex flex-wrap justify-between items-center gap-2.5 shadow-xl">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-2xl bg-luxe-card border border-luxe-gold/40 flex items-center justify-center shadow-md">
+                <div class="w-9 h-9 rounded-2xl bg-luxe-card border border-luxe-gold/40 flex items-center justify-center shadow-md">
                     <i class="fa-solid fa-fire-burner text-luxe-gold text-sm"></i>
                 </div>
                 <div>
                     <h1 class="text-xs tracking-[0.25em] font-luxury-serif font-black uppercase text-luxe-stone leading-none">
-                        KDS • <span class="text-luxe-gold">Monitor & Caja</span>
+                        KDS • <span class="text-luxe-gold">Monitor Central</span>
                     </h1>
-                    <span class="text-[9px] tracking-widest text-luxe-muted font-semibold uppercase flex items-center gap-1.5 mt-0.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> KeyMar Systems
+                    <span class="text-[9px] tracking-widest text-luxe-muted font-semibold uppercase flex items-center gap-1 mt-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Sistema Anti-Colapso
                     </span>
                 </div>
             </div>
 
-            <!-- CONTROLES CENTRALES -->
-            <div class="flex items-center space-x-2 bg-luxe-card px-3 py-1.5 rounded-2xl border border-luxe-border">
+            <!-- CONTROLES CENTRALES: RESUMEN DE FUEGO + HORA PUNTA + CAJA -->
+            <div class="flex flex-wrap items-center gap-2 bg-luxe-card px-3 py-1.5 rounded-2xl border border-luxe-border">
                 
-                <!-- BOTÓN CIERRE DE CAJA & HISTORIAL -->
-                <button onclick="abrirModalCajaHistorial()" class="px-2.5 py-1 bg-emerald-600/15 hover:bg-emerald-600/25 text-emerald-400 border border-emerald-500/40 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm" title="Ver ventas del día y arqueo de caja">
-                    <i class="fa-solid fa-cash-register"></i>
-                    <span>Caja & Ventas</span>
-                    <span id="badgeTotalVentasHeader" class="text-[10px] text-emerald-300 font-black bg-emerald-950 px-1.5 py-0.2 rounded border border-emerald-500/30">S/ 0.00</span>
+                <!-- BOTÓN RESUMEN DE FUEGO (BATCH COOKING - CLAVE PARA CHIFAS/WOK) -->
+                <button onclick="abrirModalResumenFuego()" class="px-2.5 py-1 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 rounded-xl text-xs font-black transition flex items-center gap-1.5 shadow-sm" title="Ver platos acumulados para cocinar por tandas">
+                    <i class="fa-solid fa-utensils"></i>
+                    <span>Resumen Fuego</span>
+                    <span id="badgePlatosEnFuegoTotal" class="w-4 h-4 rounded-full bg-amber-500 text-black text-[9px] font-black flex items-center justify-center">0</span>
                 </button>
 
-                <!-- BOTÓN CONTROL DE STOCK -->
-                <button onclick="abrirModalStock()" class="px-2.5 py-1 bg-luxe-surface hover:bg-luxe-cardHover text-rose-400 border border-rose-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm" title="Bloquear platos agotados">
+                <!-- TOGGLE MODO HORA PUNTA (PACING) -->
+                <button onclick="toggleModoHoraPunta()" id="btnModoHoraPunta" class="px-2.5 py-1 bg-luxe-surface hover:bg-luxe-cardHover text-luxe-stone border border-luxe-border rounded-xl text-xs font-bold transition flex items-center gap-1" title="Activar modo alta demanda en cocina">
+                    <i class="fa-solid fa-bolt text-amber-400"></i>
+                    <span id="txtHoraPunta">Hora Punta: OFF</span>
+                </button>
+
+                <!-- BOTÓN CIERRE DE CAJA & HISTORIAL -->
+                <button onclick="abrirModalCajaHistorial()" class="px-2.5 py-1 bg-emerald-600/15 hover:bg-emerald-600/25 text-emerald-400 border border-emerald-500/40 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-cash-register"></i>
+                    <span>Caja</span>
+                    <span id="badgeTotalVentasHeader" class="text-[10px] text-emerald-300 font-black bg-emerald-950 px-1 py-0.2 rounded">S/ 0.00</span>
+                </button>
+
+                <!-- BOTÓN STOCK AGOTADOS -->
+                <button onclick="abrirModalStock()" class="px-2 py-1 bg-luxe-surface hover:bg-luxe-cardHover text-rose-400 border border-rose-500/30 rounded-xl text-xs font-bold transition flex items-center gap-1" title="Bloquear platos agotados">
                     <i class="fa-solid fa-boxes-stacked"></i>
                     <span>Stock</span>
-                    <span id="badgeAgotadosCount" class="w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center hidden">0</span>
+                    <span id="badgeAgotadosCount" class="w-3.5 h-3.5 rounded-full bg-rose-500 text-white text-[8px] font-black flex items-center justify-center hidden">0</span>
                 </button>
 
                 <!-- Reloj -->
@@ -170,24 +188,35 @@
             </div>
 
             <!-- CERRAR TURNO -->
-            <div class="flex items-center space-x-3">
-                <button onclick="cerrarSesionStaff()" class="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold rounded-xl transition flex items-center gap-1.5">
+            <div class="flex items-center space-x-2">
+                <button onclick="cerrarSesionStaff()" class="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold rounded-xl transition flex items-center gap-1">
                     <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Cerrar Turno</span>
+                    <span>Salir</span>
                 </button>
             </div>
         </header>
 
-        <!-- STREAM DE ALERTAS DE SALÓN (MOZO & CUENTAS) -->
-        <div class="bg-luxe-surface/60 border-b border-luxe-border px-6 py-2 flex items-center gap-3 overflow-x-auto custom-scroll shadow-sm">
-            <span class="text-[10px] font-black uppercase tracking-widest text-amber-300 flex items-center gap-1.5 whitespace-nowrap">
-                <i class="fa-solid fa-bell animate-bounce"></i> Salón:
-            </span>
-            <div id="contenedorAlertasStaff" class="flex items-center gap-2 flex-wrap"></div>
+        <!-- BARRA DE FILTRO POR ESTACIONES DE COCINA -->
+        <div class="bg-luxe-surface/70 border-b border-luxe-border px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+            
+            <!-- Selector de Estación (Wok / Fríos / Bar) -->
+            <div class="flex items-center gap-1.5 overflow-x-auto custom-scroll">
+                <span class="text-[10px] font-black uppercase tracking-wider text-luxe-muted mr-1">Estación:</span>
+                <button onclick="filtrarPorEstacion('todos', event)" class="estacion-btn active px-3 py-1 rounded-lg bg-luxe-card border border-luxe-border text-luxe-stone font-bold text-xs">🍽️ Todas</button>
+                <button onclick="filtrarPorEstacion('fondos', event)" class="estacion-btn px-3 py-1 rounded-lg bg-luxe-card border border-luxe-border text-luxe-muted hover:text-white font-bold text-xs">🥘 Wok / Calientes</button>
+                <button onclick="filtrarPorEstacion('entradas', event)" class="estacion-btn px-3 py-1 rounded-lg bg-luxe-card border border-luxe-border text-luxe-muted hover:text-white font-bold text-xs">🐟 Fríos / Ceviches</button>
+                <button onclick="filtrarPorEstacion('bebidas', event)" class="estacion-btn px-3 py-1 rounded-lg bg-luxe-card border border-luxe-border text-luxe-muted hover:text-white font-bold text-xs">🍹 Bar / Bebidas</button>
+            </div>
+
+            <!-- Stream de Alertas de Salón -->
+            <div class="flex items-center gap-2 overflow-x-auto custom-scroll">
+                <span class="text-[10px] font-black uppercase text-amber-300 whitespace-nowrap"><i class="fa-solid fa-bell mr-1"></i>Salón:</span>
+                <div id="contenedorAlertasStaff" class="flex items-center gap-1.5"></div>
+            </div>
         </div>
 
         <!-- TABLERO KANBAN KDS -->
-        <main class="flex-1 max-w-7xl mx-auto w-full p-5">
+        <main class="flex-1 max-w-7xl mx-auto w-full p-4 sm:p-5">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 
                 <!-- Columna 1: 🔴 Nuevos -->
@@ -231,7 +260,41 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- MODAL: CIERRE DE CAJA, HISTORIAL DE VENTAS & EXPORTAR EXCEL (CSV)        -->
+    <!-- MODAL: RESUMEN DE FUEGO (BATCH COOKING - CLAVE PARA CHIFAS Y WOKS)       -->
+    <!-- ========================================================================= -->
+    <div id="modalResumenFuego" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-luxe-surface w-full max-w-lg rounded-3xl border border-luxe-border p-6 shadow-2xl max-h-[85vh] flex flex-col">
+            
+            <div class="flex justify-between items-center pb-3 border-b border-luxe-border">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-utensils"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-luxury-serif font-black text-luxe-stone">Resumen de Fuego (Cocción por Tandas)</h3>
+                        <p class="text-[10px] text-luxe-muted">Platos acumulados pendientes en todas las mesas</p>
+                    </div>
+                </div>
+                <button onclick="cerrarModalResumenFuego()" class="text-luxe-muted hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl my-3 text-xs text-amber-200 leading-relaxed">
+                💡 <b>Para el Chef de Wok / Parrilla:</b> Cocina estas cantidades en una sola tanda para despachar múltiples mesas simultáneamente.
+            </div>
+
+            <!-- LISTA DE PLATOS AGRUPADOS -->
+            <div id="listaBatchPlatos" class="space-y-2.5 overflow-y-auto custom-scroll flex-1 pr-1">
+                <!-- Se llena con JS -->
+            </div>
+
+            <div class="pt-3 border-t border-luxe-border flex justify-end">
+                <button onclick="cerrarModalResumenFuego()" class="px-5 py-2.5 bg-luxe-gold text-black font-black text-xs rounded-xl shadow">Cerrar Resumen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: CIERRE DE CAJA, HISTORIAL DE VENTAS & EXPORTAR EXCEL              -->
     <!-- ========================================================================= -->
     <div id="modalCajaHistorial" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-luxe-surface w-full max-w-2xl rounded-3xl border border-luxe-border p-6 shadow-2xl max-h-[90vh] flex flex-col">
@@ -377,14 +440,14 @@
         }
         const db = firebase.database();
 
-        // CATÁLOGO PERUANO SINCRONIZADO
+        // CATÁLOGO PERUANO
         const CATALOGO_PLATOS_STOCK = [
-            { id: 1, nombre: "Ceviche Clásico de Pesca del Día", cat: "Entradas" },
-            { id: 2, nombre: "Lomo Saltado Criollo al Wok", cat: "Fondos" },
-            { id: 3, nombre: "Ribeye Black Angus 300g a la Brasa", cat: "Fondos" },
-            { id: 4, nombre: "Causa Limeña con Pulpa de Cangrejo", cat: "Entradas" },
-            { id: 5, nombre: "Chicha Morada Clásica (1L)", cat: "Bebidas" },
-            { id: 6, nombre: "Suspiro a la Limeña Tradicional", cat: "Postres" }
+            { id: 1, nombre: "Ceviche Clásico de Pesca del Día", cat: "entradas" },
+            { id: 2, nombre: "Lomo Saltado Criollo al Wok", cat: "fondos" },
+            { id: 3, nombre: "Ribeye Black Angus 300g a la Brasa", cat: "fondos" },
+            { id: 4, nombre: "Causa Limeña con Pulpa de Cangrejo", cat: "entradas" },
+            { id: 5, nombre: "Chicha Morada Clásica (1L)", cat: "bebidas" },
+            { id: 6, nombre: "Suspiro a la Limeña Tradicional", cat: "postres" }
         ];
 
         let primeraCarga = true;
@@ -392,8 +455,9 @@
         let stockAgotadosCache = {};
         let historialVentasCache = {};
         let mesaOrigenParaMover = null;
+        let estacionFiltroActiva = 'todos'; // 'todos' | 'fondos' | 'entradas' | 'bebidas'
+        let modoHoraPuntaActivo = false;
 
-        // GONG ELEGANTE AL RECIBIR COMANDA
         function reproducirGongCocina() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -454,6 +518,7 @@
             db.ref('mesas').on('value', (snapshot) => {
                 dbMesasCache = snapshot.val() || {};
                 renderizarTableroKDS(dbMesasCache);
+                actualizarConteoBatchTotal();
 
                 let totalComandasActuales = 0;
                 Object.keys(dbMesasCache).forEach(k => {
@@ -485,6 +550,126 @@
             });
         }
 
+        // CONTROL DE FILTRO POR ESTACIONES (WOK, FRÍOS, BAR)
+        function filtrarPorEstacion(estacion, event) {
+            estacionFiltroActiva = estacion;
+            document.querySelectorAll('.estacion-btn').forEach(btn => {
+                btn.className = 'estacion-btn px-3 py-1 rounded-lg bg-luxe-card border border-luxe-border text-luxe-muted hover:text-white font-bold text-xs';
+            });
+            event.currentTarget.className = 'estacion-btn active px-3 py-1 rounded-lg font-bold text-xs';
+            renderizarTableroKDS(dbMesasCache);
+        }
+
+        // TOGGLE HORA PUNTA
+        function toggleModoHoraPunta() {
+            modoHoraPuntaActivo = !modoHoraPuntaActivo;
+            const btn = document.getElementById('btnModoHoraPunta');
+            const txt = document.getElementById('txtHoraPunta');
+
+            if (modoHoraPuntaActivo) {
+                btn.className = 'px-2.5 py-1 bg-amber-500 text-black border border-amber-400 rounded-xl text-xs font-black transition flex items-center gap-1 shadow-lg';
+                txt.innerText = 'Hora Punta: ON 🔥';
+            } else {
+                btn.className = 'px-2.5 py-1 bg-luxe-surface hover:bg-luxe-cardHover text-luxe-stone border border-luxe-border rounded-xl text-xs font-bold transition flex items-center gap-1';
+                txt.innerText = 'Hora Punta: OFF';
+            }
+        }
+
+        // =========================================================================
+        // RESUMEN DE FUEGO / BATCH COOKING (LA SOLUCIÓN DE LOS CHIFAS Y WOKS)
+        // =========================================================================
+        function abrirModalResumenFuego() {
+            renderizarBatchPlatos();
+            document.getElementById('modalResumenFuego').classList.remove('hidden');
+        }
+
+        function cerrarModalResumenFuego() {
+            document.getElementById('modalResumenFuego').classList.add('hidden');
+        }
+
+        function actualizarConteoBatchTotal() {
+            let totalPlatosEnEspera = 0;
+            Object.keys(dbMesasCache).forEach(mKey => {
+                const mesa = dbMesasCache[mKey];
+                if (mesa && mesa.comandas) {
+                    mesa.comandas.forEach(cmd => {
+                        if (cmd.estado === 'nuevo' || cmd.estado === 'preparacion') {
+                            if (cmd.items) {
+                                cmd.items.forEach(it => {
+                                    totalPlatosEnEspera += (it.cantidad || 1);
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+            document.getElementById('badgePlatosEnFuegoTotal').innerText = totalPlatosEnEspera;
+        }
+
+        function renderizarBatchPlatos() {
+            const cont = document.getElementById('listaBatchPlatos');
+            cont.innerHTML = '';
+
+            // Agrupar platos por nombre
+            const mapaAcumulado = {};
+
+            Object.keys(dbMesasCache).forEach(mKey => {
+                const mesa = dbMesasCache[mKey];
+                if (mesa && mesa.comandas) {
+                    mesa.comandas.forEach(cmd => {
+                        if (cmd.estado === 'nuevo' || cmd.estado === 'preparacion') {
+                            if (cmd.items) {
+                                cmd.items.forEach(it => {
+                                    if (!mapaAcumulado[it.nombre]) {
+                                        mapaAcumulado[it.nombre] = {
+                                            nombre: it.nombre,
+                                            totalCantidad: 0,
+                                            mesas: [],
+                                            notas: []
+                                        };
+                                    }
+                                    mapaAcumulado[it.nombre].totalCantidad += it.cantidad;
+                                    if (!mapaAcumulado[it.nombre].mesas.includes(mesa.mesaId)) {
+                                        mapaAcumulado[it.nombre].mesas.push(mesa.mesaId);
+                                    }
+                                    if (it.notas && it.notas !== 'Sin notas especiales') {
+                                        mapaAcumulado[it.nombre].notas.push(`${mesa.mesaId}: "${it.notas}"`);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+
+            const keys = Object.keys(mapaAcumulado);
+            if (keys.length === 0) {
+                cont.innerHTML = '<div class="text-center py-8 text-luxe-muted text-xs italic">No hay platos pendientes en fuego en este momento.</div>';
+                return;
+            }
+
+            keys.forEach(k => {
+                const item = mapaAcumulado[k];
+                const card = document.createElement('div');
+                card.className = 'p-3 bg-luxe-card rounded-2xl border border-amber-500/30 flex justify-between items-center shadow-sm';
+                
+                let notasHtml = item.notas.length > 0 ? `<div class="mt-1 text-[10px] text-amber-300 font-semibold bg-amber-500/10 p-1.5 rounded-lg border border-amber-500/20">⚠️ ${item.notas.join(' | ')}</div>` : '';
+
+                card.innerHTML = `
+                    <div class="flex-1 pr-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg font-black text-amber-400 font-mono">${item.totalCantidad}x</span>
+                            <span class="text-xs font-bold text-white">${item.nombre}</span>
+                        </div>
+                        <span class="text-[10px] text-luxe-muted block mt-0.5 font-medium">Mesas a servir: <b class="text-luxe-stone">${item.mesas.join(', ')}</b></span>
+                        ${notasHtml}
+                    </div>
+                `;
+                cont.appendChild(card);
+            });
+        }
+
+        // RENDERIZADO DEL TABLERO KANBAN CON FILTRO DE ESTACIONES
         function renderizarTableroKDS(dbMesas) {
             const colNuevos = document.getElementById('columnaNuevos');
             const colPrep = document.getElementById('columnaPrep');
@@ -502,6 +687,16 @@
 
                 if (mesa && mesa.comandas) {
                     mesa.comandas.forEach((cmd, cmdIdx) => {
+                        
+                        // FILTRO POR ESTACIÓN (Wok / Fríos / Bar)
+                        if (estacionFiltroActiva !== 'todos' && cmd.items) {
+                            const coincideEstacion = cmd.items.some(it => {
+                                const prodRef = CATALOGO_PLATOS_STOCK.find(cp => cp.nombre.toLowerCase() === it.nombre.toLowerCase());
+                                return prodRef && prodRef.cat === estacionFiltroActiva;
+                            });
+                            if (!coincideEstacion) return; // Salta esta comanda si no tiene platos de esa estación
+                        }
+
                         const tiempoInicio = cmd.timestamp || ahora;
                         const minutosTranscurridos = Math.floor((ahora - tiempoInicio) / 60000);
 
@@ -574,7 +769,7 @@
                         `;
                     });
 
-                    // CAJA & ACCIONES DE MESA
+                    // CAJA & ACCIONES
                     if (mesa.comandas && mesa.comandas.length > 0) {
                         const cajaBox = document.createElement('div');
                         cajaBox.className = 'mt-3 bg-luxe-surface p-4 rounded-2xl border border-rose-500/40 shadow-lg space-y-2.5';
@@ -716,7 +911,7 @@
                 card.innerHTML = `
                     <div>
                         <span class="text-xs font-bold text-luxe-stone block">${p.nombre}</span>
-                        <span class="text-[10px] text-luxe-muted">${p.cat} • Estado: <b class="${estaAgotado ? 'text-rose-400' : 'text-emerald-400'}">${estaAgotado ? '🔴 AGOTADO' : '🟢 Disponible'}</b></span>
+                        <span class="text-[10px] text-luxe-muted">${p.cat.toUpperCase()} • Estado: <b class="${estaAgotado ? 'text-rose-400' : 'text-emerald-400'}">${estaAgotado ? '🔴 AGOTADO' : '🟢 Disponible'}</b></span>
                     </div>
                     <button onclick="toggleStockPlato(${p.id}, '${p.nombre}', ${estaAgotado})" class="px-3 py-1.5 rounded-xl text-xs font-black transition ${estaAgotado ? 'bg-rose-600 hover:bg-rose-500 text-white' : 'bg-luxe-surface hover:bg-luxe-cardHover text-luxe-stone border border-luxe-border'}">
                         ${estaAgotado ? 'Desbloquear' : 'Marcar Agotado'}
@@ -864,7 +1059,6 @@
             document.getElementById('lblMetodoEfectivo').innerText = `S/ ${efectivoTotal.toFixed(2)}`;
         }
 
-        // DESCARGA EN EXCEL (CSV)
         function exportarReporteExcelCSV() {
             const keys = Object.keys(historialVentasCache);
             if (keys.length === 0) {
