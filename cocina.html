@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es" class="dark">
 <head>
@@ -59,7 +58,6 @@
         .custom-scroll::-webkit-scrollbar-thumb { background: #3d3830; border-radius: 999px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #d4af37; }
 
-        /* ANIMACIÓN ALERTA SLA URGENTE (>15 MIN) */
         .urgent-sla-pulse {
             animation: urgentFlash 1.8s infinite;
         }
@@ -77,7 +75,6 @@
             100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.05; }
         }
 
-        /* FORMATO IMPRESIÓN TÉRMICA 80MM */
         @media print {
             body * { visibility: hidden; }
             #areaImpresionTermica, #areaImpresionTermica * { visibility: visible; }
@@ -142,7 +139,7 @@
                         KDS • <span class="text-luxe-gold">Monitor Central</span>
                     </h1>
                     <span class="text-[9px] tracking-widest text-luxe-muted font-semibold uppercase flex items-center gap-1.5 mt-0.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> SLA & Asistente de Voz Activo
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Locutor Masculino Activo
                     </span>
                 </div>
             </div>
@@ -161,6 +158,12 @@
                 <button id="btnToggleVoz" onclick="toggleAsistenteVoz()" class="px-2.5 py-1 bg-luxe-gold/15 text-luxe-gold border border-luxe-gold/40 rounded-xl text-xs font-bold transition flex items-center gap-1.5" title="Activar o pausar la voz">
                     <i id="iconoVoz" class="fa-solid fa-volume-high"></i>
                     <span id="txtEstadoVoz" class="hidden md:inline">Voz: ON</span>
+                </button>
+
+                <!-- Botón Probar Voz -->
+                <button onclick="probarVozMasculina()" class="px-2.5 py-1 bg-luxe-surface hover:bg-luxe-cardHover text-luxe-gold border border-luxe-border rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-sm" title="Escuchar tono de voz de locutor">
+                    <i class="fa-solid fa-microphone"></i>
+                    <span class="hidden sm:inline">Probar</span>
                 </button>
 
                 <!-- Botón Repetir Última Comanda -->
@@ -185,7 +188,7 @@
             </div>
         </header>
 
-        <!-- STREAM DE ALERTAS DE SALÓN (MOZO / CUENTAS) -->
+        <!-- STREAM DE ALERTAS DE SALÓN -->
         <div class="bg-luxe-surface/60 border-b border-luxe-border px-6 py-2 flex items-center gap-3 overflow-x-auto custom-scroll shadow-sm">
             <span class="text-[10px] font-black uppercase tracking-widest text-amber-300 flex items-center gap-1.5 whitespace-nowrap">
                 <i class="fa-solid fa-bell animate-bounce"></i> Salón:
@@ -237,9 +240,7 @@
         </main>
     </div>
 
-    <!-- ========================================================================= -->
-    <!-- MODAL: CONTROL DE STOCK & PLATOS AGOTADOS ("SOLD OUT")                   -->
-    <!-- ========================================================================= -->
+    <!-- MODAL CONTROL DE STOCK -->
     <div id="modalStockControl" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-luxe-surface w-full max-w-lg rounded-3xl border border-luxe-border p-6 shadow-2xl max-h-[85vh] flex flex-col">
             <div class="flex justify-between items-center pb-3 border-b border-luxe-border">
@@ -251,9 +252,7 @@
             </div>
             <p class="text-xs text-luxe-muted my-2">Toca cualquier plato para marcarlo como <b>AGOTADO</b>. Se bloqueará de inmediato en los celulares de los comensales.</p>
             
-            <div id="listaPlatosStock" class="space-y-2 overflow-y-auto custom-scroll flex-1 pr-1 my-2">
-                <!-- Se llena con JS -->
-            </div>
+            <div id="listaPlatosStock" class="space-y-2 overflow-y-auto custom-scroll flex-1 pr-1 my-2"></div>
 
             <div class="pt-3 border-t border-luxe-border flex justify-end">
                 <button onclick="cerrarModalStock()" class="px-5 py-2.5 bg-luxe-gold text-black font-black text-xs rounded-xl shadow">Listo</button>
@@ -261,16 +260,14 @@
         </div>
     </div>
 
-    <!-- ========================================================================= -->
-    <!-- MODAL: MOVER / TRANSFERIR MESA                                           -->
-    <!-- ========================================================================= -->
+    <!-- MODAL MOVER MESA -->
     <div id="modalMoverMesa" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-luxe-surface w-full max-w-sm rounded-3xl border border-luxe-border p-6 shadow-2xl text-center">
             <div class="w-12 h-12 rounded-2xl bg-luxe-card border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-3 text-lg font-bold">
                 <i class="fa-solid fa-right-left"></i>
             </div>
             <h3 class="text-base font-luxury-serif font-black text-luxe-stone">Mover / Transferir Comanda</h3>
-            <p class="text-xs text-luxe-muted mt-1 mb-4">Transfiere todos los pedidos y la cuenta activa de <b id="lblOrigenMesaMover" class="text-luxe-gold">Mesa 04</b> a otra mesa:</p>
+            <p class="text-xs text-luxe-muted mt-1 mb-4">Transfiere todos los pedidos y la cuenta de <b id="lblOrigenMesaMover" class="text-luxe-gold">Mesa 04</b> a otra mesa:</p>
 
             <label class="text-[10px] font-bold uppercase tracking-widest text-luxe-muted block mb-1.5 text-left">Seleccionar Mesa Destino:</label>
             <select id="selectDestinoMesa" class="w-full bg-luxe-card text-luxe-stone text-xs font-bold p-3 rounded-xl border border-luxe-border focus:border-luxe-gold focus:outline-none mb-5">
@@ -296,7 +293,7 @@
     <!-- CONTENEDOR OCULTO PARA IMPRESIÓN TÉRMICA DE 80MM -->
     <div id="areaImpresionTermica" class="hidden"></div>
 
-    <!-- JAVASCRIPT DE COCINA -->
+    <!-- JAVASCRIPT DE COCINA CON MOTOR DE VOZ MASCULINO TIKTOK -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAOdDt5smefZAZHcMZA2spWVRwT8xaAAq4",
@@ -313,7 +310,6 @@
         }
         const db = firebase.database();
 
-        // Catálogo local para gestión de stock
         const CATALOGO_PLATOS_STOCK = [
             { id: 1, nombre: "Tataki de Atún Rojo & Sésamo Tostado", cat: "Entradas" },
             { id: 2, nombre: "Carpaccio de Pulpo al Olivo Criollo", cat: "Entradas" },
@@ -332,26 +328,46 @@
         let mesaOrigenParaMover = null;
         let advertenciasSlaDictadas = {};
 
-        // MOTOR DE SÍNTESIS DE VOZ (WEB SPEECH API)
-        function hablarTexto(texto, velocidad = 1.0) {
+        // =========================================================================
+        // MOTOR DE VOZ MASCULINA NÍTIDA TIPO LOCUTOR DE TIKTOK
+        // =========================================================================
+        function obtenerMejorVozMasculina() {
+            if (!('speechSynthesis' in window)) return null;
+            const voces = window.speechSynthesis.getVoices();
+            
+            // Priorizar voces masculinas profundas de Google, Microsoft o Apple
+            const vozPrioritaria = voces.find(v => 
+                (v.name.includes("Google") && (v.lang.startsWith("es-US") || v.lang.startsWith("es-ES") || v.lang.startsWith("es-419"))) ||
+                (v.name.includes("Jorge") || v.name.includes("Alvaro") || v.name.includes("Diego") || v.name.includes("Gonzalo") || v.name.includes("Natural")) && v.lang.startsWith("es")
+            );
+
+            return vozPrioritaria || voces.find(v => v.lang.startsWith("es")) || null;
+        }
+
+        function hablarTexto(texto, velocidad = 1.08, tono = 0.88) {
             if (!vozActivada || !('speechSynthesis' in window)) return;
 
             window.speechSynthesis.cancel();
 
             const locucion = new SpeechSynthesisUtterance(texto);
-            locucion.lang = 'es-ES';
-            locucion.rate = velocidad;
-            locucion.pitch = 1.0;
+            locucion.lang = 'es-US'; // Timbre latino neutro
+            locucion.rate = velocidad; // Cadencia rápida tipo TikTok
+            locucion.pitch = tono;     // Tono grave masculino
             locucion.volume = 1.0;
 
-            const voces = window.speechSynthesis.getVoices();
-            const vozEspanol = voces.find(v => v.lang.startsWith('es'));
-            if (vozEspanol) locucion.voice = vozEspanol;
+            const mejorVoz = obtenerMejorVozMasculina();
+            if (mejorVoz) {
+                locucion.voice = mejorVoz;
+            }
 
             window.speechSynthesis.speak(locucion);
         }
 
-        // CANTAR COMANDA CON JERARQUÍA Y PAUSAS CLARAS
+        function probarVozMasculina() {
+            hablarTexto("¡Marcha Mesa 4! Dos Ribeye Black Angus al Carbón. Atención: Término medio.");
+        }
+
+        // CANTAR COMANDA CON JERARQUÍA Y PAUSAS
         function cantarComandaVozEstructurada(mesaId, items, asiento = "") {
             let textoVoz = `¡Marcha ${mesaId}! `;
             if (asiento) textoVoz += `Comensal ${asiento}. `;
@@ -377,7 +393,7 @@
         }
 
         function cantarAlertaVoz(mensaje) {
-            hablarTexto(`¡Atención salón! ${mensaje}`, 1.05);
+            hablarTexto(`¡Atención salón! ${mensaje}`, 1.1, 0.85);
         }
 
         function repetirUltimaComanda() {
@@ -395,7 +411,7 @@
                 btn.className = 'px-2.5 py-1 bg-luxe-gold/15 text-luxe-gold border border-luxe-gold/40 rounded-xl text-xs font-bold transition flex items-center gap-1.5';
                 icon.className = 'fa-solid fa-volume-high';
                 txt.innerText = 'Voz: ON';
-                hablarTexto("Asistente de voz activado");
+                hablarTexto("Asistente de cocina listo");
             } else {
                 window.speechSynthesis.cancel();
                 btn.className = 'px-2.5 py-1 bg-luxe-surface text-luxe-muted border border-luxe-border rounded-xl text-xs font-bold transition flex items-center gap-1.5';
@@ -432,7 +448,7 @@
                 document.getElementById('pantallaLoginCocina').classList.add('hidden');
                 document.getElementById('dashboardCocina').classList.remove('hidden');
                 iniciarKDS();
-                hablarTexto("Sistema de cocina listo");
+                hablarTexto("Sistema de cocina activo");
             } else {
                 alert('PIN Incorrecto. Usa 1234');
             }
@@ -527,7 +543,7 @@
 
                             if (minutosTranscurridos >= 15 && !advertenciasSlaDictadas[cmd.id]) {
                                 advertenciasSlaDictadas[cmd.id] = true;
-                                hablarTexto(`¡Atención cocina! ${mesa.mesaId} pendiente hace ${minutosTranscurridos} minutos.`, 1.05);
+                                hablarTexto(`¡Atención cocina! ${mesa.mesaId} pendiente hace ${minutosTranscurridos} minutos.`, 1.05, 0.82);
                             }
                         }
                     });
