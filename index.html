@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es" class="dark" id="htmlRoot">
 <head>
@@ -101,10 +100,11 @@
         </div>
     </div>
 
-    <!-- HEADER: LOGO, IDIOMA, WIFI, MESA, ASIENTO Y MODO DÍA/NOCHE -->
+    <!-- HEADER CLIENTE CON SELECTOR DE MESA / MODO MOZO -->
     <header class="sticky top-0 z-40 bg-luxe-surface/85 dark:bg-luxe-surface/85 bg-white/90 backdrop-blur-xl border-b border-luxe-border dark:border-luxe-border border-luz-border px-3.5 py-2.5 shadow-xl transition-colors">
         <div class="max-w-4xl mx-auto flex justify-between items-center gap-2">
             
+            <!-- Logo y Marca -->
             <div class="flex items-center space-x-2 cursor-pointer" onclick="navegarInicioCliente()">
                 <div class="w-8 h-8 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 flex items-center justify-center shadow-md">
                     <i class="fa-solid fa-crown text-luxe-gold text-xs"></i>
@@ -139,17 +139,18 @@
                     <span class="hidden sm:inline">WiFi</span>
                 </button>
 
-                <!-- Asiento / Comensal -->
-                <button onclick="abrirModalAsiento()" class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl flex items-center gap-1 shadow-sm text-[11px]" title="Asignar mi nombre">
+                <!-- Identificador de Asiento / Mozo -->
+                <button onclick="abrirModalAsiento()" class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl flex items-center gap-1 shadow-sm text-[11px]" title="Asignar mi nombre o Mozo">
                     <i class="fa-solid fa-user text-luxe-gold text-[9px]"></i>
                     <span id="lblAsientoHeader" class="font-bold text-luxe-stone dark:text-luxe-stone text-luz-text">Asiento 1</span>
                 </button>
 
-                <!-- Mesa ID -->
-                <div class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl flex items-center gap-1 shadow-sm text-[11px]">
+                <!-- SELECTOR DE MESA RÁPIDO (MODO MOZO & SALÓN) -->
+                <button onclick="abrirModalSelectorMesaMozo()" class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 hover:border-luxe-gold px-2.5 py-1 rounded-xl flex items-center gap-1 shadow-sm text-[11px] cursor-pointer" title="Tocar para cambiar de mesa (Modo Mozo)">
                     <i class="fa-solid fa-chair text-luxe-gold text-[9px]"></i>
-                    <span id="lblMesaHeader" class="font-black font-luxury-serif text-[10px] text-luxe-stone dark:text-luxe-stone text-luz-text">Mesa 04</span>
-                </div>
+                    <span id="lblMesaHeader" class="font-black font-luxury-serif text-luxe-stone dark:text-luxe-stone text-luz-text">Mesa 04</span>
+                    <i class="fa-solid fa-chevron-down text-[8px] text-luxe-muted ml-0.5"></i>
+                </button>
 
                 <!-- Toggle Modo Día / Noche -->
                 <button onclick="toggleModoDiaNoche()" class="w-7 h-7 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border text-luxe-gold flex items-center justify-center text-xs shadow-sm hover:scale-105 transition" title="Cambiar tema">
@@ -215,9 +216,10 @@
 
         </div>
 
-        <!-- SUBSECCIÓN B: TICKET ACUMULADO -->
+        <!-- SUBSECCIÓN B: TICKET ACUMULADO (EN VIVO CON STEPPER) -->
         <div id="subseccionTicket" class="hidden space-y-4 max-w-2xl mx-auto">
             
+            <!-- Banner Status Cocina con Stepper -->
             <div class="bg-luxe-card/90 dark:bg-luxe-card/90 bg-white backdrop-blur-md p-5 rounded-3xl border border-luxe-gold/30 shadow-2xl relative overflow-hidden">
                 <div class="flex items-center space-x-4 mb-4">
                     <div class="w-12 h-12 rounded-2xl bg-luxe-surface dark:bg-luxe-surface bg-amber-50 border border-luxe-gold/40 text-luxe-gold flex items-center justify-center font-black text-xl gold-glow">
@@ -453,7 +455,7 @@
         </div>
     </div>
 
-    <!-- MODAL PEDIR LA CUENTA -->
+    <!-- MODAL PEDIR LA CUENTA: CON PROPINA Y DIVISIÓN EXACTA (1, 2, 3, 4, 5+) -->
     <div id="modalPagarCuenta" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-luxe-surface dark:bg-luxe-surface bg-white w-full max-w-md rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto custom-scroll">
             <button onclick="cerrarModalPedirCuenta()" class="absolute top-4 right-4 text-luxe-muted dark:text-luxe-muted text-luz-muted hover:text-luxe-gold">
@@ -468,13 +470,14 @@
                 <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted"><span id="lblModalPagarMesa" class="text-luxe-gold font-bold">Mesa 04</span></p>
             </div>
 
+            <!-- TOTAL GLOBAL CON PROPINA INTEGRADA -->
             <div class="bg-luxe-card dark:bg-luxe-card bg-luz-base p-4 rounded-2xl border border-luxe-border dark:border-luxe-border border-luz-border text-center mb-3 shadow-sm">
                 <span class="text-[9px] uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted font-extrabold block" data-i18n="bill_total_label">Total a Pagar</span>
                 <span id="lblModalPagarTotal" class="text-3xl font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
                 <span id="lblPropinaDesglose" class="text-[10px] text-amber-500 block mt-0.5 hidden">+ S/ 0.00</span>
             </div>
 
-            <!-- Propina -->
+            <!-- SELECTOR DE PROPINA SUGERIDA -->
             <div class="bg-luxe-card/80 dark:bg-luxe-card/80 bg-luz-base p-3 rounded-2xl border border-luxe-border/80 dark:border-luxe-border/80 border-luz-border mb-3">
                 <span class="text-[9px] font-black uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted block mb-1.5 text-center" data-i18n="tip_label">
                     ✨ Servicio Sugerido al Personal
@@ -487,7 +490,7 @@
                 </div>
             </div>
 
-            <!-- División Simétrica -->
+            <!-- DIVISIÓN DE CUENTA 100% SIMÉTRICA (1, 2, 3, 4, 5+) -->
             <div class="bg-luxe-card/80 dark:bg-luxe-card/80 bg-luz-base p-3 rounded-2xl border border-luxe-border/80 dark:border-luxe-border/80 border-luz-border mb-4">
                 <span class="text-[9px] font-black uppercase tracking-widest text-luxe-gold block mb-1.5 text-center" data-i18n="split_label">
                     <i class="fa-solid fa-users mr-1"></i> Dividir Cuenta en Partes Iguales
@@ -505,7 +508,7 @@
                 </div>
             </div>
 
-            <!-- Métodos -->
+            <!-- MÉTODOS DE PAGO -->
             <div class="space-y-1.5 mb-4">
                 <label class="flex items-center p-2.5 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border cursor-pointer hover:border-luxe-gold/50 transition">
                     <input type="radio" name="radioMetodoPago" value="Yape / Plin (QR)" checked onchange="toggleMetodoQR(true)" class="accent-luxe-gold mr-3">
@@ -550,6 +553,36 @@
         </div>
     </div>
 
+    <!-- MODAL SELECTOR DE MESA RÁPIDO (MODO MOZO / SALÓN) -->
+    <div id="modalSelectorMesaMozo" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-luxe-surface dark:bg-luxe-surface bg-white w-full max-w-sm rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border p-6 shadow-2xl text-center">
+            <div class="w-12 h-12 rounded-2xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-3 text-lg">
+                <i class="fa-solid fa-chair"></i>
+            </div>
+            <h3 class="text-base font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text">Seleccionar Mesa (Modo Mozo)</h3>
+            <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 mb-4">Elige la mesa para tomar la orden o ver su cuenta:</p>
+
+            <select id="selectCambiarMesaMozo" class="w-full bg-luxe-card dark:bg-luxe-card bg-luz-base text-center text-xs font-bold text-luxe-stone dark:text-luxe-stone text-luz-text p-3 rounded-xl border border-luxe-border dark:border-luxe-border border-luz-border focus:border-luxe-gold focus:outline-none mb-4">
+                <option value="Mesa 01">Mesa 01</option>
+                <option value="Mesa 02">Mesa 02</option>
+                <option value="Mesa 03">Mesa 03</option>
+                <option value="Mesa 04" selected>Mesa 04</option>
+                <option value="Mesa 05">Mesa 05</option>
+                <option value="Mesa 06">Mesa 06</option>
+                <option value="Mesa 07">Mesa 07</option>
+                <option value="Mesa 08">Mesa 08</option>
+                <option value="Terraza VIP">Terraza VIP</option>
+                <option value="Piso 2 - Mesa 1">Piso 2 - Mesa 1</option>
+                <option value="Piso 3 - Terraza">Piso 3 - Terraza</option>
+            </select>
+
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="cerrarModalSelectorMesaMozo()" class="py-2.5 bg-luxe-card dark:bg-luxe-card bg-luz-base text-luxe-muted dark:text-luxe-muted text-luz-muted text-xs font-bold rounded-xl">Cancelar</button>
+                <button onclick="confirmarCambioMesaMozo()" class="py-2.5 bg-luxe-gold text-black text-xs font-black rounded-xl shadow">Cambiar Mesa</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL ASIENTO (MESAS COMPARTIDAS) -->
     <div id="modalAsientoComensal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-luxe-surface dark:bg-luxe-surface bg-white w-full max-w-xs rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border p-6 shadow-2xl text-center">
@@ -559,7 +592,7 @@
             <h3 class="text-base font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text" data-i18n="seat_modal_title">Identificador de Comensal</h3>
             <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 mb-4" data-i18n="seat_modal_desc">¿Quién pide desde este teléfono? (Separa los platos de la mesa):</p>
 
-            <input type="text" id="inputNombreAsiento" placeholder="Ej: Asiento 1, Carlos, Ana..." class="w-full bg-luxe-card dark:bg-luxe-card bg-luz-base text-center text-xs font-bold text-luxe-stone dark:text-luxe-stone text-luz-text p-3 rounded-xl border border-luxe-border dark:border-luxe-border border-luz-border focus:border-luxe-gold focus:outline-none mb-4">
+            <input type="text" id="inputNombreAsiento" placeholder="Ej: Asiento 1, Carlos, Ana, Mozo..." class="w-full bg-luxe-card dark:bg-luxe-card bg-luz-base text-center text-xs font-bold text-luxe-stone dark:text-luxe-stone text-luz-text p-3 rounded-xl border border-luxe-border dark:border-luxe-border border-luz-border focus:border-luxe-gold focus:outline-none mb-4">
 
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="cerrarModalAsiento()" class="py-2.5 bg-luxe-card dark:bg-luxe-card bg-luz-base text-luxe-muted dark:text-luxe-muted text-luz-muted text-xs font-bold rounded-xl" data-i18n="btn_cancel">Cancelar</button>
@@ -572,10 +605,10 @@
     <div id="modalKeyMarLead" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-luxe-surface dark:bg-luxe-surface bg-white w-full max-w-sm rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border p-6 text-center shadow-2xl">
             <div class="w-12 h-12 rounded-2xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-3 text-lg">
-                <i class="fa-solid fa-laptop-code"></i>
+                <i class="fa-solid fa-crown text-luxe-gold"></i>
             </div>
             <h3 class="text-base font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text">KeyMar Systems</h3>
-            <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 mb-4">¿Quieres modernizar tu restaurante con carta interactiva, KDS y división de cuentas?</p>
+            <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 mb-4">¿Quieres modernizar tu restaurante con carta interactiva en 4 idiomas, Modo Mozo y KDS?</p>
 
             <a href="https://wa.me/51999999999?text=Hola%20KeyMar%20Systems,%20vi%20su%20carta%20digital%20y%20quiero%20información%20para%20mi%20restaurante." target="_blank" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 mb-2 transition">
                 <i class="fa-brands fa-whatsapp text-base"></i>
@@ -592,7 +625,7 @@
         <span id="toastMsg" class="text-xs font-bold block">Notificación</span>
     </div>
 
-    <!-- JAVASCRIPT CORREGIDO -->
+    <!-- JAVASCRIPT MULTILINGÜE Y MODO MOZO -->
     <script>
         // 1. DICCIONARIOS MULTILINGÜES (DECLARADOS AL INICIO)
         const DICCIONARIO = {
@@ -1046,725 +1079,27 @@
             document.getElementById('modalKeyMarLead').classList.add('hidden');
         }
 
-        function reproducirSonido(tipo) {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
-                const now = ctx.currentTime;
-
-                if (tipo === 'tap') {
-                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
-                    osc.type = 'sine'; osc.frequency.setValueAtTime(550, now);
-                    gain.gain.setValueAtTime(0.06, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
-                    osc.connect(gain); gain.connect(ctx.destination);
-                    osc.start(now); osc.stop(now + 0.08);
-                } else if (tipo === 'add') {
-                    const osc1 = ctx.createOscillator(); const gain1 = ctx.createGain();
-                    osc1.type = 'sine'; osc1.frequency.setValueAtTime(523.25, now);
-                    gain1.gain.setValueAtTime(0.12, now); gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-                    osc1.connect(gain1); gain1.connect(ctx.destination);
-                    osc1.start(now); osc1.stop(now + 0.25);
-
-                    const osc2 = ctx.createOscillator(); const gain2 = ctx.createGain();
-                    osc2.type = 'sine'; osc2.frequency.setValueAtTime(783.99, now + 0.08);
-                    gain2.gain.setValueAtTime(0.15, now + 0.08);
-                    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-                    osc2.connect(gain2); gain2.connect(ctx.destination);
-                    osc2.start(now + 0.08); osc2.stop(now + 0.35);
-                } else if (tipo === 'order') {
-                    [440, 554.37, 659.25].forEach((f, i) => {
-                        const osc = ctx.createOscillator(); const gain = ctx.createGain();
-                        osc.type = 'sine'; osc.frequency.setValueAtTime(f, now + (i * 0.04));
-                        gain.gain.setValueAtTime(0.1, now + (i * 0.04)); gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.0);
-                        osc.connect(gain); gain.connect(ctx.destination);
-                        osc.start(now + (i * 0.04)); osc.stop(now + 1.0);
-                    });
-                } else if (tipo === 'bell') {
-                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
-                    osc.type = 'triangle'; osc.frequency.setValueAtTime(1760, now);
-                    gain.gain.setValueAtTime(0.18, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
-                    osc.connect(gain); gain.connect(ctx.destination);
-                    osc.start(now); osc.stop(now + 0.7);
-                } else if (tipo === 'pay') {
-                    [587.33, 739.99, 880].forEach((freq, idx) => {
-                        const osc = ctx.createOscillator(); const gain = ctx.createGain();
-                        osc.type = 'sine'; osc.frequency.setValueAtTime(freq, now + (idx * 0.05));
-                        gain.gain.setValueAtTime(0.09, now + (idx * 0.05)); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-                        osc.connect(gain); gain.connect(ctx.destination);
-                        osc.start(now + (idx * 0.05)); osc.stop(now + 0.6);
-                    });
-                }
-            } catch(e) {}
-        }
-
-        function toggleModoDiaNoche() {
+        // CONTROL MODO MOZO: CAMBIO RÁPIDO DE MESA
+        function abrirModalSelectorMesaMozo() {
             reproducirSonido('tap');
-            const root = document.getElementById('htmlRoot');
-            const icon = document.getElementById('iconoTema');
-            
-            root.classList.toggle('dark');
-            const esOscuro = root.classList.contains('dark');
-
-            if (esOscuro) {
-                icon.className = 'fa-solid fa-sun text-[10px]';
-                localStorage.setItem('tema_preferido', 'dark');
-            } else {
-                icon.className = 'fa-solid fa-moon text-amber-600 text-[10px]';
-                localStorage.setItem('tema_preferido', 'light');
-            }
+            document.getElementById('selectCambiarMesaMozo').value = mesaActual;
+            document.getElementById('modalSelectorMesaMozo').classList.remove('hidden');
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const hora = new Date().getHours();
-            const temaGuardado = localStorage.getItem('tema_preferido');
-            const root = document.getElementById('htmlRoot');
-            const icon = document.getElementById('iconoTema');
+        function cerrarModalSelectorMesaMozo() {
+            document.getElementById('modalSelectorMesaMozo').classList.add('hidden');
+        }
 
-            if (temaGuardado === 'light' || (!temaGuardado && hora >= 7 && hora < 18)) {
-                root.classList.remove('dark');
-                icon.className = 'fa-solid fa-moon text-amber-600 text-[10px]';
-            } else {
-                root.classList.add('dark');
-                icon.className = 'fa-solid fa-sun text-[10px]';
-            }
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const paramMesa = urlParams.get('mesa');
-            if (paramMesa) {
-                mesaActual = decodeURIComponent(paramMesa);
-            }
-
-            const asientoGuardado = sessionStorage.getItem('mi_asiento_comensal');
-            if (asientoGuardado) {
-                miAsientoNombre = asientoGuardado;
-            }
-            document.getElementById('lblAsientoHeader').innerText = miAsientoNombre;
-
+        function confirmarCambioMesaMozo() {
+            const nuevaMesa = document.getElementById('selectCambiarMesaMozo').value;
+            mesaActual = nuevaMesa;
             document.getElementById('lblMesaHeader').innerText = mesaActual;
             document.getElementById('lblMesaHero').innerText = mesaActual;
-
-            // RENDER INMEDIATO DE LA CARTA
-            renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
-
-            const mesaKey = mesaActual.replace(/\s+/g, '_');
             
-            db.ref('mesas/' + mesaKey).on('value', (snapshot) => {
-                const dataMesa = snapshot.val();
-                if (dataMesa && dataMesa.comandas && dataMesa.comandas.length > 0) {
-                    totalConsumoBase = dataMesa.totalAcumulado || 0;
-                    renderizarTicketEnVivoCliente(dataMesa);
-                    actualizarStepperProgreso(dataMesa);
-                    document.getElementById('subseccionMenu').classList.add('hidden');
-                    document.getElementById('subseccionTicket').classList.remove('hidden');
-                } else {
-                    totalConsumoBase = 0;
-                    document.getElementById('subseccionMenu').classList.remove('hidden');
-                    document.getElementById('subseccionTicket').classList.add('hidden');
-                }
-            });
-
-            db.ref('stockAgotados').on('value', (snapshot) => {
-                stockAgotadosMap = snapshot.val() || {};
-                renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
-            });
-        });
-
-        function abrirModalAsiento() {
-            reproducirSonido('tap');
-            document.getElementById('inputNombreAsiento').value = miAsientoNombre;
-            document.getElementById('modalAsientoComensal').classList.remove('hidden');
-        }
-
-        function cerrarModalAsiento() {
-            document.getElementById('modalAsientoComensal').classList.add('hidden');
-        }
-
-        function guardarAsientoComensal() {
-            const val = document.getElementById('inputNombreAsiento').value.trim();
-            if (val) {
-                miAsientoNombre = val;
-                sessionStorage.setItem('mi_asiento_comensal', miAsientoNombre);
-                document.getElementById('lblAsientoHeader').innerText = miAsientoNombre;
-                mostrarToast(`Asiento: ${miAsientoNombre}`, 'success');
-            }
-            cerrarModalAsiento();
-        }
-
-        function buscarPlatosEnVivo(texto) {
-            const query = texto.toLowerCase().trim();
-            if (!query) {
-                renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
-                return;
-            }
-            const filtrados = PRODUCTOS_CATALOGO.filter(p => {
-                const nom = (p.nombre[idiomaActual] || p.nombre.es).toLowerCase();
-                const desc = (p.desc[idiomaActual] || p.desc.es).toLowerCase();
-                const ing = (p.ingredientes[idiomaActual] || p.ingredientes.es).toLowerCase();
-                return nom.includes(query) || desc.includes(query) || ing.includes(query);
-            });
-            renderizarCatalogoMenu(filtrados);
-        }
-
-        function renderizarCatalogoMenu(platos) {
-            const grid = document.getElementById('gridCatalogoPlatos');
-            grid.innerHTML = '';
-            const t = DICCIONARIO[idiomaActual] || DICCIONARIO.es;
-
-            if (!platos || platos.length === 0) {
-                grid.innerHTML = `<div class="col-span-2 text-center py-10 text-luxe-muted dark:text-luxe-muted text-luz-muted text-xs"><i class="fa-solid fa-utensils text-2xl mb-2 text-luxe-border block"></i>Sin resultados.</div>`;
-                return;
-            }
-
-            platos.forEach(p => {
-                const estaAgotado = !!stockAgotadosMap[p.id];
-                const nom = (p.nombre && (p.nombre[idiomaActual] || p.nombre.es)) || p.nombre || "Plato";
-                const desc = (p.desc && (p.desc[idiomaActual] || p.desc.es)) || p.desc || "";
-                const tag = (p.tag && (p.tag[idiomaActual] || p.tag.es)) || p.tag || "Gourmet";
-
-                const card = document.createElement('div');
-                card.className = `bg-luxe-card/90 dark:bg-luxe-card/90 bg-white backdrop-blur-md rounded-3xl p-4 border transition-all duration-300 flex flex-col sm:flex-row gap-4 shadow-md ${estaAgotado ? 'opacity-50 border-rose-500/40 bg-rose-500/5' : 'border-luxe-border dark:border-luxe-border border-luz-border hover:border-luxe-gold/40'}`;
-                
-                let botonPedir = `<button onclick="abrirModalDetallePlato(${p.id})" class="px-3.5 py-1.5 bg-luxe-gold hover:bg-luxe-goldLight text-black text-xs font-black rounded-xl transition flex items-center gap-1.5 shadow"><i class="fa-solid fa-plus text-[10px]"></i> ${t.btn_add}</button>`;
-                let tagEstado = `<span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-luxe-base/85 backdrop-blur-md text-luxe-gold text-[8px] font-extrabold tracking-wider uppercase">${tag}</span>`;
-
-                if (estaAgotado) {
-                    botonPedir = `<button disabled class="px-3 py-1.5 bg-rose-500/20 text-rose-400 text-xs font-bold rounded-xl cursor-not-allowed border border-rose-500/30">${t.sold_out_btn}</button>`;
-                    tagEstado = `<span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-rose-900/90 backdrop-blur-md text-white text-[8px] font-black tracking-wider uppercase border border-rose-500/40">${t.sold_out_tag}</span>`;
-                }
-
-                card.innerHTML = `
-                    <div class="w-full sm:w-36 h-36 rounded-2xl overflow-hidden relative ${estaAgotado ? '' : 'cursor-pointer flex-shrink-0'}" onclick="${estaAgotado ? '' : `abrirModalDetallePlato(${p.id})`}">
-                        <img src="${p.img}" alt="${nom}" class="w-full h-full object-cover ${estaAgotado ? 'grayscale' : 'hover:scale-105 transition-transform duration-500'}">
-                        ${tagEstado}
-                    </div>
-                    <div class="flex-1 flex flex-col justify-between">
-                        <div>
-                            <div class="flex justify-between items-start gap-2">
-                                <h4 onclick="${estaAgotado ? '' : `abrirModalDetallePlato(${p.id})`}" class="text-sm font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text ${estaAgotado ? 'line-through text-luxe-muted' : 'hover:text-luxe-gold cursor-pointer'} transition leading-snug">${nom}</h4>
-                                <span class="text-sm font-luxury-serif font-black text-luxe-gold whitespace-nowrap">S/ ${p.precioBase.toFixed(2)}</span>
-                            </div>
-                            <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 line-clamp-2 leading-relaxed">${desc}</p>
-                            
-                            <!-- Badges de Picante & Alérgenos -->
-                            <div class="flex flex-wrap items-center gap-1.5 mt-2 text-[9px] font-bold">
-                                <span class="text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">${p.picante}</span>
-                                <span class="text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-md border border-rose-500/20">⚠️ ${p.alergenos}</span>
-                            </div>
-                        </div>
-                        <div class="mt-3 pt-3 border-t border-luxe-border/60 dark:border-luxe-border/60 border-luz-border flex items-center justify-between">
-                            ${estaAgotado ? `<span class="text-[11px] font-bold text-rose-400">${t.sold_out_msg}</span>` : `<button onclick="abrirModalDetallePlato(${p.id})" class="text-[11px] font-bold text-luxe-muted dark:text-luxe-muted text-luz-muted hover:text-luxe-gold flex items-center gap-1"><span>Ver Detalle</span> <i class="fa-solid fa-arrow-right text-[9px]"></i></button>`}
-                            ${botonPedir}
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function filtrarCategoria(cat, event) {
-            reproducirSonido('tap');
-            document.querySelectorAll('.cat-pill').forEach(btn => {
-                btn.className = 'cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 dark:bg-luxe-card/90 bg-white text-luxe-stone dark:text-luxe-stone text-luz-text border border-luxe-border dark:border-luxe-border border-luz-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm shadow-sm';
-            });
-            event.currentTarget.className = 'cat-pill active px-3.5 py-2 rounded-xl font-bold bg-luxe-gold text-black whitespace-nowrap transition shadow-md';
-
-            if (cat === 'todos') {
-                renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
-            } else {
-                renderizarCatalogoMenu(PRODUCTOS_CATALOGO.filter(p => p.categoria === cat));
-            }
-        }
-
-        function abrirModalDetallePlato(id) {
-            reproducirSonido('tap');
-            const prod = PRODUCTOS_CATALOGO.find(p => p.id === id);
-            if (!prod || stockAgotadosMap[id]) return;
-
-            platoModalActivo = prod;
-            cantidadModal = 1;
-            extrasSeleccionadosModal = [];
-
-            const nom = prod.nombre[idiomaActual] || prod.nombre.es;
-            const desc = prod.desc[idiomaActual] || prod.desc.es;
-            const ing = prod.ingredientes[idiomaActual] || prod.ingredientes.es;
-            const tag = prod.tag[idiomaActual] || prod.tag.es;
-            const maridajeTxt = (prod.maridaje && (prod.maridaje[idiomaActual] || prod.maridaje.es)) || 'Copa de Vino Recomendada';
-
-            document.getElementById('modalImgPlato').src = prod.img;
-            document.getElementById('modalTagPlato').innerText = tag.toUpperCase();
-            document.getElementById('modalNombrePlato').innerText = nom;
-            document.getElementById('modalDescPlato').innerText = desc;
-            document.getElementById('modalIngredientesPlato').innerText = ing;
-            document.getElementById('modalPicantePlato').innerText = prod.picante;
-            document.getElementById('modalAlergenosPlato').innerText = prod.alergenos;
-            document.getElementById('modalMaridajePlato').innerText = maridajeTxt;
-            document.getElementById('modalPrecioBasePlato').innerText = `S/ ${prod.precioBase.toFixed(2)}`;
-            document.getElementById('modalTxtCantidad').innerText = cantidadModal;
-            document.getElementById('modalInputNotas').value = '';
-
-            const contenedorExtras = document.getElementById('modalListaExtras');
-            contenedorExtras.innerHTML = '';
-
-            if (prod.extrasDisponibles && prod.extrasDisponibles.length > 0) {
-                prod.extrasDisponibles.forEach(ex => {
-                    const exNombre = ex.nombre[idiomaActual] || ex.nombre.es;
-                    const itemDiv = document.createElement('label');
-                    itemDiv.className = 'flex items-center justify-between p-2.5 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border hover:border-luxe-gold/40 cursor-pointer transition';
-                    itemDiv.innerHTML = `
-                        <div class="flex items-center space-x-2.5">
-                            <input type="checkbox" onchange="toggleExtraPlato('${ex.id}', this.checked)" class="accent-luxe-gold w-4 h-4 rounded cursor-pointer">
-                            <span class="text-xs font-semibold text-luxe-stone dark:text-luxe-stone text-luz-text">${exNombre}</span>
-                        </div>
-                        <span class="text-xs font-bold text-luxe-gold whitespace-nowrap ml-2">+ S/ ${ex.precio.toFixed(2)}</span>
-                    `;
-                    contenedorExtras.appendChild(itemDiv);
-                });
-            } else {
-                contenedorExtras.innerHTML = '<span class="text-[11px] text-luxe-muted italic">Sin extras adicionales para este plato</span>';
-            }
-
-            recalcularPrecioModal();
-            document.getElementById('modalDetallePlato').classList.remove('hidden');
-        }
-
-        function cerrarModalDetalle() {
-            reproducirSonido('tap');
-            document.getElementById('modalDetallePlato').classList.add('hidden');
-        }
-
-        function toggleExtraPlato(extraId, isChecked) {
-            reproducirSonido('tap');
-            const extraObj = platoModalActivo.extrasDisponibles.find(e => e.id === extraId);
-            if (!extraObj) return;
-
-            if (isChecked) {
-                extrasSeleccionadosModal.push(extraObj);
-            } else {
-                extrasSeleccionadosModal = extrasSeleccionadosModal.filter(e => e.id !== extraId);
-            }
-            recalcularPrecioModal();
-        }
-
-        function recalcularPrecioModal() {
-            if (!platoModalActivo) return;
-            const sumaExtras = extrasSeleccionadosModal.reduce((acc, e) => acc + e.precio, 0);
-            const precioUnitario = platoModalActivo.precioBase + sumaExtras;
-            document.getElementById('modalBtnPrecioTotal').innerText = `S/ ${(precioUnitario * cantidadModal).toFixed(2)}`;
-        }
-
-        function insertarNotaRapida(texto) {
-            reproducirSonido('tap');
-            const input = document.getElementById('modalInputNotas');
-            input.value = input.value.trim() === '' ? texto : `${input.value}, ${texto}`;
-        }
-
-        function ajustarCantidadModal(delta) {
-            reproducirSonido('tap');
-            const nuevo = cantidadModal + delta;
-            if (nuevo >= 1) {
-                cantidadModal = nuevo;
-                document.getElementById('modalTxtCantidad').innerText = cantidadModal;
-                recalcularPrecioModal();
-            }
-        }
-
-        function confirmarAgregarAlCarrito() {
-            if (!platoModalActivo) return;
-            reproducirSonido('add');
-
-            const notaUsuario = document.getElementById('modalInputNotas').value.trim();
-            const sumaExtras = extrasSeleccionadosModal.reduce((acc, e) => acc + e.precio, 0);
-            const precioUnitario = platoModalActivo.precioBase + sumaExtras;
-            const nom = platoModalActivo.nombre[idiomaActual] || platoModalActivo.nombre.es;
-
-            carritoRondaTemporal.push({
-                productoId: platoModalActivo.id,
-                nombre: nom,
-                precioBase: platoModalActivo.precioBase,
-                extras: extrasSeleccionadosModal.map(e => ({ id: e.id, nombre: e.nombre[idiomaActual] || e.nombre.es, precio: e.precio })),
-                precioUnitario: precioUnitario,
-                cantidad: cantidadModal,
-                subtotal: precioUnitario * cantidadModal,
-                notas: notaUsuario || 'Sin notas especiales'
-            });
-
-            cerrarModalDetalle();
-            actualizarBarraCarritoFlotante();
-            mostrarToast(`Añadido: ${cantidadModal}x ${nom}`, 'success');
-        }
-
-        function actualizarBarraCarritoFlotante() {
-            const barra = document.getElementById('barraFlotanteCarrito');
-            const totalCant = carritoRondaTemporal.reduce((acc, it) => acc + it.cantidad, 0);
-            const totalMonto = carritoRondaTemporal.reduce((acc, it) => acc + it.subtotal, 0);
-
-            if (totalCant > 0) {
-                barra.classList.remove('translate-y-36');
-                document.getElementById('txtCantCarritoFlotante').innerText = totalCant;
-                document.getElementById('txtTotalCarritoFlotante').innerText = `S/ ${totalMonto.toFixed(2)}`;
-            } else {
-                barra.classList.add('translate-y-36');
-            }
-        }
-
-        function abrirModalCarrito() {
-            reproducirSonido('tap');
-            const lista = document.getElementById('listaItemsModalCarrito');
-            lista.innerHTML = '';
-
-            carritoRondaTemporal.forEach((it, idx) => {
-                let extrasTxt = '';
-                if (it.extras && it.extras.length > 0) {
-                    extrasTxt = `<span class="text-[10px] text-luxe-gold block mt-0.5">+ Extras: ${it.extras.map(e => e.nombre).join(', ')}</span>`;
-                }
-
-                const card = document.createElement('div');
-                card.className = 'p-3 bg-luxe-card dark:bg-luxe-card bg-luz-base rounded-2xl border border-luxe-border dark:border-luxe-border border-luz-border flex justify-between items-start';
-                card.innerHTML = `
-                    <div class="flex-1 pr-3">
-                        <span class="text-xs font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text block">${it.cantidad}x ${it.nombre}</span>
-                        ${extrasTxt}
-                        <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted block mt-0.5 italic">Nota: "${it.notas}"</span>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <span class="text-xs font-black text-luxe-gold font-luxury-serif">S/ ${it.subtotal.toFixed(2)}</span>
-                        <button onclick="eliminarItemCarro(${idx})" class="text-slate-400 hover:text-rose-400 text-xs">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-                lista.appendChild(card);
-            });
-
-            const subtotal = carritoRondaTemporal.reduce((acc, it) => acc + it.subtotal, 0);
-            document.getElementById('modalCarroSubtotalVal').innerText = `S/ ${subtotal.toFixed(2)}`;
-            document.getElementById('modalCarrito').classList.remove('hidden');
-        }
-
-        function cerrarModalCarrito() {
-            reproducirSonido('tap');
-            document.getElementById('modalCarrito').classList.add('hidden');
-        }
-
-        function eliminarItemCarro(idx) {
-            reproducirSonido('tap');
-            carritoRondaTemporal.splice(idx, 1);
-            if (carritoRondaTemporal.length === 0) {
-                cerrarModalCarrito();
-            } else {
-                abrirModalCarrito();
-            }
-            actualizarBarraCarritoFlotante();
-        }
-
-        function enviarPedidoACocinaFinal() {
-            if (carritoRondaTemporal.length === 0) return;
-
-            const btnEnviar = document.getElementById('btnEnviarCocinaModal');
-            btnEnviar.disabled = true;
-            btnEnviar.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Enviando...';
-
-            reproducirSonido('order');
-            const horaEnvio = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const mesaKey = mesaActual.replace(/\s+/g, '_');
-
-            db.ref('mesas/' + mesaKey).once('value').then((snapshot) => {
-                let dataMesa = snapshot.val() || {
-                    mesaId: mesaActual,
-                    inicioServicio: horaEnvio,
-                    totalAcumulado: 0,
-                    contadorRondas: 0,
-                    comandas: []
-                };
-
-                if (!dataMesa.comandas) dataMesa.comandas = [];
-
-                dataMesa.contadorRondas = (dataMesa.contadorRondas || 0) + 1;
-                const totalRonda = carritoRondaTemporal.reduce((acc, it) => acc + it.subtotal, 0);
-                dataMesa.totalAcumulado = (dataMesa.totalAcumulado || 0) + totalRonda;
-
-                const nuevaComanda = {
-                    id: 'CMD-' + Math.floor(1000 + Math.random() * 9000),
-                    mesaId: mesaActual,
-                    asiento: miAsientoNombre,
-                    ronda: dataMesa.contadorRondas,
-                    hora: horaEnvio,
-                    timestamp: Date.now(),
-                    estado: 'nuevo',
-                    items: [...carritoRondaTemporal]
-                };
-
-                dataMesa.comandas.push(nuevaComanda);
-                return db.ref('mesas/' + mesaKey).set(dataMesa);
-            }).then(() => {
-                btnEnviar.disabled = false;
-                btnEnviar.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Confirmar y Enviar a Cocina';
-
-                carritoRondaTemporal = [];
-                actualizarBarraCarritoFlotante();
-                cerrarModalCarrito();
-                mostrarToast(`¡Pedido de ${miAsientoNombre} enviado!`, 'success');
-            }).catch((error) => {
-                btnEnviar.disabled = false;
-                btnEnviar.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Confirmar y Enviar a Cocina';
-                alert("Error: " + error.message);
-            });
-        }
-
-        function actualizarStepperProgreso(dataMesa) {
-            if (!dataMesa.comandas || dataMesa.comandas.length === 0) return;
-            const ultComanda = dataMesa.comandas[dataMesa.comandas.length - 1];
-
-            const dot1 = document.getElementById('stepDot1');
-            const dot2 = document.getElementById('stepDot2');
-            const dot3 = document.getElementById('stepDot3');
-            const line1 = document.getElementById('stepLine1');
-            const line2 = document.getElementById('stepLine2');
-            const header = document.getElementById('lblStatusCocinaHeader');
-
-            if (ultComanda.estado === 'nuevo') {
-                header.innerText = '1. Comanda Recibida en Cocina';
-                dot1.className = 'w-4 h-4 rounded-full bg-luxe-gold text-black flex items-center justify-center text-[9px] mb-1 animate-pulse';
-                dot2.className = 'w-4 h-4 rounded-full bg-luxe-card dark:bg-luxe-card bg-white border border-luxe-border text-luxe-muted flex items-center justify-center text-[9px] mb-1';
-                dot3.className = 'w-4 h-4 rounded-full bg-luxe-card dark:bg-luxe-card bg-white border border-luxe-border text-luxe-muted flex items-center justify-center text-[9px] mb-1';
-                line1.className = 'h-[2px] flex-1 bg-luxe-border';
-                line2.className = 'h-[2px] flex-1 bg-luxe-border';
-            } else if (ultComanda.estado === 'preparacion') {
-                header.innerText = '2. ¡El Chef está en Fuego Preparando!';
-                dot1.className = 'w-4 h-4 rounded-full bg-luxe-gold text-black flex items-center justify-center text-[9px] mb-1';
-                dot2.className = 'w-4 h-4 rounded-full bg-amber-400 text-black flex items-center justify-center text-[9px] mb-1 animate-pulse';
-                dot3.className = 'w-4 h-4 rounded-full bg-luxe-card dark:bg-luxe-card bg-white border border-luxe-border text-luxe-muted flex items-center justify-center text-[9px] mb-1';
-                line1.className = 'h-[2px] flex-1 bg-luxe-gold';
-                line2.className = 'h-[2px] flex-1 bg-luxe-border';
-            } else if (ultComanda.estado === 'entregado') {
-                header.innerText = '3. ¡Platos Servidos en tu Mesa!';
-                dot1.className = 'w-4 h-4 rounded-full bg-luxe-gold text-black flex items-center justify-center text-[9px] mb-1';
-                dot2.className = 'w-4 h-4 rounded-full bg-luxe-gold text-black flex items-center justify-center text-[9px] mb-1';
-                dot3.className = 'w-4 h-4 rounded-full bg-emerald-400 text-black flex items-center justify-center text-[9px] mb-1 animate-bounce';
-                line1.className = 'h-[2px] flex-1 bg-luxe-gold';
-                line2.className = 'h-[2px] flex-1 bg-luxe-gold';
-            }
-        }
-
-        function renderizarTicketEnVivoCliente(dataMesa) {
-            document.getElementById('lblTicketMesaTitle').innerText = `${dataMesa.mesaId} • ${dataMesa.inicioServicio}`;
-            const contenedor = document.getElementById('listaItemsTicketAcumulado');
-            contenedor.innerHTML = '';
-            let totalPlatosCount = 0;
-
-            if (dataMesa.comandas) {
-                dataMesa.comandas.forEach(cmd => {
-                    const bloque = document.createElement('div');
-                    bloque.className = 'pt-3 pb-2';
-
-                    let itemsHtml = '';
-                    if (cmd.items) {
-                        cmd.items.forEach(it => {
-                            let txtExtras = '';
-                            if (it.extras && it.extras.length > 0) {
-                                txtExtras = `<span class="text-[10px] text-luxe-gold block">+ Extras: ${it.extras.map(e => e.nombre).join(', ')}</span>`;
-                            }
-
-                            totalPlatosCount += it.cantidad;
-
-                            itemsHtml += `
-                                <div class="flex justify-between items-start py-1.5 text-xs">
-                                    <div>
-                                        <span class="text-luxe-stone dark:text-luxe-stone text-luz-text font-bold">${it.cantidad}x ${it.nombre}</span>
-                                        ${txtExtras}
-                                        ${it.notas !== 'Sin notas especiales' ? `<span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted block italic">Nota: "${it.notas}"</span>` : ''}
-                                    </div>
-                                    <span class="text-luxe-gold font-bold font-luxury-serif">S/ ${it.subtotal.toFixed(2)}</span>
-                                </div>
-                            `;
-                        });
-                    }
-
-                    let statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 font-black rounded uppercase">En Comandera</span>';
-                    if (cmd.estado === 'preparacion') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 font-black rounded uppercase">En Fuego</span>';
-                    if (cmd.estado === 'entregado') statusBadge = '<span class="text-[9px] px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black rounded uppercase">Servido</span>';
-
-                    const asientoTag = cmd.asiento ? `<span class="text-[9px] bg-luxe-card dark:bg-luxe-card bg-luz-base px-2 py-0.5 rounded text-luxe-gold font-bold border border-luxe-border">${cmd.asiento}</span>` : '';
-
-                    bloque.innerHTML = `
-                        <div class="flex justify-between items-center mb-1.5">
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-[11px] font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text uppercase tracking-widest">Ronda #${cmd.ronda}</span>
-                                ${asientoTag}
-                            </div>
-                            ${statusBadge}
-                        </div>
-                        <div class="space-y-1 pl-1">${itemsHtml}</div>
-                    `;
-                    contenedor.appendChild(bloque);
-                });
-            }
-
-            const total = dataMesa.totalAcumulado || 0;
-            const subtotalSinIgv = total / 1.18;
-            const igv = total - subtotalSinIgv;
-
-            document.getElementById('ticketSubtotalNeto').innerText = `S/ ${subtotalSinIgv.toFixed(2)}`;
-            document.getElementById('ticketIgvCalculado').innerText = `S/ ${igv.toFixed(2)}`;
-            document.getElementById('ticketTotalAcumuladoSoles').innerText = `S/ ${total.toFixed(2)}`;
-            document.getElementById('ticketTotalItemsResume').innerText = `${totalPlatosCount} platos ordenados`;
-        }
-
-        function volverAlMenuParaPedirMas() {
-            reproducirSonido('tap');
-            document.getElementById('subseccionMenu').classList.remove('hidden');
-            document.getElementById('subseccionTicket').classList.add('hidden');
-        }
-
-        function navegarInicioCliente() {
-            reproducirSonido('tap');
-            const mesaKey = mesaActual.replace(/\s+/g, '_');
-            db.ref('mesas/' + mesaKey).once('value').then((snap) => {
-                const dataMesa = snap.val();
-                if (dataMesa && dataMesa.comandas && dataMesa.comandas.length > 0) {
-                    document.getElementById('subseccionMenu').classList.add('hidden');
-                    document.getElementById('subseccionTicket').classList.remove('hidden');
-                } else {
-                    document.getElementById('subseccionMenu').classList.remove('hidden');
-                    document.getElementById('subseccionTicket').classList.add('hidden');
-                }
-            });
-        }
-
-        function solicitarAsistenciaMozo() {
-            reproducirSonido('bell');
-            const alerta = {
-                id: 'ALT-' + Date.now(),
-                mesa: mesaActual,
-                asiento: miAsientoNombre,
-                tipo: 'mozo',
-                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                mensaje: `🔔 Mozo solicitado en ${mesaActual} (${miAsientoNombre})`
-            };
-            db.ref('alertas').push(alerta).then(() => {
-                mostrarToast('Mozo en camino', 'success');
-            });
-        }
-
-        function seleccionarPropina(porcentaje) {
-            reproducirSonido('tap');
-            porcentajePropina = porcentaje;
-            document.querySelectorAll('.btn-tip').forEach(btn => {
-                btn.className = 'btn-tip flex-1 py-1 rounded-lg bg-luxe-surface dark:bg-luxe-surface bg-white border border-luxe-border dark:border-luxe-border border-luz-border text-luxe-stone dark:text-luxe-stone text-luz-text font-bold text-[11px] shadow-sm';
-            });
-            event.currentTarget.className = 'btn-tip active flex-1 py-1 rounded-lg bg-luxe-surface dark:bg-luxe-surface bg-white border border-luxe-gold text-luxe-gold font-bold text-[11px] shadow-sm';
-
-            recalcularTotalesConPropinaYSplit();
-        }
-
-        function calcularSplitBill(personas) {
-            reproducirSonido('tap');
-            personasSplit = personas;
-            document.querySelectorAll('.btn-split').forEach(btn => {
-                btn.className = 'btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface dark:bg-luxe-surface bg-white border border-luxe-border dark:border-luxe-border border-luz-border text-luxe-stone dark:text-luxe-stone text-luz-text font-bold text-xs shadow-sm';
-            });
-            event.currentTarget.className = 'btn-split active flex-1 py-1.5 rounded-lg bg-luxe-surface dark:bg-luxe-surface bg-white border border-luxe-gold text-luxe-gold font-bold text-xs shadow-sm';
-
-            recalcularTotalesConPropinaYSplit();
-        }
-
-        function recalcularTotalesConPropinaYSplit() {
-            const montoPropina = (totalConsumoBase * (porcentajePropina / 100));
-            const totalConPropina = totalConsumoBase + montoPropina;
-
-            document.getElementById('lblModalPagarTotal').innerText = `S/ ${totalConPropina.toFixed(2)}`;
-
-            const desglosePropina = document.getElementById('lblPropinaDesglose');
-            if (porcentajePropina > 0) {
-                desglosePropina.innerText = `+ S/ ${montoPropina.toFixed(2)} (${porcentajePropina}% servicio sugerido)`;
-                desglosePropina.classList.remove('hidden');
-            } else {
-                desglosePropina.classList.add('hidden');
-            }
-
-            const boxSplit = document.getElementById('boxResultadoSplit');
-            if (personasSplit > 1 && totalConPropina > 0) {
-                const porPersona = totalConPropina / personasSplit;
-                document.getElementById('lblMontoPorPersona').innerText = `S/ ${porPersona.toFixed(2)} c/u (${personasSplit} comensales)`;
-                boxSplit.classList.remove('hidden');
-            } else {
-                boxSplit.classList.add('hidden');
-            }
-        }
-
-        function abrirModalPedirCuenta() {
-            reproducirSonido('pay');
-            const mesaKey = mesaActual.replace(/\s+/g, '_');
-            db.ref('mesas/' + mesaKey).once('value').then((snap) => {
-                const data = snap.val();
-                if (!data || !data.totalAcumulado || data.totalAcumulado <= 0) {
-                    mostrarToast('Sin consumo en mesa', 'warning');
-                    return;
-                }
-
-                totalConsumoBase = data.totalAcumulado;
-                porcentajePropina = 0;
-                personasSplit = 1;
-                document.getElementById('lblModalPagarMesa').innerText = mesaActual;
-                recalcularTotalesConPropinaYSplit();
-                document.getElementById('modalPagarCuenta').classList.remove('hidden');
-            });
-        }
-
-        function cerrarModalPedirCuenta() {
-            reproducirSonido('tap');
-            document.getElementById('modalPagarCuenta').classList.add('hidden');
-        }
-
-        function toggleMetodoQR(isYape) {
-            reproducirSonido('tap');
-            document.getElementById('boxQrYapePlin').style.display = isYape ? 'flex' : 'none';
-        }
-
-        function confirmarSolicitudDeCuenta() {
-            reproducirSonido('pay');
-            const metodo = document.querySelector('input[name="radioMetodoPago"]:checked').value;
-            const mesaKey = mesaActual.replace(/\s+/g, '_');
-            const montoPropina = (totalConsumoBase * (porcentajePropina / 100));
-            const totalFinal = totalConsumoBase + montoPropina;
-
-            const alerta = {
-                id: 'ALT-' + Date.now(),
-                mesa: mesaActual,
-                asiento: miAsientoNombre,
-                tipo: 'cuenta',
-                metodo: metodo,
-                propina: montoPropina,
-                total: totalFinal,
-                split: personasSplit,
-                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                mensaje: `💳 Cuenta solicitada: ${mesaActual} — ${metodo} (S/ ${totalFinal.toFixed(2)}${personasSplit > 1 ? ` | ${personasSplit} personas` : ''})`
-            };
-
-            db.ref('alertas').push(alerta).then(() => {
-                cerrarModalPedirCuenta();
-                mostrarToast(`Cuenta solicitada (${metodo})`, 'success');
-            });
-        }
-
-        function mostrarToast(msg, tipo = 'info') {
-            const toast = document.getElementById('toastNotification');
-            const toastMsg = document.getElementById('toastMsg');
-            const toastIcon = document.getElementById('toastIcon');
-
-            toastMsg.innerText = msg;
-            if (tipo === 'success') {
-                toastIcon.className = 'fa-solid fa-circle-check text-emerald-400 text-base';
-            } else {
-                toastIcon.className = 'fa-solid fa-circle-info text-luxe-gold text-base';
-            }
-
-            toast.classList.remove('translate-x-96');
-            setTimeout(() => {
-                toast.classList.add('translate-x-96');
-            }, 3000);
-        }
-    </script>
-</body>
-</html>
+            // Actualizar URL sin recargar
+            const url = new URL(window.location);
+            url.searchParams.set('mesa', mesaActual);
+            window.history.replaceState({}, '', url);
+
+            // Reconectar listener de Firebase para la nueva mesa
+            co
