@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KeyMar Systems — The Future of Restaurant Operations</title>
+    <title>KeyMar Systems — Plataforma FoodTech & Cartas QR</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,22 +12,24 @@
             theme: {
                 extend: {
                     colors: {
-                        apple: {
-                            black: '#000000',
-                            bg: '#0a0a0c',
-                            card: '#161617',
-                            cardHover: '#1d1d1f',
-                            border: '#424245',
-                            subtext: '#86868b',
-                            text: '#f5f5f7',
-                            blue: '#2997ff',
-                            blueHover: '#147ce5',
+                        km: {
+                            base: '#040507',
+                            surface: '#0d0f15',
+                            card: '#131620',
+                            cardHover: '#1c202e',
+                            border: '#232838',
                             gold: '#d4af37',
-                            green: '#30d158'
+                            goldLight: '#f3e5ab',
+                            blue: '#3b82f6',
+                            cyan: '#06b6d4',
+                            purple: '#8b5cf6',
+                            stone: '#f8fafc',
+                            muted: '#94a3b8'
                         }
                     },
                     fontFamily: {
-                        sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Inter', 'system-ui', 'sans-serif']
+                        sans: ['Plus Jakarta Sans', '-apple-system', 'Inter', 'sans-serif'],
+                        serif: ['Cinzel', 'Georgia', 'serif']
                     }
                 }
             }
@@ -36,265 +38,322 @@
     <!-- Google Fonts & Font Awesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         body {
-            background-color: #000000;
-            color: #f5f5f7;
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+            background-color: #040507;
+            color: #f8fafc;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             overflow-x: hidden;
-            letter-spacing: -0.015em;
         }
-        .apple-headline {
-            background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
+        .font-brand { font-family: 'Cinzel', serif; }
+        
+        /* EFECTOS DE LUZ Y COLOR APPLE EN MOVIMIENTO */
+        .aurora-bg {
+            background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.25) 0%, rgba(6, 182, 212, 0.15) 30%, rgba(212, 175, 55, 0.1) 60%, transparent 80%);
+            animation: auroraShift 12s ease-in-out infinite alternate;
+        }
+        @keyframes auroraShift {
+            0% { transform: scale(1) translateY(0); filter: hue-rotate(0deg); }
+            50% { transform: scale(1.1) translateY(20px); filter: hue-rotate(20deg); }
+            100% { transform: scale(1) translateY(0); filter: hue-rotate(0deg); }
+        }
+
+        .gradient-text-apple {
+            background: linear-gradient(135deg, #ffffff 20%, #93c5fd 50%, #67e8f9 80%, #fde047 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .apple-gradient-blue {
-            background: linear-gradient(135deg, #2997ff 0%, #0071e3 100%);
+
+        .glass-panel {
+            background: rgba(19, 22, 32, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .apple-card {
-            background-color: #161617;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 28px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        .glass-panel:hover {
+            border-color: rgba(6, 182, 212, 0.4);
+            box-shadow: 0 0 35px -5px rgba(6, 182, 212, 0.2);
         }
-        .apple-card:hover {
-            background-color: #1d1d1f;
-            border-color: rgba(255, 255, 255, 0.18);
-            transform: translateY(-2px);
+
+        .product-tab.active {
+            background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.35);
         }
-        .apple-pill {
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #000000; }
-        ::-webkit-scrollbar-thumb { background: #333336; border-radius: 999px; }
-        ::-webkit-scrollbar-thumb:hover { background: #424245; }
     </style>
 </head>
-<body class="selection:bg-apple-blue selection:text-white">
+<body class="selection:bg-cyan-500 selection:text-black">
+
+    <!-- AURORA DEGRADADA DE FONDO DINÁMICA -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[950px] h-[650px] aurora-bg rounded-full blur-[100px]"></div>
+        <div class="absolute top-1/2 left-[-15%] w-[550px] h-[550px] bg-purple-600/10 rounded-full blur-[140px]"></div>
+        <div class="absolute bottom-10 right-[-10%] w-[650px] h-[650px] bg-cyan-600/10 rounded-full blur-[160px]"></div>
+    </div>
 
     <!-- ========================================================================= -->
-    <!-- 1. APPLE GLOBAL NAVIGATION                                               -->
+    <!-- 1. BARRA DE NAVEGACIÓN CON LOGO DORADO HERÁLDICO                         -->
     <!-- ========================================================================= -->
-    <header class="sticky top-0 z-40 bg-black/80 backdrop-blur-2xl border-b border-white/[0.08] px-6 py-3.5">
+    <header class="sticky top-0 z-40 bg-km-base/75 backdrop-blur-2xl border-b border-white/[0.08] px-6 py-3.5">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             
-            <!-- LOGO OFICIAL KEYMAR SYSTEMS (DRAGÓN KM) -->
-            <a href="#" class="flex items-center space-x-3 group">
-                <div class="w-10 h-10 flex items-center justify-center bg-white/[0.06] rounded-2xl border border-white/[0.1] group-hover:border-apple-blue transition-all">
-                    <!-- SVG REAL DEL LOGO DRAGÓN KM -->
-                    <svg viewBox="0 0 100 100" class="w-7 h-7 text-white group-hover:text-apple-blue transition-colors" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M 25 75 L 25 25 M 25 50 L 50 25 M 25 45 L 50 75" stroke="#2997ff" stroke-width="4.5"/>
-                        <path d="M 50 75 L 50 25 L 68 55 L 86 25 L 86 75" stroke="currentColor" stroke-width="4.5"/>
-                        <!-- Cabeza y alas del dragón -->
-                        <path d="M 35 25 C 28 15, 42 10, 52 18 C 60 12, 68 18, 62 26 C 72 26, 75 38, 65 44" stroke="#2997ff" stroke-width="3"/>
-                        <circle cx="50" cy="18" r="1.5" fill="#2997ff"/>
-                    </svg>
+            <!-- LOGO HERÁLDICO DORADO ORIGINAL -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-600 via-km-gold to-yellow-200 p-[1.5px] shadow-lg shadow-amber-500/20">
+                    <div class="w-full h-full bg-km-base rounded-[14px] flex items-center justify-center">
+                        <i class="fa-solid fa-crown text-km-gold text-sm"></i>
+                    </div>
                 </div>
                 <div>
-                    <span class="text-xs font-bold uppercase tracking-[0.25em] text-white block leading-none">
-                        KeyMar <span class="text-apple-blue">Systems</span>
+                    <span class="text-xs tracking-[0.25em] font-brand font-black uppercase text-white leading-none block">
+                        KeyMar <span class="text-km-gold">Systems</span>
                     </span>
-                    <span class="text-[9px] text-apple-subtext tracking-widest uppercase font-medium">FoodTech Engineering</span>
+                    <span class="text-[9px] tracking-widest text-km-muted font-semibold uppercase">FoodTech Engineering</span>
                 </div>
-            </a>
+            </div>
 
-            <!-- Links de Navegación -->
-            <nav class="hidden md:flex items-center space-x-8 text-xs font-medium text-apple-subtext">
-                <a href="#producto" class="hover:text-white transition">El Sistema</a>
-                <a href="#experiencia" class="hover:text-white transition">Para la Cocina</a>
-                <a href="#roi" class="hover:text-white transition">Calculadora</a>
-                <a href="#precios" class="hover:text-white transition">Inversión</a>
+            <!-- Navegación -->
+            <nav class="hidden md:flex items-center space-x-8 text-xs font-semibold text-km-muted">
+                <a href="#productos" class="hover:text-white transition flex items-center gap-1.5"><i class="fa-solid fa-cube text-cyan-400"></i> Productos</a>
+                <a href="#demostracion" class="hover:text-white transition flex items-center gap-1.5"><i class="fa-solid fa-play text-blue-400"></i> Demo en Vivo</a>
+                <a href="#roi" class="hover:text-white transition flex items-center gap-1.5"><i class="fa-solid fa-calculator text-emerald-400"></i> Rentabilidad</a>
+                <a href="#precios" class="hover:text-white transition flex items-center gap-1.5"><i class="fa-solid fa-tag text-km-gold"></i> Precios</a>
             </nav>
 
-            <!-- CTA Directo -->
-            <div class="flex items-center space-x-3">
-                <a href="https://wa.me/51999999999?text=Hola%20KeyMar%20Systems,%20quiero%20coordinar%20la%20instalación%20en%20mi%20restaurante." target="_blank" class="px-4 py-2 bg-white text-black hover:bg-[#e8e8ed] text-xs font-semibold rounded-full transition shadow-lg flex items-center gap-2">
-                    <i class="fa-brands fa-whatsapp text-sm text-emerald-600"></i>
-                    <span>Agendar Demo</span>
-                </a>
-            </div>
+            <!-- CTA WhatsApp -->
+            <a href="https://wa.me/51999999999?text=Hola%20KeyMar%20Systems,%20quiero%20coordinar%20la%20instalación%20en%20mi%20restaurante." target="_blank" class="px-4 py-2 bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-400 hover:brightness-110 text-white font-bold text-xs rounded-full shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition">
+                <i class="fa-brands fa-whatsapp text-sm"></i>
+                <span class="hidden sm:inline">Solicitar Demo</span>
+            </a>
         </div>
     </header>
 
     <!-- ========================================================================= -->
-    <!-- 2. HERO SECTION (APPLE KEYNOTE STYLE)                                    -->
+    <!-- 2. HERO PRINCIPAL: DINÁMICO, MONUMENTAL Y CON COLOR                     -->
     <!-- ========================================================================= -->
-    <section class="relative z-10 pt-20 pb-20 px-4 text-center max-w-5xl mx-auto">
+    <section class="relative z-10 pt-20 pb-16 px-4 text-center max-w-5xl mx-auto">
         
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full apple-pill mb-8">
-            <span class="text-xs font-medium text-apple-subtext">Presentamos KeyMar OS 2.0</span>
-            <span class="text-xs text-white">|</span>
-            <span class="text-xs font-semibold text-apple-blue flex items-center gap-1">Diseñado para la alta gastronomía <i class="fa-solid fa-chevron-right text-[9px]"></i></span>
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] backdrop-blur-xl mb-6 shadow-inner">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+            <span class="text-xs font-bold text-slate-200">Revolucionando la Gastronomía en Perú</span>
         </div>
 
-        <h1 class="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight apple-headline leading-[1.08] mb-6">
-            Poderoso en cocina.<br>
-            Mágico en la mesa.
+        <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight gradient-text-apple leading-[1.1] mb-6">
+            La velocidad que tu cocina necesita.<br>
+            El lujo que tus clientes merecen.
         </h1>
 
-        <p class="text-base sm:text-xl text-apple-subtext max-w-2xl mx-auto leading-relaxed mb-10 font-normal">
-            El sistema operativo definitivo para restaurantes que no quieren perder tiempo ni comensales. Cartas interactivas en 4 idiomas, cocina guiada por voz y división automática de cuentas.
+        <p class="text-sm sm:text-lg text-km-muted max-w-2xl mx-auto leading-relaxed mb-10">
+            Unificamos <b>Cartas Web interactivas en 4 idiomas</b>, <b>Parantes QR de acrílico de alta gama</b>, <b>Comanderas por voz manos libres</b> y <b>Arqueos automáticos en Excel</b>.
         </p>
 
         <!-- Botones de Acción -->
         <div class="flex flex-wrap items-center justify-center gap-4 mb-16">
-            <a href="https://wa.me/51999999999?text=Hola%20KeyMar%20Systems,%20deseo%20instalar%20el%20sistema%20en%20mi%20restaurante." target="_blank" class="px-7 py-3.5 apple-gradient-blue text-white hover:brightness-110 font-semibold text-sm rounded-full transition shadow-2xl flex items-center gap-2">
-                <span>Comenzar por S/ 900</span>
-                <i class="fa-solid fa-arrow-right text-xs"></i>
+            <a href="#precios" class="px-8 py-4 bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-400 text-white hover:brightness-110 font-extrabold text-xs uppercase tracking-wider rounded-2xl transition shadow-xl shadow-cyan-500/25 flex items-center gap-2">
+                <span>Inversión S/ 900 (2 Meses Gratis)</span>
+                <i class="fa-solid fa-arrow-right"></i>
             </a>
-            <button onclick="abrirDemoModal()" class="px-7 py-3.5 bg-[#1d1d1f] hover:bg-[#272729] text-white border border-white/10 font-semibold text-sm rounded-full transition flex items-center gap-2">
-                <i class="fa-regular fa-circle-play text-apple-blue"></i>
-                <span>Ver demostración interactiva</span>
+            <button onclick="abrirModalDemoDirecta()" class="px-8 py-4 bg-km-card hover:bg-km-cardHover text-white border border-white/10 font-bold text-xs rounded-2xl transition flex items-center gap-2 shadow-lg">
+                <i class="fa-regular fa-circle-play text-cyan-400 text-sm"></i>
+                <span>Probar Demostración en Vivo</span>
             </button>
         </div>
 
-        <!-- MOCKUP INTERACTIVO DE HARDWARE Y SOFTWARE (ESTILO APPLE) -->
-        <div class="relative max-w-4xl mx-auto bg-[#161617] rounded-[32px] border border-white/[0.12] p-6 sm:p-8 shadow-2xl text-left overflow-hidden">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-white/[0.08]">
-                <div class="flex items-center space-x-3">
-                    <div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
-                    <div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
-                    <div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
-                    <span class="text-xs text-apple-subtext font-mono ml-2">aureus.keymarsystems.pe — Mesa 04 en vivo</span>
-                </div>
-                <div class="flex items-center gap-3 text-xs">
-                    <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-medium flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Firebase Cloud Sync
-                    </span>
-                </div>
+        <!-- Banner de Módulos Activos -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto text-left">
+            <div class="glass-panel p-4 rounded-2xl">
+                <i class="fa-solid fa-language text-cyan-400 text-lg mb-2 block"></i>
+                <span class="text-xs font-bold text-white block">4 Idiomas en Vivo</span>
+                <span class="text-[10px] text-km-muted">ES, EN, FR, PT instantáneo</span>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 items-center">
-                <div class="space-y-4">
-                    <span class="text-xs font-bold text-apple-blue uppercase tracking-widest">Lo que ve tu comensal</span>
-                    <h3 class="text-2xl font-bold text-white leading-tight">Cero descargas. Cero fricción.</h3>
-                    <p class="text-xs text-apple-subtext leading-relaxed">
-                        El cliente apunta su cámara al QR y se abre una carta con fotografías en alta definición, traducción instantánea a 4 idiomas, alérgenos visibles y cálculo de propinas con división de cuentas.
-                    </p>
-                    <div class="flex flex-wrap gap-2 text-[11px] font-medium pt-1">
-                        <span class="px-2.5 py-1 rounded-lg bg-white/[0.06] text-white">🌶️ Nivel de Picante</span>
-                        <span class="px-2.5 py-1 rounded-lg bg-white/[0.06] text-white">🌾 Sin Gluten</span>
-                        <span class="px-2.5 py-1 rounded-lg bg-white/[0.06] text-white">🍷 Maridaje del Sommelier</span>
-                    </div>
-                </div>
-
-                <div class="bg-[#0a0a0c] rounded-2xl p-5 border border-white/[0.08] space-y-3">
-                    <span class="text-[10px] font-bold text-apple-subtext uppercase tracking-wider block">Lo que escucha la cocina</span>
-                    <div class="p-3.5 bg-[#161617] rounded-xl border border-white/[0.06] space-y-1">
-                        <div class="flex justify-between items-center text-xs font-bold">
-                            <span class="text-white">Mesa 04 — Ronda #1</span>
-                            <span class="text-apple-blue">S/ 106.00</span>
-                        </div>
-                        <p class="text-[11px] text-apple-subtext">2x Ceviche Clásico de Pesca del Día</p>
-                        <p class="text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded inline-block">⚠️ Nota: Sin ají para un plato</p>
-                    </div>
-                    <div class="flex items-center gap-2 p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 text-xs text-apple-blue">
-                        <i class="fa-solid fa-volume-high animate-pulse"></i>
-                        <span class="font-medium italic">"¡Marcha Mesa 4! Dos Ceviches de Pesca del Día..."</span>
-                    </div>
-                </div>
+            <div class="glass-panel p-4 rounded-2xl">
+                <i class="fa-solid fa-microphone text-blue-400 text-lg mb-2 block"></i>
+                <span class="text-xs font-bold text-white block">Cocina con Voz HD</span>
+                <span class="text-[10px] text-km-muted">Canta pedidos sin pantallas</span>
+            </div>
+            <div class="glass-panel p-4 rounded-2xl">
+                <i class="fa-solid fa-users-viewfinder text-emerald-400 text-lg mb-2 block"></i>
+                <span class="text-xs font-bold text-white block">División de Cuenta</span>
+                <span class="text-[10px] text-km-muted">Cálculo exacto para 1 a 5+</span>
+            </div>
+            <div class="glass-panel p-4 rounded-2xl">
+                <i class="fa-solid fa-file-excel text-km-gold text-lg mb-2 block"></i>
+                <span class="text-xs font-bold text-white block">Cierre en Excel</span>
+                <span class="text-[10px] text-km-muted">Descarga CSV para contador</span>
             </div>
         </div>
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 3. BENTO GRID: LOS 6 PILARES DE KEYMAR SYSTEMS                           -->
+    <!-- 3. CATÁLOGO INTERACTIVO DE PRODUCTOS & HARDWARE (LO QUE OFRECEMOS)       -->
     <!-- ========================================================================= -->
-    <section id="producto" class="relative z-10 max-w-6xl mx-auto px-4 py-20">
+    <section id="productos" class="relative z-10 max-w-6xl mx-auto px-4 py-20">
         
-        <div class="text-center max-w-2xl mx-auto mb-16">
-            <span class="text-xs font-bold tracking-widest text-apple-blue uppercase block mb-3">Arquitectura Integral</span>
-            <h2 class="text-3xl sm:text-5xl font-bold text-white tracking-tight">Diseñado para resolver cada punto ciego de tu salón.</h2>
+        <div class="text-center max-w-2xl mx-auto mb-12">
+            <span class="text-xs font-black tracking-widest text-cyan-400 uppercase block mb-2">Catálogo de Soluciones</span>
+            <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Software de Vanguardia & Hardware de Lujo</h2>
+            <p class="text-xs sm:text-sm text-km-muted mt-2">Explora los productos físicos y digitales que instalamos en tu restaurante.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- TABS INTERACTIVAS DE PRODUCTOS -->
+        <div class="flex justify-center space-x-2 pb-8 overflow-x-auto custom-scroll text-xs font-bold">
+            <button onclick="cambiarTabProducto('web')" id="tabBtn-web" class="product-tab active px-5 py-3 rounded-2xl bg-km-card border border-white/[0.08] transition flex items-center gap-2">
+                <i class="fa-solid fa-mobile-screen"></i> 1. Cartas Digitales Web
+            </button>
+            <button onclick="cambiarTabProducto('qr')" id="tabBtn-qr" class="product-tab px-5 py-3 rounded-2xl bg-km-card border border-white/[0.08] text-km-muted hover:text-white transition flex items-center gap-2">
+                <i class="fa-solid fa-qrcode"></i> 2. Parantes QR & Acrílicos
+            </button>
+            <button onclick="cambiarTabProducto('kds')" id="tabBtn-kds" class="product-tab px-5 py-3 rounded-2xl bg-km-card border border-white/[0.08] text-km-muted hover:text-white transition flex items-center gap-2">
+                <i class="fa-solid fa-fire-burner"></i> 3. KDS Cocina con Voz
+            </button>
+            <button onclick="cambiarTabProducto('caja')" id="tabBtn-caja" class="product-tab px-5 py-3 rounded-2xl bg-km-card border border-white/[0.08] text-km-muted hover:text-white transition flex items-center gap-2">
+                <i class="fa-solid fa-cash-register"></i> 4. Módulo de Caja & Excel
+            </button>
+        </div>
+
+        <!-- CONTENIDO DINÁMICO DE PRODUCTOS -->
+        <div class="glass-panel rounded-[32px] p-6 sm:p-10 border border-white/[0.1] shadow-2xl relative overflow-hidden">
             
-            <!-- Bento 1: Multilingüe & Alérgenos (Span 2) -->
-            <div class="apple-card p-8 md:col-span-2 flex flex-col justify-between">
-                <div class="space-y-3">
-                    <span class="text-xs font-bold text-apple-blue uppercase tracking-wider">01. Carta de Autor</span>
-                    <h3 class="text-2xl font-bold text-white">4 Idiomas en Tiempo Real & Alérgenos</h3>
-                    <p class="text-xs sm:text-sm text-apple-subtext leading-relaxed">
-                        Diseñado especialmente para zonas gastronómicas y turísticas. El menú traduce al instante a <b>Español 🇪🇸, Inglés 🇬🇧, Francés 🇫🇷 y Portugués 🇧🇷</b>. Destaca ingredientes nobles, nivel de picante y advertencias para celíacos o personas con alergias.
+            <!-- PRODUCTO 1: PÁGINAS WEB Y CARTAS DIGITALES -->
+            <div id="panelProd-web" class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4">
+                    <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                        Experiencia en Mesa • Cero Descargas
+                    </span>
+                    <h3 class="text-2xl sm:text-4xl font-extrabold text-white">Cartas Web Interactivas para Restaurantes de Autor</h3>
+                    <p class="text-xs sm:text-sm text-km-muted leading-relaxed">
+                        Desarrolladas a medida para cada restaurante con fotografía gastronómica en alta definición, selección de ingredientes, niveles de picante (🌶️) y advertencias claras de alérgenos.
                     </p>
+                    
+                    <div class="grid grid-cols-2 gap-3 pt-2 text-xs">
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-white block">🌐 4 Idiomas</b> ES, EN, FR, PT al toque</div>
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-white block">🍷 Maridaje del Chef</b> Sube el ticket promedio</div>
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-white block">☀️ Modo Día/Noche</b> Legible bajo sol o luz tenue</div>
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-white block">👥 División de Cuenta</b> 1 a 5+ personas</div>
+                    </div>
+
+                    <div class="pt-4">
+                        <a href="https://ctiptexnslmedupe-dotcom.github.io/men/?mesa=Mesa-04" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-cyan-500 hover:bg-cyan-400 text-black font-black text-xs rounded-xl shadow-lg transition">
+                            <span>Ver Carta Digital en Vivo</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                    </div>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-8 text-xs font-medium">
-                    <div class="p-3 bg-black/40 rounded-xl border border-white/[0.06] text-center"><span class="text-base block mb-1">🇪🇸</span> Español</div>
-                    <div class="p-3 bg-black/40 rounded-xl border border-white/[0.06] text-center"><span class="text-base block mb-1">🇬🇧</span> English</div>
-                    <div class="p-3 bg-black/40 rounded-xl border border-white/[0.06] text-center"><span class="text-base block mb-1">🇫🇷</span> Français</div>
-                    <div class="p-3 bg-black/40 rounded-xl border border-white/[0.06] text-center"><span class="text-base block mb-1">🇧🇷</span> Português</div>
+
+                <div class="bg-km-base rounded-2xl p-4 border border-km-border shadow-inner space-y-3">
+                    <div class="relative h-48 rounded-xl overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=85" alt="Plato" class="w-full h-full object-cover">
+                        <span class="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-black/80 text-km-gold text-[9px] font-bold">Gastronomía Peruana</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs font-bold pt-1">
+                        <span>Ceviche Clásico de Pesca del Día</span>
+                        <span class="text-km-gold font-mono">S/ 48.00</span>
+                    </div>
+                    <p class="text-[11px] text-km-muted">Corvina fresca en leche de tigre al ají limo, camote glaseado y choclo.</p>
                 </div>
             </div>
 
-            <!-- Bento 2: Cocina Manos Libres con Voz -->
-            <div class="apple-card p-8 flex flex-col justify-between" id="experiencia">
-                <div class="space-y-3">
-                    <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">02. KDS Inteligente</span>
-                    <h3 class="text-2xl font-bold text-white">Cocina por Voz Manos Libres</h3>
-                    <p class="text-xs sm:text-sm text-apple-subtext leading-relaxed">
-                        Los cocineros no necesitan tocar tablets con las manos llenas de masa o aceite. El asistente canta las órdenes con timbre de chef y pausas estructuradas por altavoz o parlante Bluetooth.
-                    </p>
-                </div>
-                <div class="pt-6">
-                    <span class="text-xs text-amber-400 font-semibold flex items-center gap-2">
-                        <i class="fa-solid fa-microphone"></i> Cero pantallas grasosas
+            <!-- PRODUCTO 2: PARANTES QR Y HARDWARE FÍSICO -->
+            <div id="panelProd-qr" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4">
+                    <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                        Hardware Premium • Durabilidad Total
                     </span>
+                    <h3 class="text-2xl sm:text-4xl font-extrabold text-white">Parantes de Acrílico & Madera Grabados con QR</h3>
+                    <p class="text-xs sm:text-sm text-km-muted leading-relaxed">
+                        No entregamos simples hojas de papel. Fabricamos **parantes en acrílico transparente de 3mm** y cartulinas couché de alto gramaje con el logo de tu restaurante, diseñados para resistir derrames de bebidas, alcohol y uso rudo diario.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-3 pt-2 text-xs">
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-amber-300 block">💎 Acrílico A6 en T/L</b> Acabado 5 estrellas</div>
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-amber-300 block">🛡️ Resistente a Agua</b> Cero deterioro con alcohol</div>
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-amber-300 block">🏷️ Identificador Único</b> QR independiente por mesa</div>
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-amber-300 block">⚡ Chip NFC Opcional</b> Tocar con el celular y abrir</div>
+                    </div>
+                </div>
+
+                <div class="bg-km-base rounded-2xl p-6 border border-km-border text-center space-y-4">
+                    <div class="w-36 h-36 mx-auto bg-white p-3 rounded-2xl shadow-xl flex items-center justify-center">
+                        <svg class="w-full h-full" viewBox="0 0 100 100" fill="none">
+                            <rect width="100" height="100" fill="white"/>
+                            <path d="M10 10H40V40H10V10ZM16 16V34H34V16H16Z" fill="#11100e"/>
+                            <rect x="22" y="22" width="6" height="6" fill="#d4af37"/>
+                            <path d="M60 10H90V40H60V10ZM66 16V34H84V16H66Z" fill="#11100e"/>
+                            <rect x="72" y="22" width="6" height="6" fill="#d4af37"/>
+                            <path d="M10 60H40V90H10V60ZM16 66V84H34V66H16Z" fill="#11100e"/>
+                            <rect x="22" y="72" width="6" height="6" fill="#d4af37"/>
+                            <circle cx="50" cy="50" r="7" fill="#d4af37"/>
+                        </svg>
+                    </div>
+                    <span class="text-xs font-bold text-white block">Parante A6 • Incluido en el Setup Inicial</span>
                 </div>
             </div>
 
-            <!-- Bento 3: Cierre de Caja & División de Cuenta -->
-            <div class="apple-card p-8 flex flex-col justify-between">
-                <div class="space-y-3">
-                    <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">03. Facturación & Caja</span>
-                    <h3 class="text-2xl font-bold text-white">División de Cuenta & Cierre en Excel</h3>
-                    <p class="text-xs sm:text-sm text-apple-subtext leading-relaxed">
-                        Tus comensales dividen su cuenta en partes iguales con un toque (1 a 5+ personas) y añaden propina voluntaria. Al final del turno, el cajero descarga el arqueo completo en Excel (.CSV) clasificado por Yape, POS y Efectivo.
-                    </p>
-                </div>
-                <div class="pt-6">
-                    <span class="text-xs text-emerald-400 font-semibold flex items-center gap-2">
-                        <i class="fa-solid fa-file-excel"></i> Reporte contable instantáneo
+            <!-- PRODUCTO 3: KDS DE COCINA CON VOZ -->
+            <div id="panelProd-kds" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4">
+                    <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                        Cero Pantallas Grasosas
                     </span>
+                    <h3 class="text-2xl sm:text-4xl font-extrabold text-white">Monitor KDS con Asistente de Voz de Chef</h3>
+                    <p class="text-xs sm:text-sm text-km-muted leading-relaxed">
+                        Los cocineros no tienen que tocar tablets con las manos llenas de masa o aceite. El sistema canta las comandas automáticamente por altavoz o parlante Bluetooth con pausas y notas exactas.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-3 pt-2 text-xs">
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-blue-300 block">🔊 Voz Masculina HD</b> Dicta platos con claridad</div>
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-blue-300 block">⏱️ Semáforo SLA</b> Alerta roja si pasa de 15 min</div>
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-blue-300 block">📦 Bloqueo de Stock</b> Apaga platos agotados en 1 clic</div>
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-blue-300 block">🔀 Traslado de Mesa</b> Mueve pedidos sin borrar datos</div>
+                    </div>
+
+                    <div class="pt-4">
+                        <a href="https://ctiptexnslmedupe-dotcom.github.io/men/cocina.html" target="_blank" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs rounded-xl shadow-lg transition">
+                            <span>Abrir Monitor de Cocina (PIN: 1234)</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-km-base rounded-2xl p-5 border border-km-border space-y-3">
+                    <div class="p-3 bg-km-card rounded-xl border border-white/[0.06]">
+                        <span class="text-[10px] text-amber-400 font-bold block mb-1">🔴 Nuevos en Comandera (Mesa 04)</span>
+                        <p class="text-xs text-white font-bold">2x Lomo Saltado Criollo</p>
+                        <p class="text-[10px] text-km-muted italic">Nota: "Término medio, salsa aparte"</p>
+                    </div>
+                    <div class="p-3 bg-blue-600/15 border border-blue-500/30 rounded-xl text-xs text-blue-300 flex items-center gap-2">
+                        <i class="fa-solid fa-volume-high animate-pulse"></i>
+                        <span>"¡Marcha Mesa 4! ... Dos Lomo Saltado..."</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Bento 4: Temporizador SLA de Demora -->
-            <div class="apple-card p-8 flex flex-col justify-between">
-                <div class="space-y-3">
-                    <span class="text-xs font-bold text-rose-400 uppercase tracking-wider">04. Eficiencia de Salón</span>
-                    <h3 class="text-2xl font-bold text-white">Semáforo de Demoras SLA</h3>
-                    <p class="text-xs sm:text-sm text-apple-subtext leading-relaxed">
-                        Controla los tiempos de cocción en vivo. A los 10 minutos la comanda pasa a amarillo, y a los 15 minutos parpadea en rojo con un aviso por voz para evitar comensales molestos.
-                    </p>
-                </div>
-                <div class="pt-6">
-                    <span class="text-xs text-rose-400 font-semibold flex items-center gap-2">
-                        <i class="fa-solid fa-stopwatch"></i> Control de tiempos en vivo
+            <!-- PRODUCTO 4: CAJA & REPORTES EXCEL -->
+            <div id="panelProd-caja" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4">
+                    <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        Control Financiero
                     </span>
+                    <h3 class="text-2xl sm:text-4xl font-extrabold text-white">Arqueo de Caja & Descarga de Reportes en Excel</h3>
+                    <p class="text-xs sm:text-sm text-km-muted leading-relaxed">
+                        Al final de la jornada, el administrador o cajero puede ver el total facturado, el total de propinas y descargar un archivo `.CSV` listo para su contador.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-3 pt-2 text-xs">
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-emerald-400 block">📊 Desglose en Vivo</b> Yape, POS y Efectivo</div>
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-emerald-400 block">📥 Descarga Excel</b> Reporte diario en un clic</div>
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-emerald-400 block">🖨️ Impresión Térmica</b> Compatible con 80mm</div>
+                        <div class="p-3 bg-km-base rounded-xl border border-white/[0.06]"><b class="text-emerald-400 block">🔄 Reimpresión</b> Recupera tickets pasados</div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Bento 5: Control de Stock Inmediato -->
-            <div class="apple-card p-8 flex flex-col justify-between">
-                <div class="space-y-3">
-                    <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">05. Inventario en Vivo</span>
-                    <h3 class="text-2xl font-bold text-white">Bloqueo de Agotados en 1 Clic</h3>
-                    <p class="text-xs sm:text-sm text-apple-subtext leading-relaxed">
-                        ¿Se acabó la pesca del día en el turno del domingo? Con presionar un botón en cocina, el plato se apaga de inmediato en todos los celulares del salón.
-                    </p>
-                </div>
-                <div class="pt-6">
-                    <span class="text-xs text-cyan-400 font-semibold flex items-center gap-2">
-                        <i class="fa-solid fa-ban"></i> Cero platos fantasma
-                    </span>
+                <div class="bg-km-base rounded-2xl p-5 border border-km-border text-center space-y-3">
+                    <i class="fa-solid fa-file-excel text-4xl text-emerald-400"></i>
+                    <h4 class="text-xs font-bold text-white">Reporte_Ventas_Diario.csv</h4>
+                    <p class="text-[11px] text-km-muted">Exporta todas las mesas cobradas, métodos de pago y propinas al instante.</p>
                 </div>
             </div>
 
@@ -305,37 +364,37 @@
     <!-- 4. CALCULADORA INTERACTIVA DE RENTABILIDAD (ROI)                          -->
     <!-- ========================================================================= -->
     <section id="roi" class="relative z-10 max-w-4xl mx-auto px-4 py-16">
-        <div class="apple-card p-8 sm:p-12 text-center relative overflow-hidden">
+        <div class="glass-panel p-8 sm:p-12 rounded-[32px] text-center relative overflow-hidden">
             
-            <span class="text-xs font-bold tracking-widest text-apple-blue uppercase block mb-2">Simulador de Impacto Financiero</span>
-            <h2 class="text-2xl sm:text-4xl font-bold text-white mb-3">¿Cuánto dinero le ahorra KeyMar a tu restaurante?</h2>
-            <p class="text-xs sm:text-sm text-apple-subtext max-w-md mx-auto mb-8">Selecciona la cantidad de mesas activas en tu local:</p>
+            <span class="text-xs font-black tracking-widest text-cyan-400 uppercase block mb-2">Simulador Financiero</span>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-white mb-3">¿Cuánto dinero le ahorra KeyMar a tu restaurante?</h2>
+            <p class="text-xs sm:text-sm text-km-muted max-w-md mx-auto mb-8">Mueve la barra con la cantidad de mesas de tu local:</p>
 
             <div class="max-w-md mx-auto space-y-6">
                 <div>
                     <div class="flex justify-between items-center text-xs font-bold mb-2">
-                        <span class="text-apple-subtext">Mesas activas:</span>
-                        <span id="lblNumeroMesas" class="text-lg text-white font-bold">12 Mesas</span>
+                        <span class="text-km-muted">Mesas activas:</span>
+                        <span id="lblNumeroMesas" class="text-lg text-cyan-400 font-black">12 Mesas</span>
                     </div>
-                    <input type="range" id="sliderMesas" min="4" max="40" value="12" step="1" oninput="calcularROI(this.value)" class="w-full accent-apple-blue bg-[#272729] rounded-lg cursor-pointer h-2">
+                    <input type="range" id="sliderMesas" min="4" max="40" value="12" step="1" oninput="calcularROI(this.value)" class="w-full accent-cyan-400 bg-km-surface rounded-lg cursor-pointer h-2">
                 </div>
 
                 <!-- Métricas -->
                 <div class="grid grid-cols-2 gap-4 pt-4 border-t border-white/[0.08]">
-                    <div class="bg-black/50 p-4 rounded-2xl border border-white/[0.06]">
-                        <span class="text-[10px] text-apple-subtext uppercase font-bold block mb-1">Horas de mozo ahorradas</span>
-                        <span id="lblHorasAhorradas" class="text-2xl font-bold text-apple-blue font-mono">48 hrs</span>
-                        <span class="text-[10px] text-apple-subtext block mt-0.5">al mes en idas y vueltas</span>
+                    <div class="bg-km-base p-4 rounded-2xl border border-white/[0.06]">
+                        <span class="text-[10px] text-km-muted uppercase font-bold block mb-1">Horas de mozo ahorradas</span>
+                        <span id="lblHorasAhorradas" class="text-2xl font-black text-cyan-400 font-mono">48 hrs</span>
+                        <span class="text-[10px] text-km-muted block mt-0.5">al mes en idas y vueltas</span>
                     </div>
-                    <div class="bg-black/50 p-4 rounded-2xl border border-white/[0.06]">
-                        <span class="text-[10px] text-apple-subtext uppercase font-bold block mb-1">Aumento en ventas</span>
-                        <span id="lblAumentoVentas" class="text-2xl font-bold text-emerald-400 font-mono">+ S/ 1,440</span>
-                        <span class="text-[10px] text-apple-subtext block mt-0.5">por extras y maridaje</span>
+                    <div class="bg-km-base p-4 rounded-2xl border border-white/[0.06]">
+                        <span class="text-[10px] text-km-muted uppercase font-bold block mb-1">Aumento en ventas</span>
+                        <span id="lblAumentoVentas" class="text-2xl font-black text-emerald-400 font-mono">+ S/ 1,440</span>
+                        <span class="text-[10px] text-km-muted block mt-0.5">por extras y maridaje</span>
                     </div>
                 </div>
 
-                <p class="text-xs text-apple-subtext pt-2">
-                    💡 La inversión de S/ 900 se recupera íntegramente en los primeros <b class="text-white">5 días de operación</b>.
+                <p class="text-xs text-km-muted pt-2">
+                    💡 La inversión de S/ 900 se recupera en los primeros <b class="text-white">4 días de operación</b>.
                 </p>
             </div>
 
@@ -343,62 +402,85 @@
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 5. ESTRUCTURA DE PRECIOS EXACTA (S/ 900 SETUP + 2 MESES INCLUIDOS)       -->
+    <!-- 5. ESTRUCTURA DE PRECIOS EXACTA (S/ 900 + 2 MESES GRATIS + MANTENIMIENTO)  -->
     <!-- ========================================================================= -->
     <section id="precios" class="relative z-10 max-w-5xl mx-auto px-4 py-20">
         
         <div class="text-center max-w-xl mx-auto mb-16">
-            <span class="text-xs font-bold tracking-widest text-apple-blue uppercase block mb-3">Inversión Llave en Mano</span>
-            <h2 class="text-3xl sm:text-5xl font-bold text-white tracking-tight">Simple. Transparente. Sin costos ocultos.</h2>
+            <span class="text-xs font-black tracking-widest text-km-gold uppercase block mb-2">Propuesta Comercial</span>
+            <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Sin Sorpresas. Todo Incluido.</h2>
+            <p class="text-xs sm:text-sm text-km-muted mt-2">La oferta de lanzamiento más rentable del mercado gastronómico.</p>
         </div>
 
         <div class="max-w-3xl mx-auto space-y-8">
             
-            <!-- TARJETA PRINCIPAL: INVERSIÓN INICIAL S/ 900 -->
-            <div class="apple-card p-8 sm:p-10 border-2 border-apple-blue/50 relative overflow-hidden shadow-2xl">
-                <span class="absolute top-0 right-0 px-4 py-1.5 bg-apple-blue text-white text-[10px] font-bold uppercase tracking-widest rounded-bl-2xl">
+            <!-- TARJETA PRINCIPAL: SETUP S/ 900 CON 2 MESES INCLUIDOS -->
+            <div class="glass-panel p-8 sm:p-10 rounded-[32px] border-2 border-cyan-500/60 relative overflow-hidden shadow-2xl">
+                <span class="absolute top-0 right-0 px-4 py-1.5 bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-[10px] font-black uppercase tracking-widest rounded-bl-2xl">
                     Pack Fundador • Llave en Mano
                 </span>
 
                 <div class="space-y-4">
-                    <span class="text-xs font-bold text-apple-blue uppercase tracking-widest">Paso 1: Instalación & Activación Completa</span>
+                    <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest">Paso 1: Instalación, Hardware & Activación</span>
                     <div class="flex items-baseline gap-2">
                         <span class="text-5xl sm:text-6xl font-extrabold text-white">S/ 900</span>
-                        <span class="text-sm text-apple-subtext font-medium">Pago único de configuración</span>
+                        <span class="text-xs text-km-muted font-medium">Pago único inicial</span>
                     </div>
-                    <p class="text-sm text-apple-subtext leading-relaxed">
-                        Nosotros nos encargamos de absolutamente todo. Dejamos tu restaurante funcionando en menos de 24 horas.
+                    <p class="text-xs sm:text-sm text-km-muted leading-relaxed">
+                        Nosotros digitalizamos toda tu carta, editamos las fotos, generamos tus QR y te entregamos los parantes físicos listos para tus mesas en 24 horas.
                     </p>
 
-                    <!-- Lista de Entrega -->
+                    <!-- Lo que incluye -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 text-xs text-white">
-                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <b>2 Meses de servicio incluidos gratis</b></div>
-                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <b>10 Parantes de Acrílico grabados</b></div>
-                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Digitalización de carta con fotos HD</div>
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <b>Primeros 2 meses de servicio 100% GRATIS</b></div>
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> <b>10 Parantes de Acrílico grabados incluidos</b></div>
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Digitalización completa con fotos HD</div>
                         <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Traducción a 4 idiomas (ES/EN/FR/PT)</div>
-                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> KDS de Cocina con Asistente de Voz</div>
-                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Capacitación de 20 min a mozos y caja</div>
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Monitor KDS con Asistente de Voz</div>
+                        <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Capacitación a mozos y cajeros</div>
                     </div>
                 </div>
 
-                <!-- COTIZADOR DE MANTENIMIENTO A PARTIR DEL MES 3 -->
-                <div class="mt-8 pt-6 border-t border-white/[0.08] bg-black/40 p-5 rounded-2xl">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <!-- COTIZADOR DE MANTENIMIENTO DESDE EL MES 3 -->
+                <div class="mt-8 pt-6 border-t border-white/[0.08] bg-km-base/70 p-5 rounded-2xl space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                         <div>
-                            <span class="text-xs font-bold text-white block">Paso 2: Mantenimiento desde el Mes 3</span>
-                            <span class="text-[11px] text-apple-subtext">Soporte 24/7, servidores en la nube y actualizaciones</span>
+                            <span class="text-xs font-bold text-white block">Paso 2: Mantenimiento Mensual (A partir del Mes 3)</span>
+                            <span class="text-[10px] text-km-muted">Servidores Google Cloud 24/7, soporte y actualizaciones</span>
                         </div>
                         <div class="text-right">
-                            <span class="text-2xl font-bold text-white font-mono">S/ 200 a S/ 300</span>
-                            <span class="text-[10px] text-apple-subtext block">/ mes según extras</span>
+                            <span id="lblCuotaMantenimiento" class="text-2xl font-black text-cyan-400 font-mono">S/ 200.00</span>
+                            <span class="text-[9px] text-km-muted block">/ mes</span>
                         </div>
+                    </div>
+
+                    <!-- Módulos Adicionales para cotizar entre S/ 200 y S/ 300 -->
+                    <div class="space-y-1.5 pt-2 text-xs">
+                        <label class="flex items-center justify-between p-2 rounded-xl bg-km-card border border-white/[0.05] cursor-pointer">
+                            <span class="text-slate-300">Plan Base (Menú QR + KDS Cocina + Cierre Caja)</span>
+                            <span class="font-bold text-white">S/ 200/mes</span>
+                        </label>
+                        <label class="flex items-center justify-between p-2 rounded-xl bg-km-card border border-white/[0.05] cursor-pointer">
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="chkExtraVoz" onchange="recalcularMantenimiento()" class="accent-cyan-400 rounded">
+                                <span class="text-slate-300">+ Módulo de 4 Idiomas & Alérgenos Avanzados</span>
+                            </div>
+                            <span class="font-bold text-cyan-400">+ S/ 50/mes</span>
+                        </label>
+                        <label class="flex items-center justify-between p-2 rounded-xl bg-km-card border border-white/[0.05] cursor-pointer">
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="chkExtraReportes" onchange="recalcularMantenimiento()" class="accent-cyan-400 rounded">
+                                <span class="text-slate-300">+ Asistencia Prioritaria 24/7 & Reportes SUNAT CSV</span>
+                            </div>
+                            <span class="font-bold text-cyan-400">+ S/ 50/mes</span>
+                        </label>
                     </div>
                 </div>
 
                 <div class="pt-6">
-                    <a href="https://wa.me/51999999999?text=Hola%20KeyMar%20Systems,%20quiero%20coordinar%20el%20paquete%20de%20S/%20900%20para%20mi%20local." target="_blank" class="w-full py-4 apple-gradient-blue text-white hover:brightness-110 font-bold text-sm rounded-2xl flex items-center justify-center gap-2 shadow-xl transition">
-                        <i class="fa-brands fa-whatsapp text-lg"></i>
-                        <span>Solicitar Instalación en mi Restaurante</span>
+                    <a href="https://wa.me/51999999999?text=Hola%20KeyMar%20Systems,%20quiero%20coordinar%20el%20paquete%20de%20S/%20900%20con%20los%202%20meses%20gratis." target="_blank" class="w-full py-4 bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-400 text-white hover:brightness-110 font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 shadow-xl shadow-cyan-500/20 transition">
+                        <i class="fa-brands fa-whatsapp text-base"></i>
+                        <span>Solicitar Instalación de S/ 900 por WhatsApp</span>
                     </a>
                 </div>
             </div>
@@ -406,115 +488,138 @@
         </div>
     </section>
 
-    <!-- ========================================================================= -->
-    <!-- 6. FOOTER CORPORATIVO                                                    -->
-    <!-- ========================================================================= -->
-    <footer class="relative z-10 border-t border-white/[0.08] bg-[#050507] py-12 px-4 text-center">
+    <!-- FOOTER COMERCIAL -->
+    <footer class="relative z-10 border-t border-white/[0.08] bg-km-base py-12 px-4 text-center">
         <div class="max-w-4xl mx-auto space-y-4">
             <div class="flex items-center justify-center space-x-2">
-                <span class="text-xs font-bold uppercase tracking-[0.25em] text-white">KeyMar Systems</span>
+                <div class="w-6 h-6 rounded-lg bg-km-gold/20 flex items-center justify-center text-km-gold text-xs">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <span class="text-xs font-brand font-bold uppercase tracking-widest text-white">KeyMar Systems</span>
             </div>
-            <p class="text-xs text-apple-subtext max-w-md mx-auto">
+            <p class="text-xs text-km-muted max-w-md mx-auto">
                 Tecnología de alta velocidad y diseño para la hostelería moderna en el Perú.
             </p>
-            <p class="text-[10px] text-apple-subtext">© 2026 KeyMar Systems S.A.C. Todos los derechos reservados.</p>
+            <p class="text-[10px] text-km-muted">© 2026 KeyMar Systems S.A.C. Todos los derechos reservados.</p>
         </div>
     </footer>
 
     <!-- ========================================================================= -->
-    <!-- 7. CHATBOT ASISTENTE IA DE KEYMAR SYSTEMS (DESTACADO Y VISIBLE)          -->
+    <!-- 6. CHATBOT INTERACTIVO IA DE KEYMAR SYSTEMS (DESTACADO Y VISIBLE)        -->
     <!-- ========================================================================= -->
     <div class="fixed bottom-6 right-6 z-50 flex items-center gap-3">
         
-        <!-- Globo de Invitación Inicial (Llamativo) -->
-        <div id="globoInvitacionChat" class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-[#1d1d1f] border border-white/10 text-xs text-white shadow-2xl animate-bounce cursor-pointer" onclick="toggleChatbot()">
-            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span>¿Dudas sobre el sistema? Chatea aquí</span>
+        <!-- Globo de Invitación Inicial -->
+        <div id="globoInvitacionChat" class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-km-card border border-cyan-500/40 text-xs text-white shadow-2xl cursor-pointer hover:scale-105 transition" onclick="toggleChatbot()">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span>¿Dudas sobre el sistema? Chatea aquí 🤖</span>
         </div>
 
-        <!-- Botón Flotante Redondo -->
-        <button id="btnChatbotFlotante" onclick="toggleChatbot()" class="w-14 h-14 rounded-full apple-gradient-blue text-white flex items-center justify-center shadow-2xl hover:scale-110 transition-transform">
+        <!-- Botón Redondo Flotante -->
+        <button id="btnChatbotFlotante" onclick="toggleChatbot()" class="w-14 h-14 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 text-white flex items-center justify-center shadow-2xl hover:scale-110 transition-transform shadow-cyan-500/30">
             <i id="iconoChatFlotante" class="fa-solid fa-comment-dots text-xl"></i>
         </button>
     </div>
 
-    <!-- VENTANA DEL CHATBOT ESTILO APPLE -->
-    <div id="ventanaChatbot" class="fixed bottom-24 right-6 z-50 w-80 sm:w-96 rounded-[28px] bg-[#161617] border border-white/[0.12] shadow-2xl overflow-hidden hidden flex flex-col max-h-[520px]">
+    <!-- VENTANA DEL CHATBOT -->
+    <div id="ventanaChatbot" class="fixed bottom-24 right-6 z-50 w-80 sm:w-96 rounded-3xl bg-km-surface border border-km-border shadow-2xl overflow-hidden hidden flex flex-col max-h-[520px]">
         
         <!-- Header Chatbot -->
-        <div class="p-4 bg-[#1d1d1f] border-b border-white/[0.08] flex justify-between items-center">
+        <div class="p-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white flex justify-between items-center">
             <div class="flex items-center space-x-2.5">
-                <div class="w-8 h-8 rounded-full bg-apple-blue/20 text-apple-blue flex items-center justify-center text-xs font-bold">
+                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-xs">
                     <i class="fa-solid fa-robot"></i>
                 </div>
                 <div>
-                    <h4 class="text-xs font-bold text-white leading-none">Asistente KeyMar</h4>
-                    <span class="text-[10px] text-apple-subtext flex items-center gap-1 mt-0.5">
+                    <h4 class="text-xs font-bold leading-none">Asistente KeyMar</h4>
+                    <span class="text-[9px] text-cyan-100 flex items-center gap-1 mt-0.5">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Respuestas instantáneas
                     </span>
                 </div>
             </div>
-            <button onclick="toggleChatbot()" class="text-apple-subtext hover:text-white text-sm"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="toggleChatbot()" class="text-white/80 hover:text-white text-sm"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
         <!-- Mensajes -->
-        <div id="chatMensajesContenedor" class="p-4 overflow-y-auto custom-scroll space-y-3 flex-1 text-xs bg-[#0a0a0c]">
-            <div class="bg-[#1d1d1f] p-3.5 rounded-2xl rounded-tl-none border border-white/[0.06] text-white max-w-[85%] leading-relaxed">
-                ¡Hola! 👋 Soy el asistente de <b>KeyMar Systems</b>. ¿Qué te gustaría saber sobre cómo modernizar tu restaurante?
+        <div id="chatMensajesContenedor" class="p-4 overflow-y-auto custom-scroll space-y-3 flex-1 text-xs bg-km-base">
+            <div class="bg-km-card p-3.5 rounded-2xl rounded-tl-none border border-white/[0.06] text-white max-w-[85%] leading-relaxed">
+                ¡Hola! 👋 Soy el asistente de <b>KeyMar Systems</b>. ¿En qué te puedo ayudar sobre nuestro sistema para tu restaurante?
             </div>
         </div>
 
         <!-- Preguntas Rápidas -->
-        <div class="p-2.5 bg-[#161617] border-t border-white/[0.06] flex flex-wrap gap-1.5">
-            <button onclick="enviarPreguntaChat('¿Cómo son los precios?')" class="px-2.5 py-1 rounded-lg bg-[#1d1d1f] hover:bg-[#272729] text-[10px] text-apple-blue border border-white/[0.06] transition">¿Cómo son los precios?</button>
-            <button onclick="enviarPreguntaChat('¿Qué incluye los S/ 900?')" class="px-2.5 py-1 rounded-lg bg-[#1d1d1f] hover:bg-[#272729] text-[10px] text-apple-blue border border-white/[0.06] transition">¿Qué incluye el Setup?</button>
-            <button onclick="enviarPreguntaChat('¿Necesito comprar tablets caras?')" class="px-2.5 py-1 rounded-lg bg-[#1d1d1f] hover:bg-[#272729] text-[10px] text-apple-blue border border-white/[0.06] transition">¿Qué equipos necesito?</button>
-            <button onclick="enviarPreguntaChat('Quiero agendar una demo en mi restaurante')" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-[10px] text-emerald-400 border border-emerald-500/30 transition">Agendar Demo 📲</button>
+        <div class="p-2.5 bg-km-surface border-t border-km-border/60 flex flex-wrap gap-1.5">
+            <button onclick="enviarPreguntaChat('¿Qué incluye los S/ 900?')" class="px-2.5 py-1 rounded-lg bg-km-card hover:bg-km-cardHover text-[10px] text-cyan-400 border border-cyan-500/20 transition">¿Qué incluye el Setup?</button>
+            <button onclick="enviarPreguntaChat('¿Cómo son los pagos desde el mes 3?')" class="px-2.5 py-1 rounded-lg bg-km-card hover:bg-km-cardHover text-[10px] text-cyan-400 border border-cyan-500/20 transition">¿Cuánto es el mantenimiento?</button>
+            <button onclick="enviarPreguntaChat('¿Necesito comprar tablets caras?')" class="px-2.5 py-1 rounded-lg bg-km-card hover:bg-km-cardHover text-[10px] text-cyan-400 border border-cyan-500/20 transition">¿Qué equipos necesito?</button>
+            <button onclick="enviarPreguntaChat('Quiero agendar una demo en mi local')" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-[10px] text-emerald-400 border border-emerald-500/30 transition">Agendar Demo 📲</button>
         </div>
 
         <!-- Input de Texto -->
-        <div class="p-3 bg-[#1d1d1f] border-t border-white/[0.08] flex items-center gap-2">
-            <input type="text" id="inputChatTexto" onkeypress="if(event.key === 'Enter') enviarMensajeUsuario()" placeholder="Haz una pregunta sobre el sistema..." class="flex-1 bg-[#0a0a0c] text-xs text-white px-3.5 py-2.5 rounded-xl border border-white/[0.1] focus:border-apple-blue focus:outline-none">
-            <button onclick="enviarMensajeUsuario()" class="w-8 h-8 rounded-xl apple-gradient-blue text-white flex items-center justify-center text-xs font-bold hover:brightness-110 transition">
+        <div class="p-3 bg-km-card border-t border-km-border flex items-center gap-2">
+            <input type="text" id="inputChatTexto" onkeypress="if(event.key === 'Enter') enviarMensajeUsuario()" placeholder="Escribe tu consulta..." class="flex-1 bg-km-surface text-xs text-white px-3.5 py-2.5 rounded-xl border border-km-border focus:border-cyan-400 focus:outline-none">
+            <button onclick="enviarMensajeUsuario()" class="w-8 h-8 rounded-xl bg-cyan-500 text-black flex items-center justify-center text-xs font-bold hover:bg-cyan-400 transition">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
         </div>
 
     </div>
 
-    <!-- MODAL DEMO INTERACTIVA (SELECTOR DE PANTALLAS) -->
+    <!-- MODAL SELECTOR DE DEMOS -->
     <div id="modalDemoLauncher" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl hidden flex items-center justify-center p-4">
-        <div class="bg-[#161617] w-full max-w-md rounded-[32px] border border-white/[0.12] p-8 text-center shadow-2xl">
-            <div class="w-12 h-12 rounded-2xl bg-apple-blue/10 text-apple-blue flex items-center justify-center mx-auto mb-4 text-xl">
+        <div class="bg-km-surface w-full max-w-md rounded-3xl border border-white/[0.1] p-8 text-center shadow-2xl">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mx-auto mb-4 text-xl">
                 <i class="fa-solid fa-layer-group"></i>
             </div>
             <h3 class="text-xl font-bold text-white mb-2">Demostración en Vivo</h3>
-            <p class="text-xs text-apple-subtext mb-6">Elige qué pantalla deseas probar ahora mismo:</p>
+            <p class="text-xs text-km-muted mb-6">Elige qué pantalla deseas probar ahora mismo:</p>
 
             <div class="space-y-3">
-                <a href="https://ctiptexnslmedupe-dotcom.github.io/men/?mesa=Mesa-04" target="_blank" class="w-full p-4 rounded-2xl bg-[#1d1d1f] hover:bg-[#272729] border border-white/[0.08] flex items-center justify-between text-left transition group">
+                <a href="https://ctiptexnslmedupe-dotcom.github.io/men/?mesa=Mesa-04" target="_blank" class="w-full p-4 rounded-2xl bg-km-card hover:bg-km-cardHover border border-white/[0.08] flex items-center justify-between text-left transition group">
                     <div>
-                        <span class="text-xs font-bold text-white block group-hover:text-apple-blue">📱 Carta Digital del Cliente</span>
-                        <span class="text-[10px] text-apple-subtext">4 idiomas, alérgenos, división de cuenta</span>
+                        <span class="text-xs font-bold text-white block group-hover:text-cyan-400">📱 1. Carta Digital del Cliente</span>
+                        <span class="text-[10px] text-km-muted">4 idiomas, alérgenos, división de cuenta</span>
                     </div>
-                    <i class="fa-solid fa-arrow-right text-xs text-apple-subtext group-hover:text-white"></i>
+                    <i class="fa-solid fa-arrow-right text-xs text-km-muted group-hover:text-white"></i>
                 </a>
 
-                <a href="https://ctiptexnslmedupe-dotcom.github.io/men/cocina.html" target="_blank" class="w-full p-4 rounded-2xl bg-[#1d1d1f] hover:bg-[#272729] border border-white/[0.08] flex items-center justify-between text-left transition group">
+                <a href="https://ctiptexnslmedupe-dotcom.github.io/men/cocina.html" target="_blank" class="w-full p-4 rounded-2xl bg-km-card hover:bg-km-cardHover border border-white/[0.08] flex items-center justify-between text-left transition group">
                     <div>
-                        <span class="text-xs font-bold text-white block group-hover:text-apple-blue">👨‍🍳 Monitor KDS de Cocina & Caja</span>
-                        <span class="text-[10px] text-apple-subtext">Voz de chef, SLA, Excel y Stock (PIN: 1234)</span>
+                        <span class="text-xs font-bold text-white block group-hover:text-cyan-400">👨‍🍳 2. Monitor KDS de Cocina & Caja</span>
+                        <span class="text-[10px] text-km-muted">Voz de chef, SLA, Excel y Stock (PIN: 1234)</span>
                     </div>
-                    <i class="fa-solid fa-arrow-right text-xs text-apple-subtext group-hover:text-white"></i>
+                    <i class="fa-solid fa-arrow-right text-xs text-km-muted group-hover:text-white"></i>
                 </a>
             </div>
 
-            <button onclick="cerrarDemoModal()" class="w-full mt-6 py-2.5 text-xs text-apple-subtext hover:text-white font-medium">Cerrar</button>
+            <button onclick="cerrarModalDemoDirecta()" class="w-full mt-6 py-2.5 text-xs text-km-muted hover:text-white font-medium">Cerrar</button>
         </div>
     </div>
 
-    <!-- JAVASCRIPT: ROI, CHATBOT & MODALES -->
+    <!-- JAVASCRIPT: TABS, ROI, COTIZADOR & CHATBOT -->
     <script>
+        // 1. TABS DE PRODUCTOS
+        function cambiarTabProducto(tipo) {
+            document.querySelectorAll('.product-tab').forEach(b => {
+                b.className = 'product-tab px-5 py-3 rounded-2xl bg-km-card border border-white/[0.08] text-km-muted hover:text-white transition flex items-center gap-2';
+            });
+            document.getElementById(`tabBtn-${tipo}`).className = 'product-tab active px-5 py-3 rounded-2xl transition flex items-center gap-2';
+
+            ['web', 'qr', 'kds', 'caja'].forEach(p => {
+                document.getElementById(`panelProd-${p}`).classList.add('hidden');
+            });
+            document.getElementById(`panelProd-${tipo}`).classList.remove('hidden');
+        }
+
+        // 2. COTIZADOR DE MANTENIMIENTO
+        function recalcularMantenimiento() {
+            let base = 200;
+            if (document.getElementById('chkExtraVoz').checked) base += 50;
+            if (document.getElementById('chkExtraReportes').checked) base += 50;
+            document.getElementById('lblCuotaMantenimiento').innerText = `S/ ${base}.00`;
+        }
+
+        // 3. ROI
         function calcularROI(mesas) {
             document.getElementById('lblNumeroMesas').innerText = `${mesas} Mesas`;
             const horasAhorradas = mesas * 4;
@@ -523,13 +628,14 @@
             document.getElementById('lblAumentoVentas').innerText = `+ S/ ${aumentoVentas.toLocaleString()}`;
         }
 
-        function abrirDemoModal() {
+        function abrirModalDemoDirecta() {
             document.getElementById('modalDemoLauncher').classList.remove('hidden');
         }
-        function cerrarDemoModal() {
+        function cerrarModalDemoDirecta() {
             document.getElementById('modalDemoLauncher').classList.add('hidden');
         }
 
+        // 4. CHATBOT INTERACTIVO
         function toggleChatbot() {
             const ventana = document.getElementById('ventanaChatbot');
             const icono = document.getElementById('iconoChatFlotante');
@@ -547,10 +653,10 @@
             const msg = document.createElement('div');
 
             if (esUsuario) {
-                msg.className = 'apple-gradient-blue text-white p-3 rounded-2xl rounded-tr-none ml-auto max-w-[85%]';
+                msg.className = 'bg-gradient-to-r from-blue-600 to-cyan-500 text-white p-3 rounded-2xl rounded-tr-none ml-auto max-w-[85%]';
                 msg.innerText = texto;
             } else {
-                msg.className = 'bg-[#1d1d1f] p-3 rounded-2xl rounded-tl-none border border-white/[0.06] text-white max-w-[85%] leading-relaxed';
+                msg.className = 'bg-km-card p-3 rounded-2xl rounded-tl-none border border-white/[0.06] text-white max-w-[85%] leading-relaxed';
                 msg.innerHTML = texto;
             }
 
@@ -562,14 +668,16 @@
             const q = pregunta.toLowerCase();
 
             setTimeout(() => {
-                if (q.includes('precio') || q.includes('cuesta') || q.includes('900') || q.includes('setup') || q.includes('plan')) {
-                    agregarMensajeChat("La inversión inicial es de <b>S/ 900 (pago único)</b> e incluye:<br>• Configuración completa y carga de carta con fotos.<br>• 10 Parantes acrílicos grabados con QR.<br>• <b>Primeros 2 meses de servicio 100% GRATIS</b>.<br><br>A partir del mes 3, el mantenimiento es de solo <b>S/ 200 a S/ 300 mensuales</b> según los extras.");
-                } else if (q.includes('equipo') || q.includes('tablet') || q.includes('comprar')) {
-                    agregarMensajeChat("¡No necesitas gastar en equipos caros! La cocina puede usar una tablet básica o simplemente conectar un <b>parlante Bluetooth</b> para que el sistema cante las órdenes por voz.");
+                if (q.includes('900') || q.includes('setup') || q.includes('instalacion') || q.includes('inicial')) {
+                    agregarMensajeChat("La inversión inicial es de <b>S/ 900 (pago único)</b> e incluye:<br>• <b>2 Meses de servicio 100% GRATIS</b>.<br>• 10 Parantes de Acrílico grabados con QR.<br>• Carga completa de la carta con fotos HD.<br>• Capacitación a mozos y cocina.");
+                } else if (q.includes('mantenimiento') || q.includes('mes 3') || q.includes('cuota') || q.includes('mensual')) {
+                    agregarMensajeChat("A partir del mes 3, el mantenimiento mensual va desde <b>S/ 200 hasta S/ 300 / mes</b> según los módulos que elijas (soporte 24/7, servidores en la nube y reportes en Excel).");
+                } else if (q.includes('equipo') || q.includes('tablet') || q.includes('hardware')) {
+                    agregarMensajeChat("¡No necesitas tablets caras! La cocina puede usar un celular o conectar un <b>parlante Bluetooth</b> para que el sistema cante las comandas por voz.");
                 } else if (q.includes('demo') || q.includes('agendar') || q.includes('local') || q.includes('visita')) {
-                    agregarMensajeChat("¡Claro que sí! Podemos coordinar una demostración en vivo de 5 minutos en tu local por WhatsApp:<br><br><a href='https://wa.me/51999999999?text=Hola%20KeyMar%20Systems,%20quiero%20agendar%20una%20demostración%20en%20mi%20restaurante.' target='_blank' class='inline-block px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-[11px] mt-1 shadow'><i class='fa-brands fa-whatsapp mr-1.5'></i> Agendar por WhatsApp</a>");
+                    agregarMensajeChat("¡Claro! Podemos coordinar una demostración en vivo de 5 minutos en tu local:<br><br><a href='https://wa.me/51999999999?text=Hola%20KeyMar%20Systems,%20quiero%20agendar%20una%20demostración%20en%20mi%20local.' target='_blank' class='inline-block px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-[11px] mt-1 shadow'><i class='fa-brands fa-whatsapp mr-1.5'></i> Agendar por WhatsApp</a>");
                 } else {
-                    agregarMensajeChat("KeyMar Systems optimiza salón y cocina con cartas en 4 idiomas, comanda por voz y división de cuentas en Excel. ¿Te gustaría coordinar una visita?<br><br><a href='https://wa.me/51999999999?text=Hola,%20tengo%20una%20consulta.' target='_blank' class='text-apple-blue font-bold underline'>Hablar con un especialista</a>");
+                    agregarMensajeChat("KeyMar Systems moderniza restaurantes con cartas QR en 4 idiomas, cocina por voz y cierre en Excel. ¿Te gustaría coordinar una visita?<br><br><a href='https://wa.me/51999999999?text=Hola,%20tengo%20una%20consulta.' target='_blank' class='text-cyan-400 font-bold underline'>Hablar con un asesor</a>");
                 }
             }, 500);
         }
