@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="es" class="dark" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AUREUS RESERVE — Carta Digital & Menú en Mesa</title>
+    <title>AUREUS RESERVE — Multilingual Culinary & QR Dining</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -24,7 +25,6 @@
                             stone: '#f5f2eb',
                             muted: '#a8a296'
                         },
-                        // Paleta Modo Día / Terraza
                         luz: {
                             base: '#f8f6f0',
                             surface: '#ffffff',
@@ -43,7 +43,7 @@
             }
         }
     </script>
-    <!-- Firebase SDK (Compat) -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
@@ -54,7 +54,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* Modo Noche por defecto */
         body {
             background-color: #11100e;
             color: #f5f2eb;
@@ -63,7 +62,6 @@
             overflow-x: hidden;
             transition: background-color 0.3s, color 0.3s;
         }
-        /* Modo Día para Terrazas Soleadas */
         html:not(.dark) body {
             background-color: #f8f6f0;
             color: #1a1815;
@@ -74,13 +72,6 @@
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #3d3830; border-radius: 999px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #d4af37; }
-        
-        .macro-pulse { animation: macroFlash 0.35s ease-out; }
-        @keyframes macroFlash {
-            0% { transform: scale(1); opacity: 0.7; }
-            50% { transform: scale(1.1); color: #d4af37; }
-            100% { transform: scale(1); opacity: 1; }
-        }
 
         .watermark-float {
             animation: watermarkBreathe 16s ease-in-out infinite alternate;
@@ -110,42 +101,54 @@
         </div>
     </div>
 
-    <!-- HEADER CLIENTE CON IDENTIFICADOR DE ASIENTO Y MODO DÍA/NOCHE -->
-    <header class="sticky top-0 z-40 bg-luxe-surface/85 dark:bg-luxe-surface/85 bg-white/90 backdrop-blur-xl border-b border-luxe-border dark:border-luxe-border border-luz-border px-4 py-3 shadow-xl transition-colors">
+    <!-- HEADER: IDIOMA, MESA, ASIENTO Y MODO DÍA/NOCHE -->
+    <header class="sticky top-0 z-40 bg-luxe-surface/85 dark:bg-luxe-surface/85 bg-white/90 backdrop-blur-xl border-b border-luxe-border dark:border-luxe-border border-luz-border px-4 py-2.5 shadow-xl transition-colors">
         <div class="max-w-4xl mx-auto flex justify-between items-center gap-2">
             
-            <div class="flex items-center space-x-2.5 cursor-pointer" onclick="navegarInicioCliente()">
-                <div class="w-9 h-9 rounded-2xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border flex items-center justify-center shadow-md">
+            <!-- Logo y Marca -->
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="navegarInicioCliente()">
+                <div class="w-8 h-8 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 flex items-center justify-center shadow-md">
                     <i class="fa-solid fa-crown text-luxe-gold text-xs"></i>
                 </div>
                 <div>
-                    <h1 class="text-xs tracking-[0.2em] font-luxury-serif font-black uppercase text-luxe-stone dark:text-luxe-stone text-luz-text leading-none">
+                    <h1 class="text-[11px] tracking-[0.2em] font-luxury-serif font-black uppercase text-luxe-stone dark:text-luxe-stone text-luz-text leading-none">
                         Aureus <span class="text-luxe-gold">Reserve</span>
                     </h1>
-                    <span class="text-[9px] tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted font-semibold uppercase flex items-center gap-1 mt-0.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> En Vivo
+                    <span id="txtLiveBadge" class="text-[8px] tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted font-semibold uppercase flex items-center gap-1 mt-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> <span data-i18n="live_menu">En Vivo</span>
                     </span>
                 </div>
             </div>
 
-            <!-- CONTROLES HEADER: MESA, ASIENTO Y TOGGLE DÍA/NOCHE -->
+            <!-- CONTROLES SUPERIORES -->
             <div class="flex items-center space-x-1.5">
                 
-                <!-- Identificador de Asiento / Comensal (Mesas Compartidas) -->
-                <button onclick="abrirModalAsiento()" class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm text-xs" title="Asignar mi nombre o asiento">
+                <!-- SELECTOR DE IDIOMA (ES, EN, FR, PT) -->
+                <div class="relative bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 rounded-xl px-2 py-1 flex items-center shadow-sm">
+                    <span class="text-xs mr-1" id="flagIcon">🇪🇸</span>
+                    <select id="selectIdioma" onchange="cambiarIdioma(this.value)" class="bg-transparent text-xs font-bold text-luxe-stone dark:text-luxe-stone text-luz-text focus:outline-none cursor-pointer">
+                        <option value="es" class="bg-luxe-card text-white">ES</option>
+                        <option value="en" class="bg-luxe-card text-white">EN</option>
+                        <option value="fr" class="bg-luxe-card text-white">FR</option>
+                        <option value="pt" class="bg-luxe-card text-white">PT</option>
+                    </select>
+                </div>
+
+                <!-- Asiento / Comensal -->
+                <button onclick="abrirModalAsiento()" class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl flex items-center gap-1 shadow-sm text-xs" title="Asignar mi nombre">
                     <i class="fa-solid fa-user text-luxe-gold text-[10px]"></i>
-                    <span id="lblAsientoHeader" class="font-bold text-[11px] text-luxe-stone dark:text-luxe-stone text-luz-text">Asiento 1</span>
+                    <span id="lblAsientoHeader" class="font-bold text-[10px] text-luxe-stone dark:text-luxe-stone text-luz-text">Asiento 1</span>
                 </button>
 
                 <!-- Mesa ID -->
-                <div class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2.5 py-1.5 rounded-xl flex items-center gap-1 shadow-sm text-xs">
+                <div class="bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border px-2 py-1 rounded-xl flex items-center gap-1 shadow-sm text-xs">
                     <i class="fa-solid fa-chair text-luxe-gold text-[10px]"></i>
-                    <span id="lblMesaHeader" class="font-black font-luxury-serif text-[11px] text-luxe-stone dark:text-luxe-stone text-luz-text">Mesa 04</span>
+                    <span id="lblMesaHeader" class="font-black font-luxury-serif text-[10px] text-luxe-stone dark:text-luxe-stone text-luz-text">Mesa 04</span>
                 </div>
 
-                <!-- Toggle Modo Luz Día (Terraza) / Noche (Salón) -->
-                <button onclick="toggleModoDiaNoche()" class="w-8 h-8 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border text-luxe-gold flex items-center justify-center text-xs shadow-sm hover:scale-105 transition" title="Cambiar modo de iluminación Día/Noche">
-                    <i id="iconoTema" class="fa-solid fa-sun"></i>
+                <!-- Toggle Modo Día / Noche -->
+                <button onclick="toggleModoDiaNoche()" class="w-7 h-7 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border text-luxe-gold flex items-center justify-center text-xs shadow-sm hover:scale-105 transition" title="Cambiar tema Día/Noche">
+                    <i id="iconoTema" class="fa-solid fa-sun text-[11px]"></i>
                 </button>
             </div>
         </div>
@@ -160,63 +163,66 @@
             <!-- Hero Banner -->
             <div class="relative overflow-hidden rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border shadow-2xl h-44 flex items-end p-5 bg-cover bg-center" style="background-image: linear-gradient(to top, rgba(17,16,14,0.95) 15%, rgba(17,16,14,0.4) 65%, rgba(17,16,14,0.1) 100%), url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85');">
                 <div class="relative z-10">
-                    <span class="px-3 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-[0.2em] bg-luxe-surface/90 text-luxe-gold border border-luxe-border inline-block mb-1 backdrop-blur-md">
-                        Alta Cocina • Macros Dinámicos
+                    <span class="px-3 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-[0.2em] bg-luxe-surface/90 text-luxe-gold border border-luxe-border inline-block mb-1 backdrop-blur-md" data-i18n="hero_badge">
+                        Gastronomía Peruana de Autor
                     </span>
-                    <h2 class="text-lg sm:text-xl font-luxury-serif font-black text-white">Experiencia en <span id="lblMesaHero" class="text-luxe-gold">Mesa 04</span></h2>
-                    <p class="text-[11px] text-slate-300 max-w-sm">Personaliza cada plato con extras y observa cómo se recalculan los macros en tiempo real.</p>
+                    <h2 class="text-lg sm:text-xl font-luxury-serif font-black text-white">
+                        <span data-i18n="hero_title">Experiencia en</span> <span id="lblMesaHero" class="text-luxe-gold">Mesa 04</span>
+                    </h2>
+                    <p class="text-[11px] text-slate-300 max-w-sm" data-i18n="hero_subtitle">Ingredientes de origen certificado, pesca del día y recetas peruanas de alta cocina.</p>
                 </div>
             </div>
 
             <!-- Buscador Rápido -->
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-luxe-muted dark:text-luxe-muted text-luz-muted text-xs"></i>
-                <input type="text" id="inputBuscadorPlatos" oninput="buscarPlatosEnVivo(this.value)" placeholder="Buscar plato o ingrediente (ej. Salmón, Angus, Quinoa)..." class="w-full bg-luxe-card/90 dark:bg-luxe-card/90 bg-white text-xs text-luxe-stone dark:text-luxe-stone text-luz-text pl-10 pr-4 py-3 rounded-2xl border border-luxe-border dark:border-luxe-border border-luz-border focus:border-luxe-gold focus:outline-none backdrop-blur-md shadow-sm">
+                <input type="text" id="inputBuscadorPlatos" oninput="buscarPlatosEnVivo(this.value)" placeholder="Buscar por plato, ingrediente o alérgeno..." class="w-full bg-luxe-card/90 dark:bg-luxe-card/90 bg-white text-xs text-luxe-stone dark:text-luxe-stone text-luz-text pl-10 pr-4 py-3 rounded-2xl border border-luxe-border dark:border-luxe-border border-luz-border focus:border-luxe-gold focus:outline-none backdrop-blur-md shadow-sm">
             </div>
 
             <!-- Filtro de Categorías -->
             <div class="flex space-x-2 overflow-x-auto pb-1 custom-scroll text-xs">
-                <button onclick="filtrarCategoria('todos', event)" class="cat-pill active px-3.5 py-2 rounded-xl font-bold bg-luxe-gold text-black whitespace-nowrap transition shadow-md">Todas las Creaciones</button>
-                <button onclick="filtrarCategoria('entradas', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 dark:bg-luxe-card/90 bg-white text-luxe-stone dark:text-luxe-stone text-luz-text border border-luxe-border dark:border-luxe-border border-luz-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm shadow-sm">Entradas</button>
-                <button onclick="filtrarCategoria('fondos', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 dark:bg-luxe-card/90 bg-white text-luxe-stone dark:text-luxe-stone text-luz-text border border-luxe-border dark:border-luxe-border border-luz-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm shadow-sm">Principales</button>
-                <button onclick="filtrarCategoria('bebidas', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 dark:bg-luxe-card/90 bg-white text-luxe-stone dark:text-luxe-stone text-luz-text border border-luxe-border dark:border-luxe-border border-luz-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm shadow-sm">Elixires</button>
-                <button onclick="filtrarCategoria('postres', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 dark:bg-luxe-card/90 bg-white text-luxe-stone dark:text-luxe-stone text-luz-text border border-luxe-border dark:border-luxe-border border-luz-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm shadow-sm">Postres</button>
+                <button onclick="filtrarCategoria('todos', event)" class="cat-pill active px-3.5 py-2 rounded-xl font-bold bg-luxe-gold text-black whitespace-nowrap transition shadow-md" data-i18n="cat_all">Toda la Carta</button>
+                <button onclick="filtrarCategoria('entradas', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 dark:bg-luxe-card/90 bg-white text-luxe-stone dark:text-luxe-stone text-luz-text border border-luxe-border dark:border-luxe-border border-luz-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm shadow-sm" data-i18n="cat_starters">Entradas & Ceviches</button>
+                <button onclick="filtrarCategoria('fondos', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 dark:bg-luxe-card/90 bg-white text-luxe-stone dark:text-luxe-stone text-luz-text border border-luxe-border dark:border-luxe-border border-luz-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm shadow-sm" data-i18n="cat_mains">Fondos & Brasas</button>
+                <button onclick="filtrarCategoria('bebidas', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 dark:bg-luxe-card/90 bg-white text-luxe-stone dark:text-luxe-stone text-luz-text border border-luxe-border dark:border-luxe-border border-luz-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm shadow-sm" data-i18n="cat_drinks">Bebidas & Vinos</button>
+                <button onclick="filtrarCategoria('postres', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-luxe-card/90 dark:bg-luxe-card/90 bg-white text-luxe-stone dark:text-luxe-stone text-luz-text border border-luxe-border dark:border-luxe-border border-luz-border hover:border-luxe-gold/40 whitespace-nowrap transition backdrop-blur-sm shadow-sm" data-i18n="cat_desserts">Postres</button>
             </div>
 
             <!-- Grilla de Platos -->
             <div id="gridCatalogoPlatos" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
         </div>
 
-        <!-- SUBSECCIÓN B: TICKET ACUMULADO (EN VIVO CON LÍNEA DE TIEMPO) -->
+        <!-- SUBSECCIÓN B: TICKET ACUMULADO (EN VIVO) -->
         <div id="subseccionTicket" class="hidden space-y-5 max-w-2xl mx-auto">
             
+            <!-- Banner Status Cocina con Stepper -->
             <div class="bg-luxe-card/90 dark:bg-luxe-card/90 bg-white backdrop-blur-md p-5 rounded-3xl border border-luxe-gold/30 shadow-2xl relative overflow-hidden">
                 <div class="flex items-center space-x-4 mb-4">
                     <div class="w-12 h-12 rounded-2xl bg-luxe-surface dark:bg-luxe-surface bg-amber-50 border border-luxe-gold/40 text-luxe-gold flex items-center justify-center font-black text-xl gold-glow">
                         🍳
                     </div>
                     <div>
-                        <span class="text-[10px] tracking-[0.2em] text-luxe-gold font-bold uppercase">Estado de Comanda en Tiempo Real</span>
+                        <span class="text-[10px] tracking-[0.2em] text-luxe-gold font-bold uppercase" data-i18n="order_status_header">Estado de tu Pedido</span>
                         <h3 id="lblStatusCocinaHeader" class="text-base font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text">Comanda en Preparación</h3>
                     </div>
                 </div>
 
-                <!-- Stepper de Progreso en Vivo -->
+                <!-- Stepper de Progreso -->
                 <div class="bg-luxe-surface/80 dark:bg-luxe-surface/80 bg-luz-base p-3 rounded-2xl border border-luxe-border/60 dark:border-luxe-border/60 border-luz-border">
                     <div class="flex justify-between items-center text-[10px] font-bold text-center">
                         <div class="flex-1 flex flex-col items-center">
                             <span id="stepDot1" class="w-4 h-4 rounded-full bg-luxe-gold text-black flex items-center justify-center text-[9px] mb-1"><i class="fa-solid fa-check"></i></span>
-                            <span class="text-luxe-stone dark:text-luxe-stone text-luz-text">Recibido</span>
+                            <span class="text-luxe-stone dark:text-luxe-stone text-luz-text" data-i18n="step_1">Recibido</span>
                         </div>
                         <div id="stepLine1" class="h-[2px] flex-1 bg-luxe-gold/40 transition-colors"></div>
                         <div class="flex-1 flex flex-col items-center">
                             <span id="stepDot2" class="w-4 h-4 rounded-full bg-amber-400 text-black flex items-center justify-center text-[9px] mb-1 animate-pulse"><i class="fa-solid fa-fire"></i></span>
-                            <span class="text-amber-500">En Fuego</span>
+                            <span class="text-amber-500" data-i18n="step_2">En Fuego</span>
                         </div>
                         <div id="stepLine2" class="h-[2px] flex-1 bg-luxe-border transition-colors"></div>
                         <div class="flex-1 flex flex-col items-center">
                             <span id="stepDot3" class="w-4 h-4 rounded-full bg-luxe-card dark:bg-luxe-card bg-white border border-luxe-border text-luxe-muted flex items-center justify-center text-[9px] mb-1"><i class="fa-solid fa-utensils"></i></span>
-                            <span class="text-luxe-muted">En Mesa</span>
+                            <span class="text-luxe-muted" data-i18n="step_3">En Mesa</span>
                         </div>
                     </div>
                 </div>
@@ -226,10 +232,10 @@
             <div class="bg-luxe-card/90 dark:bg-luxe-card/90 bg-white backdrop-blur-md rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border shadow-2xl overflow-hidden">
                 <div class="p-5 bg-luxe-surface/90 dark:bg-luxe-surface/90 bg-luz-base border-b border-luxe-border dark:border-luxe-border border-luz-border flex justify-between items-center">
                     <div>
-                        <span class="text-[10px] font-extrabold uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted">Consumo Acumulado de la Mesa</span>
+                        <span class="text-[10px] font-extrabold uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted" data-i18n="ticket_title">Cuenta Acumulada de la Mesa</span>
                         <h4 id="lblTicketMesaTitle" class="text-base font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text">Mesa 04</h4>
                     </div>
-                    <span class="px-3 py-1 bg-luxe-gold/10 text-luxe-gold border border-luxe-gold/30 text-[10px] font-black rounded-full uppercase tracking-widest">
+                    <span class="px-3 py-1 bg-luxe-gold/10 text-luxe-gold border border-luxe-gold/30 text-[10px] font-black rounded-full uppercase tracking-widest" data-i18n="ticket_badge_open">
                         Cuenta Abierta
                     </span>
                 </div>
@@ -238,17 +244,17 @@
 
                 <div class="p-6 bg-luxe-surface/90 dark:bg-luxe-surface/90 bg-luz-base border-t border-luxe-border dark:border-luxe-border border-luz-border space-y-2">
                     <div class="flex justify-between text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted">
-                        <span>Subtotal neto</span>
+                        <span data-i18n="subtotal_neto">Subtotal neto</span>
                         <span id="ticketSubtotalNeto">S/ 0.00</span>
                     </div>
                     <div class="flex justify-between text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted">
-                        <span>IGV (18% incluido)</span>
+                        <span data-i18n="igv_tax">IGV (18% incluido)</span>
                         <span id="ticketIgvCalculado">S/ 0.00</span>
                     </div>
                     <div class="pt-3 border-t border-luxe-border dark:border-luxe-border border-luz-border flex justify-between items-center">
                         <div>
-                            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-luxe-muted dark:text-luxe-muted text-luz-muted block">TOTAL ACUMULADO</span>
-                            <span id="ticketTotalMacrosResume" class="text-[11px] text-luxe-gold font-semibold">0 kcal</span>
+                            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-luxe-muted dark:text-luxe-muted text-luz-muted block" data-i18n="total_accumulated">TOTAL ACUMULADO</span>
+                            <span id="ticketTotalItemsResume" class="text-[11px] text-luxe-gold font-semibold">0 platos pedidos</span>
                         </div>
                         <span id="ticketTotalAcumuladoSoles" class="text-2xl font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
                     </div>
@@ -259,17 +265,17 @@
             <div class="space-y-2.5 pt-1">
                 <button onclick="volverAlMenuParaPedirMas()" class="w-full py-4 bg-luxe-card/90 dark:bg-luxe-card/90 bg-white hover:bg-luxe-cardHover text-luxe-stone dark:text-luxe-stone text-luz-text border border-luxe-gold/40 hover:border-luxe-gold rounded-2xl font-bold text-xs transition shadow-lg flex items-center justify-center gap-2">
                     <i class="fa-solid fa-plus text-luxe-gold"></i>
-                    <span>➕ Pedir algo más (Añadir nuevo plato o bebida)</span>
+                    <span data-i18n="btn_order_more">➕ Pedir algo más (Añadir nuevo plato o bebida)</span>
                 </button>
 
                 <div class="grid grid-cols-2 gap-3">
                     <button onclick="solicitarAsistenciaMozo()" class="py-3.5 bg-luxe-card/90 dark:bg-luxe-card/90 bg-white hover:bg-luxe-cardHover text-amber-500 border border-amber-500/30 rounded-2xl font-bold text-xs transition flex items-center justify-center gap-2 shadow-sm">
                         <i class="fa-solid fa-bell"></i>
-                        <span>Llamar al Mozo</span>
+                        <span data-i18n="btn_call_waiter">Llamar al Mozo</span>
                     </button>
                     <button onclick="abrirModalPedirCuenta()" class="py-3.5 bg-gradient-to-r from-luxe-goldMuted via-luxe-gold to-luxe-goldLight text-black font-black text-xs rounded-2xl transition shadow-lg flex items-center justify-center gap-2 gold-glow">
                         <i class="fa-solid fa-credit-card"></i>
-                        <span>Pedir la Cuenta</span>
+                        <span data-i18n="btn_ask_bill">Pedir la Cuenta</span>
                     </button>
                 </div>
             </div>
@@ -284,17 +290,17 @@
                 <span id="txtCantCarritoFlotante">0</span>
             </div>
             <div>
-                <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted block font-semibold uppercase tracking-wider">Subtotal esta ronda:</span>
+                <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted block font-semibold uppercase tracking-wider" data-i18n="cart_round_total">Subtotal esta ronda:</span>
                 <span id="txtTotalCarritoFlotante" class="text-base font-black text-luxe-stone dark:text-luxe-stone text-luz-text font-luxury-serif">S/ 0.00</span>
             </div>
         </div>
         <button onclick="abrirModalCarrito()" class="px-5 py-2.5 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl transition flex items-center gap-2 shadow">
-            <span>Revisar Pedido</span>
+            <span data-i18n="cart_review_btn">Revisar Pedido</span>
             <i class="fa-solid fa-arrow-right text-[10px]"></i>
         </button>
     </div>
 
-    <!-- MODAL DETALLE DE PLATO -->
+    <!-- MODAL DETALLE DE PLATO: INGREDIENTES, PICANTE, ALÉRGENOS & MARIDAJE -->
     <div id="modalDetallePlato" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-luxe-surface dark:bg-luxe-surface bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border overflow-hidden max-h-[92vh] flex flex-col shadow-2xl">
             
@@ -319,50 +325,57 @@
                     <span id="modalPrecioBasePlato" class="text-lg font-black text-luxe-gold whitespace-nowrap ml-3 font-luxury-serif">S/ 0.00</span>
                 </div>
 
-                <!-- Macros Dinámicos -->
-                <div class="bg-luxe-card/90 dark:bg-luxe-card/90 bg-luz-base p-3.5 rounded-2xl border border-luxe-border dark:border-luxe-border border-luz-border shadow-inner">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted">Composición Nutricional</span>
-                        <span id="badgeExtrasSumados" class="text-[9px] font-bold text-luxe-gold bg-luxe-surface px-2 py-0.5 rounded-md border border-luxe-border hidden">+ Extras sumados</span>
+                <!-- FICHA TÉCNICA: INGREDIENTES, PICANTE & ALÉRGENOS (REEMPLAZO DE MACROS) -->
+                <div class="bg-luxe-card/90 dark:bg-luxe-card/90 bg-luz-base p-4 rounded-2xl border border-luxe-border dark:border-luxe-border border-luz-border space-y-3 shadow-sm">
+                    
+                    <!-- Ingredientes Principales -->
+                    <div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted block mb-1 flex items-center gap-1">
+                            <i class="fa-solid fa-seedling text-emerald-500"></i> <span data-i18n="label_ingredients">Ingredientes Principales</span>
+                        </span>
+                        <p id="modalIngredientesPlato" class="text-xs text-luxe-stone dark:text-luxe-stone text-luz-text font-medium leading-relaxed">Lista de ingredientes</p>
                     </div>
-                    <div class="grid grid-cols-4 gap-2 text-center">
-                        <div class="bg-luxe-surface dark:bg-luxe-surface bg-white p-2 rounded-xl border border-luxe-border dark:border-luxe-border border-luz-border shadow-sm">
-                            <span class="text-[9px] text-luxe-muted dark:text-luxe-muted text-luz-muted font-semibold uppercase block">Energía</span>
-                            <span id="modalKcalPlato" class="text-xs font-black text-amber-400">0 kcal</span>
+
+                    <!-- Nivel de Picante & Alérgenos -->
+                    <div class="pt-2 border-t border-luxe-border/50 flex flex-wrap gap-2 items-center justify-between text-xs">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[10px] text-luxe-muted font-bold" data-i18n="label_spicy">Picante:</span>
+                            <span id="modalPicantePlato" class="px-2 py-0.5 rounded-lg bg-luxe-surface dark:bg-luxe-surface bg-white text-[11px] font-bold text-amber-500 border border-luxe-border">🌶️ Suave</span>
                         </div>
-                        <div class="bg-luxe-surface dark:bg-luxe-surface bg-white p-2 rounded-xl border border-luxe-border dark:border-luxe-border border-luz-border shadow-sm">
-                            <span class="text-[9px] text-luxe-muted dark:text-luxe-muted text-luz-muted font-semibold uppercase block">Proteína</span>
-                            <span id="modalProtPlato" class="text-xs font-black text-luxe-gold">0g</span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[10px] text-luxe-muted font-bold" data-i18n="label_allergens">Alérgenos:</span>
+                            <span id="modalAlergenosPlato" class="px-2 py-0.5 rounded-lg bg-luxe-surface dark:bg-luxe-surface bg-white text-[11px] font-bold text-rose-400 border border-luxe-border">Ninguno</span>
                         </div>
-                        <div class="bg-luxe-surface dark:bg-luxe-surface bg-white p-2 rounded-xl border border-luxe-border dark:border-luxe-border border-luz-border shadow-sm">
-                            <span class="text-[9px] text-luxe-muted dark:text-luxe-muted text-luz-muted font-semibold uppercase block">Carbos</span>
-                            <span id="modalCarbPlato" class="text-xs font-black text-sky-400">0g</span>
-                        </div>
-                        <div class="bg-luxe-surface dark:bg-luxe-surface bg-white p-2 rounded-xl border border-luxe-border dark:border-luxe-border border-luz-border shadow-sm">
-                            <span class="text-[9px] text-luxe-muted dark:text-luxe-muted text-luz-muted font-semibold uppercase block">Grasas</span>
-                            <span id="modalGrasPlato" class="text-xs font-black text-rose-400">0g</span>
+                    </div>
+
+                    <!-- Maridaje Sugerido (Upselling) -->
+                    <div id="boxMaridajeSugerido" class="pt-2 border-t border-luxe-border/50 text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-wine-glass text-luxe-gold text-sm"></i>
+                        <div>
+                            <span class="text-[9px] font-bold text-luxe-gold uppercase tracking-wider block" data-i18n="label_pairing">Maridaje Recomendado por el Sommelier</span>
+                            <span id="modalMaridajePlato" class="text-[11px] text-luxe-stone dark:text-luxe-stone text-luz-text font-semibold">Copa de Vino</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Lista de Extras -->
+                <!-- Lista de Extras Personalizables -->
                 <div>
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-[10px] font-black uppercase tracking-widest text-luxe-gold">Selecciona Extras</span>
-                        <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted">Opcional</span>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-luxe-gold" data-i18n="label_extras">Extras y Personalizaciones</span>
+                        <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted" data-i18n="label_optional">Opcional</span>
                     </div>
                     <div id="modalListaExtras" class="space-y-2"></div>
                 </div>
 
-                <!-- Notas -->
+                <!-- Notas Especiales -->
                 <div>
-                    <span class="text-[10px] font-black uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted block mb-2">Instrucciones para el Chef</span>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted block mb-2" data-i18n="label_chef_notes">Instrucciones para la Cocina</span>
                     <div class="flex flex-wrap gap-1.5 mb-2">
-                        <button type="button" onclick="insertarNotaRapida('Término medio')" class="text-[10px] px-2.5 py-1 rounded-lg bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border text-luxe-stone dark:text-luxe-stone text-luz-text hover:border-luxe-gold/50">🥩 Término medio</button>
-                        <button type="button" onclick="insertarNotaRapida('Aderezo aparte')" class="text-[10px] px-2.5 py-1 rounded-lg bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border text-luxe-stone dark:text-luxe-stone text-luz-text hover:border-luxe-gold/50">🥗 Aderezo aparte</button>
-                        <button type="button" onclick="insertarNotaRapida('Sin sal añadida')" class="text-[10px] px-2.5 py-1 rounded-lg bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border text-luxe-stone dark:text-luxe-stone text-luz-text hover:border-luxe-gold/50">🧂 Sin sal</button>
+                        <button type="button" onclick="insertarNotaRapida('Término medio / Medium rare')" class="text-[10px] px-2.5 py-1 rounded-lg bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border text-luxe-stone dark:text-luxe-stone text-luz-text hover:border-luxe-gold/50">🥩 Término medio</button>
+                        <button type="button" onclick="insertarNotaRapida('Aderezo aparte / Dressing on the side')" class="text-[10px] px-2.5 py-1 rounded-lg bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border text-luxe-stone dark:text-luxe-stone text-luz-text hover:border-luxe-gold/50">🥗 Aderezo aparte</button>
+                        <button type="button" onclick="insertarNotaRapida('Sin sal / No salt')" class="text-[10px] px-2.5 py-1 rounded-lg bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border text-luxe-stone dark:text-luxe-stone text-luz-text hover:border-luxe-gold/50">🧂 Sin sal</button>
                     </div>
-                    <input type="text" id="modalInputNotas" placeholder="Ej: Sin cebolla, alérgico a frutos secos..." class="w-full bg-luxe-card dark:bg-luxe-card bg-luz-base text-xs text-luxe-stone dark:text-luxe-stone text-luz-text px-3.5 py-2.5 rounded-xl border border-luxe-border dark:border-luxe-border border-luz-border focus:border-luxe-gold focus:outline-none">
+                    <input type="text" id="modalInputNotas" placeholder="Ej: Sin cebolla, alérgico a frutos secos / No onion..." class="w-full bg-luxe-card dark:bg-luxe-card bg-luz-base text-xs text-luxe-stone dark:text-luxe-stone text-luz-text px-3.5 py-2.5 rounded-xl border border-luxe-border dark:border-luxe-border border-luz-border focus:border-luxe-gold focus:outline-none">
                 </div>
             </div>
 
@@ -374,7 +387,7 @@
                 </div>
                 <button onclick="confirmarAgregarAlCarrito()" class="flex-1 py-3.5 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg">
                     <i class="fa-solid fa-plus"></i>
-                    <span>Añadir • <span id="modalBtnPrecioTotal">S/ 0.00</span></span>
+                    <span><span data-i18n="btn_add">Añadir</span> • <span id="modalBtnPrecioTotal">S/ 0.00</span></span>
                 </button>
             </div>
         </div>
@@ -386,7 +399,7 @@
             <div class="p-4 bg-luxe-card dark:bg-luxe-card bg-luz-base border-b border-luxe-border dark:border-luxe-border border-luz-border flex justify-between items-center">
                 <div class="flex items-center space-x-2">
                     <i class="fa-solid fa-receipt text-luxe-gold"></i>
-                    <h3 class="text-sm font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text">Revisión de Pedido</h3>
+                    <h3 class="text-sm font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text" data-i18n="cart_modal_title">Revisión de Pedido</h3>
                 </div>
                 <button onclick="cerrarModalCarrito()" class="text-luxe-muted dark:text-luxe-muted text-luz-muted hover:text-luxe-gold">
                     <i class="fa-solid fa-xmark"></i>
@@ -397,18 +410,18 @@
 
             <div class="p-5 bg-luxe-card dark:bg-luxe-card bg-luz-base border-t border-luxe-border dark:border-luxe-border border-luz-border space-y-3">
                 <div class="flex justify-between items-center text-xs">
-                    <span class="text-luxe-muted dark:text-luxe-muted text-luz-muted font-semibold uppercase tracking-wider">Subtotal esta ronda:</span>
+                    <span class="text-luxe-muted dark:text-luxe-muted text-luz-muted font-semibold uppercase tracking-wider" data-i18n="cart_round_total">Subtotal esta ronda:</span>
                     <span id="modalCarroSubtotalVal" class="text-lg font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
                 </div>
                 <button id="btnEnviarCocinaModal" onclick="enviarPedidoACocinaFinal()" class="w-full py-4 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-paper-plane"></i>
-                    <span>Confirmar y Enviar a Cocina</span>
+                    <span data-i18n="cart_send_btn">Confirmar y Enviar a Cocina</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL PEDIR LA CUENTA: CON PROPINA Y DIVISIÓN EXACTA (1, 2, 3, 4, 5+) -->
+    <!-- MODAL PEDIR LA CUENTA: PROPINA Y DIVISIÓN EXACTA -->
     <div id="modalPagarCuenta" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-luxe-surface dark:bg-luxe-surface bg-white w-full max-w-md rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto custom-scroll">
             <button onclick="cerrarModalPedirCuenta()" class="absolute top-4 right-4 text-luxe-muted dark:text-luxe-muted text-luz-muted hover:text-luxe-gold">
@@ -419,20 +432,20 @@
                 <div class="w-10 h-10 rounded-2xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-1.5 text-base font-bold">
                     <i class="fa-solid fa-receipt"></i>
                 </div>
-                <h3 class="text-base font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text">Solicitud de Cuenta</h3>
+                <h3 class="text-base font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text" data-i18n="bill_modal_title">Solicitud de Cuenta</h3>
                 <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted"><span id="lblModalPagarMesa" class="text-luxe-gold font-bold">Mesa 04</span></p>
             </div>
 
             <!-- TOTAL GLOBAL -->
             <div class="bg-luxe-card dark:bg-luxe-card bg-luz-base p-4 rounded-2xl border border-luxe-border dark:border-luxe-border border-luz-border text-center mb-3 shadow-sm">
-                <span class="text-[9px] uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted font-extrabold block">Total a Pagar</span>
+                <span class="text-[9px] uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted font-extrabold block" data-i18n="bill_total_label">Total a Pagar</span>
                 <span id="lblModalPagarTotal" class="text-3xl font-black text-luxe-gold font-luxury-serif">S/ 0.00</span>
-                <span id="lblPropinaDesglose" class="text-[10px] text-amber-500 block mt-0.5 hidden">+ S/ 0.00 de servicio sugerido</span>
+                <span id="lblPropinaDesglose" class="text-[10px] text-amber-500 block mt-0.5 hidden">+ S/ 0.00</span>
             </div>
 
             <!-- SELECTOR DE PROPINA SUGERIDA -->
             <div class="bg-luxe-card/80 dark:bg-luxe-card/80 bg-luz-base p-3 rounded-2xl border border-luxe-border/80 dark:border-luxe-border/80 border-luz-border mb-3">
-                <span class="text-[9px] font-black uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted block mb-1.5 text-center">
+                <span class="text-[9px] font-black uppercase tracking-widest text-luxe-muted dark:text-luxe-muted text-luz-muted block mb-1.5 text-center" data-i18n="tip_label">
                     ✨ Servicio Sugerido al Personal
                 </span>
                 <div class="flex items-center gap-1">
@@ -445,7 +458,7 @@
 
             <!-- DIVISIÓN DE CUENTA 100% SIMÉTRICA (1, 2, 3, 4, 5+) -->
             <div class="bg-luxe-card/80 dark:bg-luxe-card/80 bg-luz-base p-3 rounded-2xl border border-luxe-border/80 dark:border-luxe-border/80 border-luz-border mb-4">
-                <span class="text-[9px] font-black uppercase tracking-widest text-luxe-gold block mb-1.5 text-center">
+                <span class="text-[9px] font-black uppercase tracking-widest text-luxe-gold block mb-1.5 text-center" data-i18n="split_label">
                     <i class="fa-solid fa-users mr-1"></i> Dividir Cuenta en Partes Iguales
                 </span>
                 <div class="flex items-center gap-1 mb-2">
@@ -456,7 +469,7 @@
                     <button type="button" onclick="calcularSplitBill(5)" class="btn-split flex-1 py-1.5 rounded-lg bg-luxe-surface dark:bg-luxe-surface bg-white border border-luxe-border dark:border-luxe-border border-luz-border text-luxe-stone dark:text-luxe-stone text-luz-text font-bold text-xs shadow-sm">5+</button>
                 </div>
                 <div id="boxResultadoSplit" class="text-center py-1.5 px-3 bg-luxe-surface dark:bg-luxe-surface bg-white rounded-xl border border-luxe-gold/30 hidden shadow-sm">
-                    <span class="text-[9px] text-luxe-muted dark:text-luxe-muted text-luz-muted block">Monto por comensal:</span>
+                    <span class="text-[9px] text-luxe-muted dark:text-luxe-muted text-luz-muted block" data-i18n="split_per_person">Monto por comensal:</span>
                     <span id="lblMontoPorPersona" class="text-base font-black text-amber-500 font-luxury-serif">S/ 0.00 c/u</span>
                 </div>
             </div>
@@ -467,21 +480,21 @@
                     <input type="radio" name="radioMetodoPago" value="Yape / Plin (QR)" checked onchange="toggleMetodoQR(true)" class="accent-luxe-gold mr-3">
                     <div class="flex-1">
                         <span class="text-xs font-bold text-luxe-stone dark:text-luxe-stone text-luz-text block">📲 Yape / Plin Digital</span>
-                        <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted">QR Digital al instante</span>
+                        <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted" data-i18n="pay_qr_desc">QR Digital al instante</span>
                     </div>
                 </label>
                 <label class="flex items-center p-2.5 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border cursor-pointer hover:border-luxe-gold/50 transition">
                     <input type="radio" name="radioMetodoPago" value="Tarjeta (POS Inalámbrico)" onchange="toggleMetodoQR(false)" class="accent-luxe-gold mr-3">
                     <div class="flex-1">
-                        <span class="text-xs font-bold text-luxe-stone dark:text-luxe-stone text-luz-text block">💳 Tarjeta (POS)</span>
-                        <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted">El mozo trae el terminal</span>
+                        <span class="text-xs font-bold text-luxe-stone dark:text-luxe-stone text-luz-text block">💳 <span data-i18n="pay_card">Tarjeta (POS)</span></span>
+                        <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted" data-i18n="pay_card_desc">El mozo trae el terminal</span>
                     </div>
                 </label>
                 <label class="flex items-center p-2.5 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border cursor-pointer hover:border-luxe-gold/50 transition">
                     <input type="radio" name="radioMetodoPago" value="Efectivo" onchange="toggleMetodoQR(false)" class="accent-luxe-gold mr-3">
                     <div class="flex-1">
-                        <span class="text-xs font-bold text-luxe-stone dark:text-luxe-stone text-luz-text block">💵 Efectivo</span>
-                        <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted">Pago en billetes</span>
+                        <span class="text-xs font-bold text-luxe-stone dark:text-luxe-stone text-luz-text block">💵 <span data-i18n="pay_cash">Efectivo</span></span>
+                        <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted" data-i18n="pay_cash_desc">Pago en billetes</span>
                     </div>
                 </label>
             </div>
@@ -500,37 +513,37 @@
                 <span class="text-[9px] font-black text-slate-900 mt-1 uppercase font-luxury-serif">AUREUS RESERVE S.A.C.</span>
             </div>
 
-            <button onclick="confirmarSolicitudDeCuenta()" class="w-full py-3 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow-lg transition">
+            <button onclick="confirmarSolicitudDeCuenta()" class="w-full py-3 bg-luxe-gold hover:bg-luxe-goldLight text-black font-black text-xs rounded-xl shadow-lg transition" data-i18n="bill_confirm_btn">
                 Confirmar y Llamar al Mozo
             </button>
         </div>
     </div>
 
-    <!-- MODAL IDENTIFICADOR DE ASIENTO / COMENSAL (MESAS COMPARTIDAS) -->
+    <!-- MODAL ASIENTO (MESAS COMPARTIDAS) -->
     <div id="modalAsientoComensal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="bg-luxe-surface dark:bg-luxe-surface bg-white w-full max-w-xs rounded-3xl border border-luxe-border dark:border-luxe-border border-luz-border p-6 shadow-2xl text-center">
             <div class="w-12 h-12 rounded-2xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-gold/40 text-luxe-gold flex items-center justify-center mx-auto mb-3 text-lg">
                 <i class="fa-solid fa-user-tag"></i>
             </div>
-            <h3 class="text-base font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text">Identificador de Comensal</h3>
-            <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 mb-4">¿Quién pide desde este teléfono? (Ayuda a la cocina a separar los platos de la mesa):</p>
+            <h3 class="text-base font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text" data-i18n="seat_modal_title">Identificador de Comensal</h3>
+            <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 mb-4" data-i18n="seat_modal_desc">¿Quién pide desde este teléfono? (Separa los platos de la mesa):</p>
 
             <input type="text" id="inputNombreAsiento" placeholder="Ej: Asiento 1, Carlos, Ana..." class="w-full bg-luxe-card dark:bg-luxe-card bg-luz-base text-center text-xs font-bold text-luxe-stone dark:text-luxe-stone text-luz-text p-3 rounded-xl border border-luxe-border dark:border-luxe-border border-luz-border focus:border-luxe-gold focus:outline-none mb-4">
 
             <div class="grid grid-cols-2 gap-2">
-                <button onclick="cerrarModalAsiento()" class="py-2.5 bg-luxe-card dark:bg-luxe-card bg-luz-base text-luxe-muted dark:text-luxe-muted text-luz-muted text-xs font-bold rounded-xl">Cancelar</button>
-                <button onclick="guardarAsientoComensal()" class="py-2.5 bg-luxe-gold text-black text-xs font-black rounded-xl shadow">Guardar</button>
+                <button onclick="cerrarModalAsiento()" class="py-2.5 bg-luxe-card dark:bg-luxe-card bg-luz-base text-luxe-muted dark:text-luxe-muted text-luz-muted text-xs font-bold rounded-xl" data-i18n="btn_cancel">Cancelar</button>
+                <button onclick="guardarAsientoComensal()" class="py-2.5 bg-luxe-gold text-black text-xs font-black rounded-xl shadow" data-i18n="btn_save">Guardar</button>
             </div>
         </div>
     </div>
 
-    <!-- TOAST NOTIFICACIÓN -->
+    <!-- TOAST -->
     <div id="toastNotification" class="fixed top-5 right-5 z-50 bg-luxe-card/95 dark:bg-luxe-card/95 bg-white text-luxe-stone dark:text-luxe-stone text-luz-text px-4 py-3 rounded-2xl shadow-2xl border border-luxe-border flex items-center space-x-3 transform translate-x-96 transition-transform duration-300">
         <i id="toastIcon" class="fa-solid fa-circle-check text-luxe-gold text-base"></i>
         <span id="toastMsg" class="text-xs font-bold block">Notificación</span>
     </div>
 
-    <!-- JAVASCRIPT DEL CLIENTE -->
+    <!-- JAVASCRIPT MULTILINGÜE -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAOdDt5smefZAZHcMZA2spWVRwT8xaAAq4",
@@ -547,106 +560,384 @@
         }
         const db = firebase.database();
 
+        // DICCIONARIO MULTILINGÜE (i18n)
+        const DICCIONARIO = {
+            es: {
+                live_menu: "En Vivo",
+                hero_badge: "Gastronomía Peruana de Autor",
+                hero_title: "Experiencia en",
+                hero_subtitle: "Ingredientes de origen certificado, pesca del día y recetas peruanas de alta cocina.",
+                search_placeholder: "Buscar por plato, ingrediente o alérgeno...",
+                cat_all: "Toda la Carta",
+                cat_starters: "Entradas & Ceviches",
+                cat_mains: "Fondos & Brasas",
+                cat_drinks: "Bebidas & Vinos",
+                cat_desserts: "Postres",
+                order_status_header: "Estado de tu Pedido",
+                step_1: "Recibido",
+                step_2: "En Fuego",
+                step_3: "En Mesa",
+                ticket_title: "Cuenta Acumulada de la Mesa",
+                ticket_badge_open: "Cuenta Abierta",
+                subtotal_neto: "Subtotal neto",
+                igv_tax: "IGV (18% incluido)",
+                total_accumulated: "TOTAL ACUMULADO",
+                btn_order_more: "➕ Pedir algo más (Añadir nuevo plato o bebida)",
+                btn_call_waiter: "Llamar al Mozo",
+                btn_ask_bill: "Pedir la Cuenta",
+                cart_round_total: "Subtotal esta ronda:",
+                cart_review_btn: "Revisar Pedido",
+                label_ingredients: "Ingredientes Principales",
+                label_spicy: "Picante:",
+                label_allergens: "Alérgenos:",
+                label_pairing: "Maridaje Sugerido por el Sommelier",
+                label_extras: "Extras y Personalizaciones",
+                label_optional: "Opcional",
+                label_chef_notes: "Instrucciones para la Cocina",
+                btn_add: "Añadir",
+                cart_modal_title: "Revisión de Pedido",
+                cart_send_btn: "Confirmar y Enviar a Cocina",
+                bill_modal_title: "Solicitud de Cuenta",
+                bill_total_label: "Total a Pagar",
+                tip_label: "✨ Servicio Sugerido al Personal",
+                split_label: "Dividir Cuenta en Partes Iguales",
+                split_per_person: "Monto por comensal:",
+                pay_qr_desc: "QR Digital al instante",
+                pay_card: "Tarjeta (POS)",
+                pay_card_desc: "El mozo trae el terminal",
+                pay_cash: "Efectivo",
+                pay_cash_desc: "Pago en billetes",
+                bill_confirm_btn: "Confirmar y Llamar al Mozo",
+                seat_modal_title: "Identificador de Comensal",
+                seat_modal_desc: "¿Quién pide desde este teléfono? (Separa los platos de la mesa):",
+                btn_cancel: "Cancelar",
+                btn_save: "Guardar",
+                sold_out_tag: "🔴 AGOTADO",
+                sold_out_btn: "Agotado",
+                sold_out_msg: "No disponible por hoy"
+            },
+            en: {
+                live_menu: "Live Service",
+                hero_badge: "Signature Peruvian Gastronomy",
+                hero_title: "Dining at",
+                hero_subtitle: "Certified origin ingredients, fresh catch of the day, and fine Peruvian cuisine.",
+                search_placeholder: "Search by dish, ingredient or allergen...",
+                cat_all: "Full Menu",
+                cat_starters: "Starters & Ceviches",
+                cat_mains: "Mains & Grill",
+                cat_drinks: "Drinks & Wines",
+                cat_desserts: "Desserts",
+                order_status_header: "Your Order Live Status",
+                step_1: "Received",
+                step_2: "In Fire",
+                step_3: "Served",
+                ticket_title: "Table Accumulated Check",
+                ticket_badge_open: "Open Tab",
+                subtotal_neto: "Net Subtotal",
+                igv_tax: "Tax (18% included)",
+                total_accumulated: "TOTAL BALANCE",
+                btn_order_more: "➕ Order more items (Add another dish/drink)",
+                btn_call_waiter: "Call Waiter",
+                btn_ask_bill: "Ask for Bill",
+                cart_round_total: "Round Subtotal:",
+                cart_review_btn: "Review Order",
+                label_ingredients: "Key Ingredients",
+                label_spicy: "Spicy Level:",
+                label_allergens: "Allergens:",
+                label_pairing: "Sommelier Recommended Pairing",
+                label_extras: "Extras & Customizations",
+                label_optional: "Optional",
+                label_chef_notes: "Kitchen Special Instructions",
+                btn_add: "Add to Order",
+                cart_modal_title: "Order Review",
+                cart_send_btn: "Send Order to Kitchen",
+                bill_modal_title: "Bill Request",
+                bill_total_label: "Total Due",
+                tip_label: "✨ Suggested Staff Gratuity",
+                split_label: "Split Bill in Equal Parts",
+                split_per_person: "Amount per guest:",
+                pay_qr_desc: "Instant Digital QR",
+                pay_card: "Credit / Debit Card",
+                pay_card_desc: "Waiter brings wireless POS",
+                pay_cash: "Cash",
+                pay_cash_desc: "Cash payment",
+                bill_confirm_btn: "Confirm & Request Waiter",
+                seat_modal_title: "Guest Seat Tag",
+                seat_modal_desc: "Who is ordering from this device? (Helps kitchen separate dishes):",
+                btn_cancel: "Cancel",
+                btn_save: "Save",
+                sold_out_tag: "🔴 SOLD OUT",
+                sold_out_btn: "Sold Out",
+                sold_out_msg: "Currently unavailable"
+            },
+            fr: {
+                live_menu: "En Direct",
+                hero_badge: "Gastronomie Péruvienne d'Auteur",
+                hero_title: "Expérience à",
+                hero_subtitle: "Ingrédients d'origine certifiée, pêche du jour et haute cuisine péruvienne.",
+                search_placeholder: "Rechercher un plat, ingrédient ou allergène...",
+                cat_all: "Tout le Menu",
+                cat_starters: "Entrées & Ceviches",
+                cat_mains: "Plats & Grillades",
+                cat_drinks: "Boissons & Vins",
+                cat_desserts: "Desserts",
+                order_status_header: "Statut de votre commande",
+                step_1: "Reçu",
+                step_2: "En Cuisine",
+                step_3: "À Table",
+                ticket_title: "Addition Cumulée de la Table",
+                ticket_badge_open: "Compte Ouvert",
+                subtotal_neto: "Sous-total net",
+                igv_tax: "TVA (18% incluse)",
+                total_accumulated: "TOTAL À PAYER",
+                btn_order_more: "➕ Commander d'autres plats",
+                btn_call_waiter: "Appeler le Serveur",
+                btn_ask_bill: "Demander l'Addition",
+                cart_round_total: "Sous-total de la tournée:",
+                cart_review_btn: "Vérifier la Commande",
+                label_ingredients: "Ingrédients Principaux",
+                label_spicy: "Niveau Épicé:",
+                label_allergens: "Allergènes:",
+                label_pairing: "Accord suggéré par le Sommelier",
+                label_extras: "Suppléments & Personnalisation",
+                label_optional: "Optionnel",
+                label_chef_notes: "Instructions pour la Cuisine",
+                btn_add: "Ajouter",
+                cart_modal_title: "Vérification",
+                cart_send_btn: "Envoyer en Cuisine",
+                bill_modal_title: "Demande d'Addition",
+                bill_total_label: "Total à Payer",
+                tip_label: "✨ Pourboire Suggéré",
+                split_label: "Diviser l'Addition à Parts Égales",
+                split_per_person: "Montant par personne:",
+                pay_qr_desc: "QR Numérique instantané",
+                pay_card: "Carte Bancaire",
+                pay_card_desc: "Le serveur apporte le TPE",
+                pay_cash: "Espèces",
+                pay_cash_desc: "Paiement en espèces",
+                bill_confirm_btn: "Confirmer et Appeler",
+                seat_modal_title: "Nom du Convive",
+                seat_modal_desc: "Qui commande depuis ce téléphone?",
+                btn_cancel: "Annuler",
+                btn_save: "Enregistrer",
+                sold_out_tag: "🔴 ÉPUISÉ",
+                sold_out_btn: "Épuisé",
+                sold_out_msg: "Non disponible aujourd'hui"
+            },
+            pt: {
+                live_menu: "Ao Vivo",
+                hero_badge: "Gastronomia Peruana Autoral",
+                hero_title: "Experiência na",
+                hero_subtitle: "Ingredientes certificados, pesca fresca do dia e alta culinária peruana.",
+                search_placeholder: "Buscar prato, ingrediente ou alérgeno...",
+                cat_all: "Menu Completo",
+                cat_starters: "Entradas & Ceviches",
+                cat_mains: "Pratos Principais",
+                cat_drinks: "Bebidas & Vinhos",
+                cat_desserts: "Sobremesas",
+                order_status_header: "Status do seu Pedido",
+                step_1: "Recebido",
+                step_2: "No Fogo",
+                step_3: "Na Mesa",
+                ticket_title: "Conta Acumulada da Mesa",
+                ticket_badge_open: "Conta Aberta",
+                subtotal_neto: "Subtotal líquido",
+                igv_tax: "Imposto (18% incluso)",
+                total_accumulated: "TOTAL A PAGAR",
+                btn_order_more: "➕ Pedir mais itens",
+                btn_call_waiter: "Chamar Garçom",
+                btn_ask_bill: "Pedir a Conta",
+                cart_round_total: "Subtotal desta rodada:",
+                cart_review_btn: "Revisar Pedido",
+                label_ingredients: "Ingredientes Principais",
+                label_spicy: "Pimenta:",
+                label_allergens: "Alérgenos:",
+                label_pairing: "Harmonização Sugerida pelo Sommelier",
+                label_extras: "Adicionais e Personalizações",
+                label_optional: "Opcional",
+                label_chef_notes: "Instruções para a Cozinha",
+                btn_add: "Adicionar",
+                cart_modal_title: "Revisão do Pedido",
+                cart_send_btn: "Enviar para a Cozinha",
+                bill_modal_title: "Solicitação de Conta",
+                bill_total_label: "Total a Pagar",
+                tip_label: "✨ Gorjeta Sugerida",
+                split_label: "Dividir a Conta em Partes Iguais",
+                split_per_person: "Valor por pessoa:",
+                pay_qr_desc: "QR Digital instantâneo",
+                pay_card: "Cartão (Maquininha)",
+                pay_card_desc: "O garçom traz a maquininha",
+                pay_cash: "Dinheiro",
+                pay_cash_desc: "Pagamento em dinheiro",
+                bill_confirm_btn: "Confirmar e Chamar Garçom",
+                seat_modal_title: "Identificador do Cliente",
+                seat_modal_desc: "Quem está pedindo deste telefone?",
+                btn_cancel: "Cancelar",
+                btn_save: "Salvar",
+                sold_out_tag: "🔴 ESGOTADO",
+                sold_out_btn: "Esgotado",
+                sold_out_msg: "Indisponível hoje"
+            }
+        };
+
+        let idiomaActual = 'es';
+
+        // CATÁLOGO PERUANO MULTILINGÜE CON INGREDIENTES, PICANTE, ALÉRGENOS & MARIDAJE
         const PRODUCTOS_CATALOGO = [
             {
                 id: 1,
-                nombre: "Tataki de Atún Rojo & Sésamo Tostado",
+                nombre: { es: "Ceviche Clásico de Pesca del Día", en: "Classic Fresh Catch Ceviche", fr: "Ceviche Classique Pêche du Jour", pt: "Ceviche Clássico do Dia" },
                 categoria: "entradas",
-                precioBase: 54.00,
-                desc: "Lomo de atún aleta amarilla sellado, costra de sésamo bicolor, palta tatemada y ponzu trufado.",
-                img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=85",
-                tag: "Pesca Sostenible",
-                kcal: 410, prot: 44, carb: 12, gras: 18,
+                precioBase: 48.00,
+                desc: {
+                    es: "Corvina fresca en leche de tigre al ají limo piurano, camote glaseado y choclo cuzqueño.",
+                    en: "Fresh wild corvina cured in spicy lime tiger's milk, glazed sweet potato, and Andean corn.",
+                    fr: "Courbine fraîche marinée au lait de tigre au piment limo, patate douce et maïs géant.",
+                    pt: "Corvina fresca marinada em leche de tigre com ají limo, batata doce glaceada e milho andino."
+                },
+                img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "Plato Bandera", en: "Signature Dish", fr: "Plat Emblématique", pt: "Prato Principal" },
+                ingredientes: {
+                    es: "Corvina fresca, limón sutil, ají limo, cebolla morada, camote, choclo.",
+                    en: "Wild corvina, Key lime, limo chili, red onion, sweet potato, giant corn.",
+                    fr: "Courbine sauvage, citron vert, piment limo, oignon rouge, patate douce.",
+                    pt: "Corvina selvagem, limão, pimenta limo, cebola roxa, batata doce."
+                },
+                picante: "🌶️🌶️ Medio / Medium",
+                alergenos: "Pescado / Fish",
+                maridaje: { es: "Pisco Sour Clásico Quebranta (S/ 26)", en: "Classic Quebranta Pisco Sour (S/ 26)" },
                 extrasDisponibles: [
-                    { id: 'ex_caviar', nombre: 'Caviar Oscietra Imperial (15g)', precio: 28.00, kcal: 40, prot: 4, carb: 1, gras: 3 },
-                    { id: 'ex_palta', nombre: 'Doble Palta Hass Tatemada', precio: 7.00, kcal: 120, prot: 2, carb: 6, gras: 11 },
-                    { id: 'ex_trufa', nombre: 'Aceite de Trufa Blanca Italiana', precio: 8.00, kcal: 45, prot: 0, carb: 0, gras: 5 }
+                    { id: 'ex_chicharron', nombre: { es: "Chicharrón de Calamar Crocante", en: "Crispy Calamari Chicharrón" }, precio: 14.00 },
+                    { id: 'ex_cancha', nombre: { es: "Porción Extra Cancha Serrana", en: "Extra Andean Toasted Corn" }, precio: 4.00 }
                 ]
             },
             {
                 id: 2,
-                nombre: "Carpaccio de Pulpo al Olivo Criollo",
-                categoria: "entradas",
-                precioBase: 46.00,
-                desc: "Láminas finas de pulpo a baja temperatura, emulsión de aceitunas de botija y chips de masa madre.",
-                img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=85",
-                tag: "Entrada Fría",
-                kcal: 320, prot: 32, carb: 8, gras: 14,
+                nombre: { es: "Lomo Saltado Criollo al Wok", en: "Criollo Lomo Saltado Wok Tenderloin", fr: "Lomo Saltado au Wok", pt: "Lomo Saltado Tradicional no Wok" },
+                categoria: "fondos",
+                precioBase: 58.00,
+                desc: {
+                    es: "Lomo fino flambeado al pisco en wok con cebolla, tomate, papas amarillas fritas y arroz con choclo.",
+                    en: "Prime beef tenderloin wok-flambéed with pisco, red onions, tomatoes, crispy native fries, and rice.",
+                    fr: "Filet de bœuf sauté au wok et flambé au pisco, oignons rouges, frites de pommes de terre indigènes et riz.",
+                    pt: "Filé mignon flambado ao pisco no wok com cebola, tomate, batata frita e arroz."
+                },
+                img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "Tradición Criolla", en: "Peruvian Classic", fr: "Classique", pt: "Clássico" },
+                ingredientes: {
+                    es: "Lomo fino Angus, cebolla roja, tomate, ají amarillo, sillao, vinagre tinto, papa amarilla.",
+                    en: "Angus beef tenderloin, red onion, tomato, yellow chili, soy sauce, red vinegar, native potato.",
+                    fr: "Filet de bœuf Angus, oignon rouge, tomate, piment jaune, sauce soja, pommes de terre.",
+                    pt: "Filé mignon Angus, cebola roxa, tomate, ají amarillo, molho de soja, batatas."
+                },
+                picante: "🌶️ Suave / Mild",
+                alergenos: "Soya / Gluten (Sillao)",
+                maridaje: { es: "Copa de Malbec Gran Reserva (S/ 28)", en: "Glass of Malbec Gran Reserva (S/ 28)" },
                 extrasDisponibles: [
-                    { id: 'ex_tostadas', nombre: 'Chips Masa Madre Keto Extra', precio: 6.00, kcal: 90, prot: 4, carb: 5, gras: 6 },
-                    { id: 'ex_alcaparras', nombre: 'Alcaparras Crocantes Fritas', precio: 5.00, kcal: 25, prot: 1, carb: 2, gras: 2 }
+                    { id: 'ex_huevo_frito', nombre: { es: "Huevo Frito de Granja a Caballo", en: "Farm Fried Egg on Top" }, precio: 5.00 },
+                    { id: 'ex_platano', nombre: { es: "Plátano Bellaco Frito", en: "Fried Sweet Plantain" }, precio: 6.00 }
                 ]
             },
             {
                 id: 3,
-                nombre: "Ribeye Black Angus 300g al Carbón",
+                nombre: { es: "Ribeye Black Angus 300g a la Brasa", en: "Grilled Black Angus Ribeye 300g", fr: "Ribeye Black Angus Braisé", pt: "Ribeye Black Angus na Brasa" },
                 categoria: "fondos",
                 precioBase: 78.00,
-                desc: "Corte selecto Angus de pastoreo, espárragos verdes grillados y puré de camote rústico.",
+                desc: {
+                    es: "Corte selecto Angus de libre pastoreo sellado al carbón de quebracho con espárragos y puré rústico.",
+                    en: "Prime grass-fed Angus ribeye seared over charcoal wood, served with asparagus and potato mash.",
+                    fr: "Ribeye Angus grillé au feu de bois, asperges vertes et purée de pommes de terre maison.",
+                    pt: "Corte Angus grelhado no carvão com aspargos verdes e purê rústico."
+                },
                 img: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&q=85",
-                tag: "Grass-Fed Angus",
-                kcal: 710, prot: 62, carb: 24, gras: 36,
+                tag: { es: "Corte Premium", en: "Prime Cut", fr: "Pièce Noble", pt: "Corte Nobre" },
+                ingredientes: {
+                    es: "Bife Ancho Angus 300g, espárragos verdes, mantequilla clarificada, sal de Maras.",
+                    en: "Angus Ribeye 300g, green asparagus, clarified butter, Maras pink salt.",
+                    fr: "Ribeye Angus 300g, asperges vertes, beurre clarifié, sel de Maras.",
+                    pt: "Ribeye Angus 300g, aspargos verdes, manteiga clarificada, sal de Maras."
+                },
+                picante: "Sin picante / None",
+                alergenos: "Lactosa / Dairy (Mantequilla)",
+                maridaje: { es: "Cabernet Sauvignon Reserva (S/ 32)", en: "Cabernet Sauvignon Reserva (S/ 32)" },
                 extrasDisponibles: [
-                    { id: 'ex_mantequilla_trufa', nombre: 'Mantequilla de Trufa Negra', precio: 12.00, kcal: 110, prot: 1, carb: 0, gras: 12 },
-                    { id: 'ex_huevo_granja', nombre: 'Huevo Pochado de Granja Libre', precio: 6.00, kcal: 75, prot: 7, carb: 1, gras: 5 },
-                    { id: 'ex_chimichurri', nombre: 'Chimichurri Rústico de la Casa', precio: 5.00, kcal: 50, prot: 0, carb: 1, gras: 5 }
+                    { id: 'ex_mantequilla_trufa', nombre: { es: "Mantequilla de Trufa Negra", en: "Black Truffle Butter" }, precio: 12.00 },
+                    { id: 'ex_chimichurri', nombre: { es: "Chimichurri Rústico de Hierbas", en: "Rustic Herb Chimichurri" }, precio: 5.00 }
                 ]
             },
             {
                 id: 4,
-                nombre: "Salmón Salvaje con Costra de Hierbas",
-                categoria: "fondos",
-                precioBase: 64.00,
-                desc: "Filete de salmón salvaje atlántico, costra de eneldo y almendras, sobre quinoa negra orgánica.",
-                img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=85",
-                tag: "Omega-3 Puro",
-                kcal: 560, prot: 48, carb: 20, gras: 26,
+                nombre: { es: "Causa Limeña con Pulpa de Cangrejo", en: "Limeña Causa with Crab Meat", fr: "Causa Limeña au Crabe", pt: "Causa Limeña com Caranguejo" },
+                categoria: "entradas",
+                precioBase: 44.00,
+                desc: {
+                    es: "Masa de papa amarilla al limón y ají amarillo, palta hass y abundante pulpa de cangrejo fresca.",
+                    en: "Layered yellow potato terrine seasoned with lime and ají amarillo, Hass avocado, and fresh crab.",
+                    fr: "Terrine de pommes de terre jaunes au citron vert et piment doux, avocat et chair de crabe.",
+                    pt: "Massa de batata amarela temperada com limão e ají amarillo, abacate e carne de caranguejo."
+                },
+                img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "Entrada Fría", en: "Cold Starter", fr: "Entrée", pt: "Entrada" },
+                ingredientes: {
+                    es: "Papa amarilla, ají amarillo, limón sutil, palta Hass, pulpa de cangrejo, huevo de codorniz.",
+                    en: "Yellow potato, yellow chili, lime, Hass avocado, crab meat, quail egg.",
+                    fr: "Pommes de terre, piment jaune, citron vert, avocat, crabe, œuf de caille.",
+                    pt: "Batata amarela, ají amarillo, limão, abacate, caranguejo, ovo de codorna."
+                },
+                picante: "🌶️ Suave / Mild",
+                alergenos: "Mariscos / Seafood, Huevo / Egg",
+                maridaje: { es: "Chilcano de Pisco Acholado (S/ 24)", en: "Acholado Pisco Chilcano (S/ 24)" },
                 extrasDisponibles: [
-                    { id: 'ex_extra_salmon', nombre: 'Porción Extra Salmón Salvaje (120g)', precio: 22.00, kcal: 220, prot: 26, carb: 0, gras: 13 },
-                    { id: 'ex_esparragos', nombre: 'Espárragos Salteados en Aceite de Oliva', precio: 9.00, kcal: 45, prot: 3, carb: 4, gras: 3 }
+                    { id: 'ex_langostinos', nombre: { es: "Langostinos al Panko Extra", en: "Extra Panko Shrimp" }, precio: 12.00 }
                 ]
             },
             {
                 id: 5,
-                nombre: "Bowl de Quinoa Orgánica, Pollo & Edamame",
-                categoria: "fondos",
-                precioBase: 42.00,
-                desc: "Pechuga de pollo orgánico a las brasas, edamame, palta, brotes microgreens y aderezo sésamo.",
-                img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=85",
-                tag: "High Protein",
-                kcal: 490, prot: 50, carb: 36, gras: 12,
-                extrasDisponibles: [
-                    { id: 'ex_doble_pollo', nombre: 'Doble Pechuga de Pollo Orgánico (150g)', precio: 14.00, kcal: 180, prot: 35, carb: 0, gras: 4 },
-                    { id: 'ex_queso_cabra', nombre: 'Queso de Cabra Curado Artesanal', precio: 8.00, kcal: 95, prot: 6, carb: 1, gras: 8 }
-                ]
+                nombre: { es: "Chicha Morada Clásica de la Casa (1L)", en: "House Brewed Chicha Morada (1L)", fr: "Chicha Morada Maison (1L)", pt: "Chicha Morada da Casa (1L)" },
+                categoria: "bebidas",
+                precioBase: 16.00,
+                desc: {
+                    es: "Elaborada artesanalmente con maíz morado cuzqueño, piña, manzana verde, clavo de olor y canela.",
+                    en: "Traditional Peruvian antioxidant drink brewed from purple corn, pineapple, green apple, and spices.",
+                    fr: "Boisson artisanale au maïs violet andin, ananas, pomme verte et épices.",
+                    pt: "Bebida tradicional de milho roxo com abacaxi, maçã verde, cravo e canela."
+                },
+                img: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "100% Natural", en: "100% Natural", fr: "Naturel", pt: "Natural" },
+                ingredientes: {
+                    es: "Maíz morado, cáscara de piña, manzana verde, canela, clavo de olor, limón sutil.",
+                    en: "Purple corn, pineapple peel, green apple, cinnamon, clove, Key lime.",
+                    fr: "Maïs violet, ananas, pomme verte, cannelle, clou de girofle, citron vert.",
+                    pt: "Milho roxo, abacaxi, maçã verde, canela, cravo, limão."
+                },
+                picante: "Sin picante / None",
+                alergenos: "Ninguno / None",
+                maridaje: { es: "Ideal con Lomo Saltado o Ceviche", en: "Perfect with Lomo Saltado or Ceviche" },
+                extrasDisponibles: []
             },
             {
                 id: 6,
-                nombre: "Té Blanco Imperial & Orquídeas",
-                categoria: "bebidas",
-                precioBase: 22.00,
-                desc: "Bebida botánica antioxidante infusionada en frío con pétalos de orquídea silvestre y menta fresca.",
-                img: "https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=800&q=85",
-                tag: "Elixir Botánico",
-                kcal: 35, prot: 1, carb: 6, gras: 0,
-                extrasDisponibles: [
-                    { id: 'ex_colageno', nombre: 'Shot de Colágeno Marino Hidrolizado', precio: 8.00, kcal: 35, prot: 9, carb: 0, gras: 0 },
-                    { id: 'ex_miel_cruda', nombre: 'Miel de Abejas Cruda de Bosque Nativo', precio: 4.00, kcal: 45, prot: 0, carb: 12, gras: 0 }
-                ]
-            },
-            {
-                id: 7,
-                nombre: "Mousse de Cacao 85% & Frutos Silvestres",
+                nombre: { es: "Suspiro a la Limeña Tradicional", en: "Traditional Suspiro a la Limeña", fr: "Suspiro a la Limeña Traditionnel", pt: "Suspiro a la Limeña Tradicional" },
                 categoria: "postres",
-                precioBase: 32.00,
-                desc: "Cacao puro amazónico sin azúcar añadida con Isolate Whey Protein y coulis de frambuesas.",
+                precioBase: 24.00,
+                desc: {
+                    es: "Dulce de leche condensada y evaporada con yemas de huevo, coronado con merengue al oporto y canela.",
+                    en: "Velvety caramel milk custard enriched with egg yolks, topped with Port wine meringue and cinnamon.",
+                    fr: "Crème onctueuse au lait caramélisé et jaunes d'œufs, surmontée d'une meringue au vin de Porto.",
+                    pt: "Doce de leite aveludado com gemas, coroado com merengue ao vinho do Porto e canela."
+                },
                 img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=85",
-                tag: "Sugar-Free Luxe",
-                kcal: 310, prot: 22, carb: 16, gras: 14,
-                extrasDisponibles: [
-                    { id: 'ex_pistachos', nombre: 'Pistachos de Bronte Tostados', precio: 8.00, kcal: 85, prot: 3, carb: 4, gras: 7 },
-                    { id: 'ex_nibs', nombre: 'Nibs de Cacao Criollo Orgánico', precio: 4.00, kcal: 40, prot: 1, carb: 2, gras: 3 }
-                ]
+                tag: { es: "Postre Limeño", en: "Traditional Dessert", fr: "Dessert", pt: "Sobremesa" },
+                ingredientes: {
+                    es: "Leche evaporada, leche condensada, yemas de huevo, azúcar, vino oporto, canela en polvo.",
+                    en: "Evaporated milk, condensed milk, egg yolks, sugar, Port wine, cinnamon.",
+                    fr: "Lait concentré, jaunes d'œufs, sucre, vin de Porto, cannelle.",
+                    pt: "Leite evaporado, leite condensado, gemas, açúcar, vinho do Porto, canela."
+                },
+                picante: "Sin picante / None",
+                alergenos: "Lactosa / Dairy, Huevo / Egg",
+                maridaje: { es: "Copa de Pisco Mosto Verde Torontel", en: "Pisco Mosto Verde Torontel Glass" },
+                extrasDisponibles: []
             }
         ];
 
@@ -661,6 +952,25 @@
         let personasSplit = 1;
         let stockAgotadosMap = {};
 
+        // MOTOR DE TRADUCCIÓN i18n
+        function cambiarIdioma(lang) {
+            idiomaActual = lang;
+            const flags = { es: '🇪🇸', en: '🇬🇧', fr: '🇫🇷', pt: '🇧🇷' };
+            document.getElementById('flagIcon').innerText = flags[lang] || '🇪🇸';
+            document.getElementById('selectIdioma').value = lang;
+
+            const t = DICCIONARIO[lang] || DICCIONARIO.es;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.innerText = t[key];
+            });
+
+            document.getElementById('inputBuscadorPlatos').placeholder = t.search_placeholder;
+
+            renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
+            reproducirSonido('tap');
+        }
+
         function reproducirSonido(tipo) {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -674,26 +984,12 @@
                     gain.gain.setValueAtTime(0.06, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
                     osc.connect(gain); gain.connect(ctx.destination);
                     osc.start(now); osc.stop(now + 0.08);
-                } else if (tipo === 'extra') {
-                    const osc = ctx.createOscillator(); const gain = ctx.createGain();
-                    osc.type = 'triangle'; osc.frequency.setValueAtTime(750, now);
-                    osc.frequency.exponentialRampToValueAtTime(1100, now + 0.09);
-                    gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
-                    osc.connect(gain); gain.connect(ctx.destination);
-                    osc.start(now); osc.stop(now + 0.14);
                 } else if (tipo === 'add') {
                     const osc1 = ctx.createOscillator(); const gain1 = ctx.createGain();
                     osc1.type = 'sine'; osc1.frequency.setValueAtTime(523.25, now);
                     gain1.gain.setValueAtTime(0.12, now); gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
                     osc1.connect(gain1); gain1.connect(ctx.destination);
                     osc1.start(now); osc1.stop(now + 0.25);
-
-                    const osc2 = ctx.createOscillator(); const gain2 = ctx.createGain();
-                    osc2.type = 'sine'; osc2.frequency.setValueAtTime(783.99, now + 0.08);
-                    gain2.gain.setValueAtTime(0.15, now + 0.08);
-                    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-                    osc2.connect(gain2); gain2.connect(ctx.destination);
-                    osc2.start(now + 0.08); osc2.stop(now + 0.35);
                 } else if (tipo === 'order') {
                     [440, 554.37, 659.25].forEach((f, i) => {
                         const osc = ctx.createOscillator(); const gain = ctx.createGain();
@@ -720,7 +1016,7 @@
             } catch(e) {}
         }
 
-        // CONTROL MODO DÍA (TERRAZA) / NOCHE (SALÓN)
+        // CONTROL MODO DÍA / NOCHE
         function toggleModoDiaNoche() {
             reproducirSonido('tap');
             const root = document.getElementById('htmlRoot');
@@ -730,16 +1026,15 @@
             const esOscuro = root.classList.contains('dark');
 
             if (esOscuro) {
-                icon.className = 'fa-solid fa-sun';
+                icon.className = 'fa-solid fa-sun text-[11px]';
                 localStorage.setItem('tema_preferido', 'dark');
             } else {
-                icon.className = 'fa-solid fa-moon text-amber-600';
+                icon.className = 'fa-solid fa-moon text-amber-600 text-[11px]';
                 localStorage.setItem('tema_preferido', 'light');
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Cargar preferencia de tema o auto-detectar por hora del día (Día de 7am a 6pm)
             const hora = new Date().getHours();
             const temaGuardado = localStorage.getItem('tema_preferido');
             const root = document.getElementById('htmlRoot');
@@ -747,10 +1042,10 @@
 
             if (temaGuardado === 'light' || (!temaGuardado && hora >= 7 && hora < 18)) {
                 root.classList.remove('dark');
-                icon.className = 'fa-solid fa-moon text-amber-600';
+                icon.className = 'fa-solid fa-moon text-amber-600 text-[11px]';
             } else {
                 root.classList.add('dark');
-                icon.className = 'fa-solid fa-sun';
+                icon.className = 'fa-solid fa-sun text-[11px]';
             }
 
             const urlParams = new URLSearchParams(window.location.search);
@@ -759,7 +1054,6 @@
                 mesaActual = decodeURIComponent(paramMesa);
             }
 
-            // Asiento guardado en sesión
             const asientoGuardado = sessionStorage.getItem('mi_asiento_comensal');
             if (asientoGuardado) {
                 miAsientoNombre = asientoGuardado;
@@ -773,7 +1067,6 @@
 
             const mesaKey = mesaActual.replace(/\s+/g, '_');
             
-            // Escuchar cambios de mesa en vivo desde Firebase
             db.ref('mesas/' + mesaKey).on('value', (snapshot) => {
                 const dataMesa = snapshot.val();
                 if (dataMesa && dataMesa.comandas && dataMesa.comandas.length > 0) {
@@ -789,14 +1082,13 @@
                 }
             });
 
-            // Escuchar stock de agotados en vivo desde Cocina
             db.ref('stockAgotados').on('value', (snapshot) => {
                 stockAgotadosMap = snapshot.val() || {};
                 renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
             });
         });
 
-        // IDENTIFICADOR DE ASIENTO (MESAS COMPARTIDAS)
+        // MODAL ASIENTO
         function abrirModalAsiento() {
             reproducirSonido('tap');
             document.getElementById('inputNombreAsiento').value = miAsientoNombre;
@@ -813,69 +1105,74 @@
                 miAsientoNombre = val;
                 sessionStorage.setItem('mi_asiento_comensal', miAsientoNombre);
                 document.getElementById('lblAsientoHeader').innerText = miAsientoNombre;
-                mostrarToast(`Identificado como: ${miAsientoNombre}`, 'success');
+                mostrarToast(`Asiento: ${miAsientoNombre}`, 'success');
             }
             cerrarModalAsiento();
         }
 
-        // BUSCADOR EN VIVO
         function buscarPlatosEnVivo(texto) {
             const query = texto.toLowerCase().trim();
             if (!query) {
                 renderizarCatalogoMenu(PRODUCTOS_CATALOGO);
                 return;
             }
-            const filtrados = PRODUCTOS_CATALOGO.filter(p => 
-                p.nombre.toLowerCase().includes(query) || 
-                p.desc.toLowerCase().includes(query) ||
-                p.tag.toLowerCase().includes(query)
-            );
+            const filtrados = PRODUCTOS_CATALOGO.filter(p => {
+                const nom = (p.nombre[idiomaActual] || p.nombre.es).toLowerCase();
+                const desc = (p.desc[idiomaActual] || p.desc.es).toLowerCase();
+                const ing = (p.ingredientes[idiomaActual] || p.ingredientes.es).toLowerCase();
+                return nom.includes(query) || desc.includes(query) || ing.includes(query);
+            });
             renderizarCatalogoMenu(filtrados);
         }
 
         function renderizarCatalogoMenu(platos) {
             const grid = document.getElementById('gridCatalogoPlatos');
             grid.innerHTML = '';
+            const t = DICCIONARIO[idiomaActual] || DICCIONARIO.es;
 
             if (platos.length === 0) {
-                grid.innerHTML = '<div class="col-span-2 text-center py-10 text-luxe-muted dark:text-luxe-muted text-luz-muted text-xs"><i class="fa-solid fa-utensils text-2xl mb-2 text-luxe-border block"></i>No encontramos platos con ese nombre.</div>';
+                grid.innerHTML = `<div class="col-span-2 text-center py-10 text-luxe-muted dark:text-luxe-muted text-luz-muted text-xs"><i class="fa-solid fa-utensils text-2xl mb-2 text-luxe-border block"></i>Sin resultados.</div>`;
                 return;
             }
 
             platos.forEach(p => {
                 const estaAgotado = !!stockAgotadosMap[p.id];
+                const nom = p.nombre[idiomaActual] || p.nombre.es;
+                const desc = p.desc[idiomaActual] || p.desc.es;
+                const tag = p.tag[idiomaActual] || p.tag.es;
 
                 const card = document.createElement('div');
                 card.className = `bg-luxe-card/90 dark:bg-luxe-card/90 bg-white backdrop-blur-md rounded-3xl p-4 border transition-all duration-300 flex flex-col sm:flex-row gap-4 shadow-md ${estaAgotado ? 'opacity-50 border-rose-500/40 bg-rose-500/5' : 'border-luxe-border dark:border-luxe-border border-luz-border hover:border-luxe-gold/40'}`;
                 
-                let botonPedir = `<button onclick="abrirModalDetallePlato(${p.id})" class="px-3.5 py-1.5 bg-luxe-gold hover:bg-luxe-goldLight text-black text-xs font-black rounded-xl transition flex items-center gap-1.5 shadow"><i class="fa-solid fa-plus text-[10px]"></i> Pedir</button>`;
-                let tagEstado = `<span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-luxe-base/85 backdrop-blur-md text-luxe-gold text-[8px] font-extrabold tracking-wider uppercase">${p.tag}</span>`;
+                let botonPedir = `<button onclick="abrirModalDetallePlato(${p.id})" class="px-3.5 py-1.5 bg-luxe-gold hover:bg-luxe-goldLight text-black text-xs font-black rounded-xl transition flex items-center gap-1.5 shadow"><i class="fa-solid fa-plus text-[10px]"></i> ${t.btn_add}</button>`;
+                let tagEstado = `<span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-luxe-base/85 backdrop-blur-md text-luxe-gold text-[8px] font-extrabold tracking-wider uppercase">${tag}</span>`;
 
                 if (estaAgotado) {
-                    botonPedir = `<button disabled class="px-3 py-1.5 bg-rose-500/20 text-rose-400 text-xs font-bold rounded-xl cursor-not-allowed border border-rose-500/30">Agotado</button>`;
-                    tagEstado = `<span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-rose-900/90 backdrop-blur-md text-white text-[8px] font-black tracking-wider uppercase border border-rose-500/40">🔴 AGOTADO</span>`;
+                    botonPedir = `<button disabled class="px-3 py-1.5 bg-rose-500/20 text-rose-400 text-xs font-bold rounded-xl cursor-not-allowed border border-rose-500/30">${t.sold_out_btn}</button>`;
+                    tagEstado = `<span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-rose-900/90 backdrop-blur-md text-white text-[8px] font-black tracking-wider uppercase border border-rose-500/40">${t.sold_out_tag}</span>`;
                 }
 
                 card.innerHTML = `
                     <div class="w-full sm:w-36 h-36 rounded-2xl overflow-hidden relative ${estaAgotado ? '' : 'cursor-pointer flex-shrink-0'}" onclick="${estaAgotado ? '' : `abrirModalDetallePlato(${p.id})`}">
-                        <img src="${p.img}" alt="${p.nombre}" class="w-full h-full object-cover ${estaAgotado ? 'grayscale' : 'hover:scale-105 transition-transform duration-500'}">
+                        <img src="${p.img}" alt="${nom}" class="w-full h-full object-cover ${estaAgotado ? 'grayscale' : 'hover:scale-105 transition-transform duration-500'}">
                         ${tagEstado}
                     </div>
                     <div class="flex-1 flex flex-col justify-between">
                         <div>
                             <div class="flex justify-between items-start gap-2">
-                                <h4 onclick="${estaAgotado ? '' : `abrirModalDetallePlato(${p.id})`}" class="text-sm font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text ${estaAgotado ? 'line-through text-luxe-muted' : 'hover:text-luxe-gold cursor-pointer'} transition leading-snug">${p.nombre}</h4>
+                                <h4 onclick="${estaAgotado ? '' : `abrirModalDetallePlato(${p.id})`}" class="text-sm font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text ${estaAgotado ? 'line-through text-luxe-muted' : 'hover:text-luxe-gold cursor-pointer'} transition leading-snug">${nom}</h4>
                                 <span class="text-sm font-luxury-serif font-black text-luxe-gold whitespace-nowrap">S/ ${p.precioBase.toFixed(2)}</span>
                             </div>
-                            <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 line-clamp-2 leading-relaxed">${p.desc}</p>
-                            <div class="flex items-center gap-2 mt-2 text-[9px] font-bold">
-                                <span class="text-amber-400 bg-luxe-surface dark:bg-luxe-surface bg-luz-base px-2 py-0.5 rounded-md border border-luxe-border dark:border-luxe-border border-luz-border">${p.kcal} kcal</span>
-                                <span class="text-luxe-gold bg-luxe-surface dark:bg-luxe-surface bg-luz-base px-2 py-0.5 rounded-md border border-luxe-border dark:border-luxe-border border-luz-border">Prot: ${p.prot}g</span>
-                                <span class="text-luxe-muted dark:text-luxe-muted text-luz-muted bg-luxe-surface dark:bg-luxe-surface bg-luz-base px-2 py-0.5 rounded-md border border-luxe-border dark:border-luxe-border border-luz-border">${p.extrasDisponibles.length} extras</span>
+                            <p class="text-xs text-luxe-muted dark:text-luxe-muted text-luz-muted mt-1 line-clamp-2 leading-relaxed">${desc}</p>
+                            
+                            <!-- Badges de Picante & Alérgenos -->
+                            <div class="flex flex-wrap items-center gap-1.5 mt-2 text-[9px] font-bold">
+                                <span class="text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">${p.picante}</span>
+                                <span class="text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-md border border-rose-500/20">⚠️ ${p.alergenos}</span>
                             </div>
                         </div>
                         <div class="mt-3 pt-3 border-t border-luxe-border/60 dark:border-luxe-border/60 border-luz-border flex items-center justify-between">
-                            ${estaAgotado ? '<span class="text-[11px] font-bold text-rose-400">No disponible por hoy</span>' : `<button onclick="abrirModalDetallePlato(${p.id})" class="text-[11px] font-bold text-luxe-muted dark:text-luxe-muted text-luz-muted hover:text-luxe-gold flex items-center gap-1"><span>Macros & Extras</span> <i class="fa-solid fa-arrow-right text-[9px]"></i></button>`}
+                            ${estaAgotado ? `<span class="text-[11px] font-bold text-rose-400">${t.sold_out_msg}</span>` : `<button onclick="abrirModalDetallePlato(${p.id})" class="text-[11px] font-bold text-luxe-muted dark:text-luxe-muted text-luz-muted hover:text-luxe-gold flex items-center gap-1"><span>Ver Detalle</span> <i class="fa-solid fa-arrow-right text-[9px]"></i></button>`}
                             ${botonPedir}
                         </div>
                     </div>
@@ -907,10 +1204,20 @@
             cantidadModal = 1;
             extrasSeleccionadosModal = [];
 
+            const nom = prod.nombre[idiomaActual] || prod.nombre.es;
+            const desc = prod.desc[idiomaActual] || prod.desc.es;
+            const ing = prod.ingredientes[idiomaActual] || prod.ingredientes.es;
+            const tag = prod.tag[idiomaActual] || prod.tag.es;
+            const maridajeTxt = prod.maridaje[idiomaActual] || prod.maridaje.es || 'Copa de Vino Recomendada';
+
             document.getElementById('modalImgPlato').src = prod.img;
-            document.getElementById('modalTagPlato').innerText = prod.tag.toUpperCase();
-            document.getElementById('modalNombrePlato').innerText = prod.nombre;
-            document.getElementById('modalDescPlato').innerText = prod.desc;
+            document.getElementById('modalTagPlato').innerText = tag.toUpperCase();
+            document.getElementById('modalNombrePlato').innerText = nom;
+            document.getElementById('modalDescPlato').innerText = desc;
+            document.getElementById('modalIngredientesPlato').innerText = ing;
+            document.getElementById('modalPicantePlato').innerText = prod.picante;
+            document.getElementById('modalAlergenosPlato').innerText = prod.alergenos;
+            document.getElementById('modalMaridajePlato').innerText = maridajeTxt;
             document.getElementById('modalPrecioBasePlato').innerText = `S/ ${prod.precioBase.toFixed(2)}`;
             document.getElementById('modalTxtCantidad').innerText = cantidadModal;
             document.getElementById('modalInputNotas').value = '';
@@ -918,23 +1225,25 @@
             const contenedorExtras = document.getElementById('modalListaExtras');
             contenedorExtras.innerHTML = '';
 
-            prod.extrasDisponibles.forEach(ex => {
-                const itemDiv = document.createElement('label');
-                itemDiv.className = 'flex items-center justify-between p-2.5 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border hover:border-luxe-gold/40 cursor-pointer transition';
-                itemDiv.innerHTML = `
-                    <div class="flex items-center space-x-2.5">
-                        <input type="checkbox" onchange="toggleExtraPlato('${ex.id}', this.checked)" class="accent-luxe-gold w-4 h-4 rounded cursor-pointer">
-                        <div>
-                            <span class="text-xs font-semibold text-luxe-stone dark:text-luxe-stone text-luz-text block">${ex.nombre}</span>
-                            <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted">+${ex.kcal} kcal | P: +${ex.prot}g | C: +${ex.carb}g | G: +${ex.gras}g</span>
+            if (prod.extrasDisponibles && prod.extrasDisponibles.length > 0) {
+                prod.extrasDisponibles.forEach(ex => {
+                    const exNombre = ex.nombre[idiomaActual] || ex.nombre.es;
+                    const itemDiv = document.createElement('label');
+                    itemDiv.className = 'flex items-center justify-between p-2.5 rounded-xl bg-luxe-card dark:bg-luxe-card bg-luz-base border border-luxe-border dark:border-luxe-border border-luz-border hover:border-luxe-gold/40 cursor-pointer transition';
+                    itemDiv.innerHTML = `
+                        <div class="flex items-center space-x-2.5">
+                            <input type="checkbox" onchange="toggleExtraPlato('${ex.id}', this.checked)" class="accent-luxe-gold w-4 h-4 rounded cursor-pointer">
+                            <span class="text-xs font-semibold text-luxe-stone dark:text-luxe-stone text-luz-text">${exNombre}</span>
                         </div>
-                    </div>
-                    <span class="text-xs font-bold text-luxe-gold whitespace-nowrap ml-2">+ S/ ${ex.precio.toFixed(2)}</span>
-                `;
-                contenedorExtras.appendChild(itemDiv);
-            });
+                        <span class="text-xs font-bold text-luxe-gold whitespace-nowrap ml-2">+ S/ ${ex.precio.toFixed(2)}</span>
+                    `;
+                    contenedorExtras.appendChild(itemDiv);
+                });
+            } else {
+                contenedorExtras.innerHTML = '<span class="text-[11px] text-luxe-muted italic">Sin extras adicionales para este plato</span>';
+            }
 
-            recalcularMacrosYPrecioModal();
+            recalcularPrecioModal();
             document.getElementById('modalDetallePlato').classList.remove('hidden');
         }
 
@@ -944,7 +1253,7 @@
         }
 
         function toggleExtraPlato(extraId, isChecked) {
-            reproducirSonido('extra');
+            reproducirSonido('tap');
             const extraObj = platoModalActivo.extrasDisponibles.find(e => e.id === extraId);
             if (!extraObj) return;
 
@@ -953,50 +1262,13 @@
             } else {
                 extrasSeleccionadosModal = extrasSeleccionadosModal.filter(e => e.id !== extraId);
             }
-            recalcularMacrosYPrecioModal();
+            recalcularPrecioModal();
         }
 
-        function recalcularMacrosYPrecioModal() {
+        function recalcularPrecioModal() {
             if (!platoModalActivo) return;
-
-            let totalKcal = platoModalActivo.kcal;
-            let totalProt = platoModalActivo.prot;
-            let totalCarb = platoModalActivo.carb;
-            let totalGras = platoModalActivo.gras;
-            let sumaPrecioExtras = 0;
-
-            extrasSeleccionadosModal.forEach(e => {
-                totalKcal += e.kcal;
-                totalProt += e.prot;
-                totalCarb += e.carb;
-                totalGras += e.gras;
-                sumaPrecioExtras += e.precio;
-            });
-
-            const lblKcal = document.getElementById('modalKcalPlato');
-            const lblProt = document.getElementById('modalProtPlato');
-            const lblCarb = document.getElementById('modalCarbPlato');
-            const lblGras = document.getElementById('modalGrasPlato');
-            const badgeSumados = document.getElementById('badgeExtrasSumados');
-
-            lblKcal.innerText = `${totalKcal} kcal`;
-            lblProt.innerText = `${totalProt}g`;
-            lblCarb.innerText = `${totalCarb}g`;
-            lblGras.innerText = `${totalGras}g`;
-
-            [lblKcal, lblProt, lblCarb, lblGras].forEach(el => {
-                el.classList.remove('macro-pulse');
-                void el.offsetWidth;
-                el.classList.add('macro-pulse');
-            });
-
-            if (extrasSeleccionadosModal.length > 0) {
-                badgeSumados.classList.remove('hidden');
-            } else {
-                badgeSumados.classList.add('hidden');
-            }
-
-            const precioUnitario = platoModalActivo.precioBase + sumaPrecioExtras;
+            const sumaExtras = extrasSeleccionadosModal.reduce((acc, e) => acc + e.precio, 0);
+            const precioUnitario = platoModalActivo.precioBase + sumaExtras;
             document.getElementById('modalBtnPrecioTotal').innerText = `S/ ${(precioUnitario * cantidadModal).toFixed(2)}`;
         }
 
@@ -1012,7 +1284,7 @@
             if (nuevo >= 1) {
                 cantidadModal = nuevo;
                 document.getElementById('modalTxtCantidad').innerText = cantidadModal;
-                recalcularMacrosYPrecioModal();
+                recalcularPrecioModal();
             }
         }
 
@@ -1023,18 +1295,13 @@
             const notaUsuario = document.getElementById('modalInputNotas').value.trim();
             const sumaExtras = extrasSeleccionadosModal.reduce((acc, e) => acc + e.precio, 0);
             const precioUnitario = platoModalActivo.precioBase + sumaExtras;
-
-            const totalKcal = platoModalActivo.kcal + extrasSeleccionadosModal.reduce((a, e) => a + e.kcal, 0);
-            const totalProt = platoModalActivo.prot + extrasSeleccionadosModal.reduce((a, e) => a + e.prot, 0);
-            const totalCarb = platoModalActivo.carb + extrasSeleccionadosModal.reduce((a, e) => a + e.carb, 0);
-            const totalGras = platoModalActivo.gras + extrasSeleccionadosModal.reduce((a, e) => a + e.gras, 0);
+            const nom = platoModalActivo.nombre[idiomaActual] || platoModalActivo.nombre.es;
 
             carritoRondaTemporal.push({
                 productoId: platoModalActivo.id,
-                nombre: platoModalActivo.nombre,
+                nombre: nom,
                 precioBase: platoModalActivo.precioBase,
-                extras: [...extrasSeleccionadosModal],
-                macrosFinales: { kcal: totalKcal, prot: totalProt, carb: totalCarb, gras: totalGras },
+                extras: extrasSeleccionadosModal.map(e => ({ id: e.id, nombre: e.nombre[idiomaActual] || e.nombre.es, precio: e.precio })),
                 precioUnitario: precioUnitario,
                 cantidad: cantidadModal,
                 subtotal: precioUnitario * cantidadModal,
@@ -1043,7 +1310,7 @@
 
             cerrarModalDetalle();
             actualizarBarraCarritoFlotante();
-            mostrarToast(`Añadido: ${cantidadModal}x ${platoModalActivo.nombre}`, 'success');
+            mostrarToast(`Añadido: ${cantidadModal}x ${nom}`, 'success');
         }
 
         function actualizarBarraCarritoFlotante() {
@@ -1077,7 +1344,6 @@
                     <div class="flex-1 pr-3">
                         <span class="text-xs font-luxury-serif font-black text-luxe-stone dark:text-luxe-stone text-luz-text block">${it.cantidad}x ${it.nombre}</span>
                         ${extrasTxt}
-                        <span class="text-[10px] text-amber-500 font-semibold block mt-0.5">${it.macrosFinales.kcal} kcal | P: ${it.macrosFinales.prot}g (c/u)</span>
                         <span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted block mt-0.5 italic">Nota: "${it.notas}"</span>
                     </div>
                     <div class="flex items-center space-x-3">
@@ -1140,7 +1406,7 @@
                 const nuevaComanda = {
                     id: 'CMD-' + Math.floor(1000 + Math.random() * 9000),
                     mesaId: mesaActual,
-                    asiento: miAsientoNombre, // REGISTRA EL ASIENTO / PERSONA
+                    asiento: miAsientoNombre,
                     ronda: dataMesa.contadorRondas,
                     hora: horaEnvio,
                     timestamp: Date.now(),
@@ -1157,11 +1423,11 @@
                 carritoRondaTemporal = [];
                 actualizarBarraCarritoFlotante();
                 cerrarModalCarrito();
-                mostrarToast(`¡Pedido de ${miAsientoNombre} enviado a cocina!`, 'success');
+                mostrarToast(`¡Pedido de ${miAsientoNombre} enviado!`, 'success');
             }).catch((error) => {
                 btnEnviar.disabled = false;
                 btnEnviar.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Confirmar y Enviar a Cocina';
-                alert("Error al enviar pedido: " + error.message);
+                alert("Error: " + error.message);
             });
         }
 
@@ -1201,11 +1467,10 @@
         }
 
         function renderizarTicketEnVivoCliente(dataMesa) {
-            document.getElementById('lblTicketMesaTitle').innerText = `${dataMesa.mesaId} • Servicio iniciado a las ${dataMesa.inicioServicio}`;
+            document.getElementById('lblTicketMesaTitle').innerText = `${dataMesa.mesaId} • Servicio: ${dataMesa.inicioServicio}`;
             const contenedor = document.getElementById('listaItemsTicketAcumulado');
             contenedor.innerHTML = '';
-
-            let totalKcalMesa = 0;
+            let totalPlatosCount = 0;
 
             if (dataMesa.comandas) {
                 dataMesa.comandas.forEach(cmd => {
@@ -1220,16 +1485,13 @@
                                 txtExtras = `<span class="text-[10px] text-luxe-gold block">+ Extras: ${it.extras.map(e => e.nombre).join(', ')}</span>`;
                             }
 
-                            if (it.macrosFinales) {
-                                totalKcalMesa += (it.macrosFinales.kcal * it.cantidad);
-                            }
+                            totalPlatosCount += it.cantidad;
 
                             itemsHtml += `
                                 <div class="flex justify-between items-start py-1.5 text-xs">
                                     <div>
                                         <span class="text-luxe-stone dark:text-luxe-stone text-luz-text font-bold">${it.cantidad}x ${it.nombre}</span>
                                         ${txtExtras}
-                                        <span class="text-[10px] text-amber-500 font-semibold block">${it.macrosFinales ? it.macrosFinales.kcal : 0} kcal | P: ${it.macrosFinales ? it.macrosFinales.prot : 0}g</span>
                                         ${it.notas !== 'Sin notas especiales' ? `<span class="text-[10px] text-luxe-muted dark:text-luxe-muted text-luz-muted block italic">Nota: "${it.notas}"</span>` : ''}
                                     </div>
                                     <span class="text-luxe-gold font-bold font-luxury-serif">S/ ${it.subtotal.toFixed(2)}</span>
@@ -1265,7 +1527,7 @@
             document.getElementById('ticketSubtotalNeto').innerText = `S/ ${subtotalSinIgv.toFixed(2)}`;
             document.getElementById('ticketIgvCalculado').innerText = `S/ ${igv.toFixed(2)}`;
             document.getElementById('ticketTotalAcumuladoSoles').innerText = `S/ ${total.toFixed(2)}`;
-            document.getElementById('ticketTotalMacrosResume').innerText = `${totalKcalMesa} kcal acumuladas`;
+            document.getElementById('ticketTotalItemsResume').innerText = `${totalPlatosCount} platos ordenados`;
         }
 
         function volverAlMenuParaPedirMas() {
@@ -1300,7 +1562,7 @@
                 mensaje: `🔔 Mozo solicitado en ${mesaActual} (${miAsientoNombre})`
             };
             db.ref('alertas').push(alerta).then(() => {
-                mostrarToast('Asistencia solicitada. El personal se acerca a tu mesa.', 'success');
+                mostrarToast('Mozo en camino a tu mesa', 'success');
             });
         }
 
@@ -1356,7 +1618,7 @@
             db.ref('mesas/' + mesaKey).once('value').then((snap) => {
                 const data = snap.val();
                 if (!data || !data.totalAcumulado || data.totalAcumulado <= 0) {
-                    mostrarToast('No hay consumo registrado en esta mesa', 'warning');
+                    mostrarToast('Sin consumo en mesa', 'warning');
                     return;
                 }
 
@@ -1401,7 +1663,7 @@
 
             db.ref('alertas').push(alerta).then(() => {
                 cerrarModalPedirCuenta();
-                mostrarToast(`Cuenta solicitada con método: ${metodo}`, 'success');
+                mostrarToast(`Cuenta solicitada (${metodo})`, 'success');
             });
         }
 
