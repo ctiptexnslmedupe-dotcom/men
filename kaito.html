@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="es" class="dark" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAI-TO | Barra Fusión — Carta Digital & Barra Libre</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        kaito: {
+                            base: '#060709',
+                            surface: '#0d0f14',
+                            card: '#13161f',
+                            cardHover: '#1a1f2c',
+                            border: '#23293a',
+                            red: '#ef4444',
+                            redDark: '#dc2626',
+                            blue: '#3b82f6',
+                            gold: '#d4af37',
+                            stone: '#f8fafc',
+                            muted: '#94a3b8'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', '-apple-system', 'Inter', 'sans-serif'],
+                        serif: ['Cinzel', 'Georgia', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #060709;
+            color: #f8fafc;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            letter-spacing: -0.015em;
+        }
+        .font-brand { font-family: 'Cinzel', serif; }
+        .red-glow { box-shadow: 0 4px 30px -4px rgba(239, 68, 68, 0.35); }
+        .custom-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #23293a; border-radius: 999px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #ef4444; }
+
+        .watermark-float {
+            animation: watermarkBreathe 16s ease-in-out infinite alternate;
+        }
+        @keyframes watermarkBreathe {
+            0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.04; }
+            50% { transform: translate(-50%, -50%) scale(1.05) rotate(2deg); opacity: 0.08; }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.04; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-kaito-red selection:text-white relative">
+
+    <!-- CAPA VISUAL DE FONDO NIKKEI / FUSIÓN -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[750px] h-[550px] bg-gradient-to-b from-red-600/15 via-blue-600/10 to-transparent rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-40 right-[-10%] w-[600px] h-[600px] bg-red-950/15 rounded-full blur-[140px]"></div>
+
+        <!-- CARÁCTER JAPONÉS '海' (KAI = OCÉANO) DE KAITO EN FONDO -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] watermark-float flex items-center justify-center text-kaito-red select-none">
+            <span class="text-[280px] font-bold font-serif opacity-10">海</span>
+        </div>
+    </div>
+
+    <!-- HEADER: LOGO KAITO, SELECTOR DE SEDE, IDIOMA Y MESA -->
+    <header class="sticky top-0 z-40 bg-kaito-surface/90 backdrop-blur-xl border-b border-kaito-border px-3.5 py-2.5 shadow-xl">
+        <div class="max-w-4xl mx-auto flex justify-between items-center gap-2">
+            
+            <!-- Logo Oficial KAI-TO con Carácter Japonés -->
+            <div class="flex items-center space-x-2 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 via-kaito-red to-rose-400 p-[1.5px] shadow-md">
+                    <div class="w-full h-full bg-kaito-base rounded-[10px] flex items-center justify-center font-bold text-xs text-white">
+                        海
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-xs tracking-[0.2em] font-extrabold uppercase text-white leading-none">
+                        KAI-TO <span class="text-kaito-red">| Barra Fusión</span>
+                    </h1>
+                    <span class="text-[8px] tracking-widest text-kaito-muted font-semibold uppercase flex items-center gap-1 mt-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Barra Libre en Vivo
+                    </span>
+                </div>
+            </div>
+
+            <!-- CONTROLES SUPERIORES -->
+            <div class="flex items-center space-x-1.5">
+                
+                <!-- SELECTOR DE SEDES KAITO (MIRAFLORES / SURCO) -->
+                <div class="relative bg-kaito-card border border-kaito-red/40 rounded-xl px-2 py-1 flex items-center shadow-sm">
+                    <i class="fa-solid fa-location-dot text-kaito-red text-[10px] mr-1"></i>
+                    <select id="selectSedeKaito" onchange="cambiarSedeKaito(this.value)" class="bg-transparent text-[11px] font-bold text-white focus:outline-none cursor-pointer">
+                        <option value="Miraflores" selected class="bg-kaito-card text-white">Miraflores (Bolognesi 143)</option>
+                        <option value="Surco" class="bg-kaito-card text-white">Surco (Caminos del Inca)</option>
+                    </select>
+                </div>
+
+                <!-- Selector de Idioma (Para turistas en Miraflores) -->
+                <div class="relative bg-kaito-card border border-kaito-border rounded-xl px-1.5 py-1 flex items-center shadow-sm">
+                    <span class="text-[11px] mr-1" id="flagIcon">🇪🇸</span>
+                    <select id="selectIdioma" onchange="cambiarIdioma(this.value)" class="bg-transparent text-[11px] font-bold text-white focus:outline-none cursor-pointer">
+                        <option value="es" class="bg-kaito-card text-white">ES</option>
+                        <option value="en" class="bg-kaito-card text-white">EN</option>
+                        <option value="fr" class="bg-kaito-card text-white">FR</option>
+                        <option value="pt" class="bg-kaito-card text-white">PT</option>
+                    </select>
+                </div>
+
+                <!-- Mesa ID -->
+                <div class="bg-kaito-card border border-kaito-border px-2 py-1 rounded-xl flex items-center gap-1 shadow-sm text-[11px]">
+                    <i class="fa-solid fa-chair text-kaito-red text-[9px]"></i>
+                    <span id="lblMesaHeader" class="font-bold text-[11px] text-white">Mesa 04</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- BARRA FLOTANTE DE EXPERIENCIA: AUTO-PEDIDO O ATENCIÓN POR MOZO -->
+    <div class="bg-kaito-surface/95 border-b border-kaito-border px-4 py-2 relative z-20 shadow-sm">
+        <div class="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span class="text-kaito-muted text-[11px] font-medium flex items-center gap-1">
+                <i class="fa-solid fa-utensils text-kaito-red"></i> Modalidad de Atención:
+            </span>
+            <div class="flex items-center gap-1 bg-kaito-card p-1 rounded-xl border border-kaito-border">
+                <button onclick="setTipoAtencion('auto')" id="btnAtencionAuto" class="px-3 py-1 rounded-lg text-xs font-bold transition bg-kaito-red text-white shadow">
+                    📱 Pedir por Ronda
+                </button>
+                <button onclick="setTipoAtencion('mozo')" id="btnAtencionMozo" class="px-3 py-1 rounded-lg text-xs font-bold transition text-slate-300 hover:text-kaito-red">
+                    🤵 Mozo en Mesa
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUERPO PRINCIPAL -->
+    <main class="flex-1 max-w-4xl mx-auto w-full px-4 py-4 pb-32 relative z-10">
+        
+        <!-- SUBSECCIÓN A: MENÚ KAITO -->
+        <div id="subseccionMenu" class="space-y-4">
+            
+            <!-- HERO BANNER PERSONALIZADO CON SU PROMO REAL DE INSTAGRAM (S/ 95) -->
+            <div class="relative overflow-hidden rounded-3xl border border-kaito-border shadow-2xl p-5 bg-gradient-to-r from-red-950/80 via-kaito-card to-blue-950/40">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-kaito-red text-white inline-block">
+                            🔥 PROMOCIÓN SALÓN
+                        </span>
+                        <h2 class="text-lg sm:text-xl font-extrabold text-white">
+                            3 Tablas de Makis (36 Cortes) + 2 Complementos + 2 Bebidas
+                        </h2>
+                        <p class="text-xs text-kaito-muted">
+                            Sede: <b id="lblSedeHero" class="text-white">Miraflores — Calle Bolognesi 143</b>
+                        </p>
+                    </div>
+                    <div class="text-left sm:text-right">
+                        <span class="text-2xl font-black text-kaito-red block">S/ 95.00</span>
+                        <button onclick="pedirPromoDirecta()" class="mt-1 px-4 py-1.5 bg-white hover:bg-slate-200 text-black font-black text-xs rounded-xl shadow transition">
+                            Pedir Promo
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buscador Rápido -->
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-kaito-muted text-xs"></i>
+                <input type="text" id="inputBuscadorPlatos" oninput="buscarPlatosEnVivo(this.value)" placeholder="Buscar maki (Acevichado, Furai, Lomo...), piqueo o bebida..." class="w-full bg-kaito-card text-xs text-white pl-10 pr-4 py-3 rounded-2xl border border-kaito-border focus:border-kaito-red focus:outline-none shadow-sm">
+            </div>
+
+            <!-- Filtro de Categorías -->
+            <div class="flex space-x-2 overflow-x-auto pb-1 custom-scroll text-xs">
+                <button onclick="filtrarCategoria('todos', event)" class="cat-pill active px-3.5 py-2 rounded-xl font-bold bg-kaito-red text-white whitespace-nowrap transition shadow">Toda la Carta</button>
+                <button onclick="filtrarCategoria('makis', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-kaito-card text-kaito-muted hover:text-white border border-kaito-border whitespace-nowrap transition">🥢 Makis Fusión</button>
+                <button onclick="filtrarCategoria('combos', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-kaito-card text-kaito-muted hover:text-white border border-kaito-border whitespace-nowrap transition">🍱 Combos & Promos</button>
+                <button onclick="filtrarCategoria('piqueos', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-kaito-card text-kaito-muted hover:text-white border border-kaito-border whitespace-nowrap transition">🥟 Piqueos & Gyozas</button>
+                <button onclick="filtrarCategoria('bebidas', event)" class="cat-pill px-3.5 py-2 rounded-xl font-semibold bg-kaito-card text-kaito-muted hover:text-white border border-kaito-border whitespace-nowrap transition">🍺 Bebidas & Tragos</button>
+            </div>
+
+            <!-- Grilla de Platos de KAI-TO -->
+            <div id="gridCatalogoPlatos" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+            <!-- MARCA DE AGUA COMERCIAL: KEYMAR SYSTEMS -->
+            <div class="pt-6 pb-2 text-center">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-kaito-card border border-kaito-border shadow-sm">
+                    <span class="text-[10px] text-kaito-muted">Plataforma desarrollada por</span>
+                    <span class="text-xs font-black font-serif text-kaito-red">KeyMar Systems</span>
+                    <span class="text-[9px] px-2 py-0.5 rounded-full bg-kaito-red/15 text-kaito-red font-bold">FoodTech OS</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SUBSECCIÓN B: TICKET ACUMULADO (EN VIVO CON RONDAS DE BARRA LIBRE) -->
+        <div id="subseccionTicket" class="hidden space-y-4 max-w-2xl mx-auto">
+            
+            <div class="bg-kaito-card p-5 rounded-3xl border border-kaito-red/30 shadow-2xl relative overflow-hidden">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-kaito-surface border border-kaito-red/40 text-kaito-red flex items-center justify-center font-black text-xl red-glow">
+                        🥢
+                    </div>
+                    <div>
+                        <span class="text-[10px] tracking-widest text-kaito-red font-bold uppercase">Barra de Sushi en Preparación</span>
+                        <h3 id="lblStatusCocinaHeader" class="text-base font-bold text-white">Comanda Recibida en Barra</h3>
+                    </div>
+                </div>
+
+                <!-- Stepper de Rondas -->
+                <div class="bg-kaito-surface p-3 rounded-2xl border border-kaito-border">
+                    <div class="flex justify-between items-center text-[10px] font-bold text-center">
+                        <div class="flex-1 flex flex-col items-center">
+                            <span class="w-4 h-4 rounded-full bg-kaito-red text-white flex items-center justify-center text-[9px] mb-1"><i class="fa-solid fa-check"></i></span>
+                            <span class="text-white">Ronda en Cola</span>
+                        </div>
+                        <div class="h-[2px] flex-1 bg-kaito-red/40"></div>
+                        <div class="flex-1 flex flex-col items-center">
+                            <span class="w-4 h-4 rounded-full bg-amber-400 text-black flex items-center justify-center text-[9px] mb-1 animate-pulse"><i class="fa-solid fa-fire"></i></span>
+                            <span class="text-amber-400">Armando Makis</span>
+                        </div>
+                        <div class="h-[2px] flex-1 bg-kaito-border"></div>
+                        <div class="flex-1 flex flex-col items-center">
+                            <span class="w-4 h-4 rounded-full bg-kaito-card border border-kaito-border text-kaito-muted flex items-center justify-center text-[9px] mb-1"><i class="fa-solid fa-utensils"></i></span>
+                            <span class="text-kaito-muted">Servido en Mesa</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta de Ticket -->
+            <div class="bg-kaito-card rounded-3xl border border-kaito-border shadow-2xl overflow-hidden">
+                <div class="p-5 bg-kaito-surface border-b border-kaito-border flex justify-between items-center">
+                    <div>
+                        <span class="text-[10px] font-extrabold uppercase tracking-widest text-kaito-muted">Consumo Acumulado de la Mesa</span>
+                        <h4 id="lblTicketMesaTitle" class="text-base font-bold text-white">Mesa 04</h4>
+                    </div>
+                    <span class="px-3 py-1 bg-kaito-red/15 text-kaito-red border border-kaito-red/30 text-[10px] font-black rounded-full uppercase tracking-widest">
+                        Barra Abierta
+                    </span>
+                </div>
+
+                <div id="listaItemsTicketAcumulado" class="p-5 space-y-4 max-h-96 overflow-y-auto custom-scroll divide-y divide-kaito-border"></div>
+
+                <div class="p-6 bg-kaito-surface border-t border-kaito-border space-y-2">
+                    <div class="flex justify-between text-xs text-kaito-muted">
+                        <span>Subtotal de consumo</span>
+                        <span id="ticketSubtotalNeto">S/ 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-kaito-muted">
+                        <span>IGV (18% incluido)</span>
+                        <span id="ticketIgvCalculado">S/ 0.00</span>
+                    </div>
+                    <div class="pt-3 border-t border-kaito-border flex justify-between items-center">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-kaito-muted">TOTAL ACUMULADO</span>
+                        <span id="ticketTotalAcumuladoSoles" class="text-2xl font-black text-kaito-red">S/ 0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="space-y-2.5 pt-1">
+                <button onclick="volverAlMenuParaPedirMas()" class="w-full py-4 bg-kaito-card hover:bg-kaito-cardHover text-white border border-kaito-red/40 hover:border-kaito-red rounded-2xl font-bold text-xs transition shadow-lg flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-plus text-kaito-red"></i>
+                    <span>➕ Pedir Siguiente Ronda de Makis</span>
+                </button>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="solicitarAsistenciaMozo()" class="py-3.5 bg-kaito-card hover:bg-kaito-cardHover text-amber-400 border border-amber-500/30 rounded-2xl font-bold text-xs transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-bell"></i>
+                        <span>Llamar al Mozo</span>
+                    </button>
+                    <button onclick="abrirModalPedirCuenta()" class="py-3.5 bg-kaito-red hover:bg-kaito-redDark text-white font-black text-xs rounded-2xl transition shadow-lg flex items-center justify-center gap-2 red-glow">
+                        <i class="fa-solid fa-credit-card"></i>
+                        <span>Pedir la Cuenta</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- BARRA FLOTANTE DE CARRITO -->
+    <div id="barraFlotanteCarrito" class="fixed bottom-5 left-4 right-4 max-w-xl mx-auto bg-kaito-card/95 backdrop-blur-2xl border border-kaito-red/40 p-3.5 rounded-2xl shadow-2xl flex justify-between items-center z-30 transform translate-y-36 transition-transform duration-300 red-glow">
+        <div class="flex items-center space-x-3 pl-2">
+            <div class="w-10 h-10 rounded-xl bg-kaito-red text-white flex items-center justify-center font-black text-sm shadow">
+                <span id="txtCantCarritoFlotante">0</span>
+            </div>
+            <div>
+                <span class="text-[10px] text-kaito-muted block font-semibold uppercase tracking-wider">Total esta ronda:</span>
+                <span id="txtTotalCarritoFlotante" class="text-base font-black text-white">S/ 0.00</span>
+            </div>
+        </div>
+        <button onclick="abrirModalCarrito()" class="px-5 py-2.5 bg-kaito-red hover:bg-kaito-redDark text-white font-black text-xs rounded-xl transition flex items-center gap-2 shadow">
+            <span>Revisar Ronda</span>
+            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </button>
+    </div>
+
+    <!-- MODAL DETALLE DE MAKI -->
+    <div id="modalDetallePlato" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-kaito-surface w-full max-w-lg rounded-t-3xl sm:rounded-3xl border border-kaito-border overflow-hidden max-h-[92vh] flex flex-col shadow-2xl">
+            
+            <div class="relative h-56 w-full overflow-hidden bg-black">
+                <img id="modalImgPlato" src="" alt="Maki" class="w-full h-full object-cover">
+                <button onclick="cerrarModalDetalle()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/70 text-white flex items-center justify-center hover:bg-black transition">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+                <div class="absolute bottom-3 left-4">
+                    <span id="modalTagPlato" class="px-3 py-1 bg-kaito-red text-white font-black text-[9px] uppercase tracking-widest rounded-full shadow">
+                        MAKI FUSIÓN
+                    </span>
+                </div>
+            </div>
+
+            <div class="p-5 overflow-y-auto custom-scroll space-y-4 flex-1">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 id="modalNombrePlato" class="text-base font-extrabold text-white">Nombre del Maki</h3>
+                        <p id="modalDescPlato" class="text-xs text-kaito-muted mt-1 leading-relaxed">Descripción gastronómica detallada.</p>
+                    </div>
+                    <span id="modalPrecioBasePlato" class="text-lg font-black text-kaito-red whitespace-nowrap ml-3">S/ 0.00</span>
+                </div>
+
+                <!-- Ficha Técnica -->
+                <div class="bg-kaito-card p-4 rounded-2xl border border-kaito-border space-y-2.5 text-xs">
+                    <div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-kaito-muted block mb-1">Ingredientes Principales:</span>
+                        <p id="modalIngredientesPlato" class="text-slate-300 font-medium leading-relaxed">Ingredientes</p>
+                    </div>
+                    <div class="pt-2 border-t border-kaito-border/50 flex justify-between items-center">
+                        <span class="text-[10px] text-kaito-muted font-bold">Alérgenos:</span>
+                        <span id="modalAlergenosPlato" class="px-2 py-0.5 rounded-lg bg-kaito-surface text-[11px] font-bold text-rose-400 border border-kaito-border">Mariscos / Soya</span>
+                    </div>
+                </div>
+
+                <!-- Notas -->
+                <div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-kaito-muted block mb-1.5">Notas para la Barra de Sushi:</span>
+                    <input type="text" id="modalInputNotas" placeholder="Ej: Sin queso crema, salsa acevichada aparte..." class="w-full bg-kaito-card text-xs text-white px-3.5 py-2.5 rounded-xl border border-kaito-border focus:border-kaito-red focus:outline-none">
+                </div>
+            </div>
+
+            <div class="p-4 bg-kaito-card border-t border-kaito-border flex items-center justify-between gap-3">
+                <div class="flex items-center bg-kaito-surface rounded-xl border border-kaito-border p-1">
+                    <button onclick="ajustarCantidadModal(-1)" class="w-8 h-8 rounded-lg bg-kaito-card text-white font-bold hover:text-kaito-red flex items-center justify-center">-</button>
+                    <span id="modalTxtCantidad" class="w-8 text-center font-bold text-xs text-white">1</span>
+                    <button onclick="ajustarCantidadModal(1)" class="w-8 h-8 rounded-lg bg-kaito-card text-white font-bold hover:text-kaito-red flex items-center justify-center">+</button>
+                </div>
+                <button onclick="confirmarAgregarAlCarrito()" class="flex-1 py-3.5 bg-kaito-red hover:bg-kaito-redDark text-white font-black text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg red-glow">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Añadir a la Ronda • <span id="modalBtnPrecioTotal">S/ 0.00</span></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CARRITO / REVISIÓN DE RONDA -->
+    <div id="modalCarrito" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-kaito-surface w-full max-w-lg rounded-t-3xl sm:rounded-3xl border border-kaito-border overflow-hidden max-h-[90vh] flex flex-col shadow-2xl">
+            <div class="p-4 bg-kaito-card border-b border-kaito-border flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-receipt text-kaito-red"></i>
+                    <h3 class="text-sm font-extrabold text-white">Revisión de Ronda de Makis</h3>
+                </div>
+                <button onclick="cerrarModalCarrito()" class="text-kaito-muted hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div id="listaItemsModalCarrito" class="p-4 overflow-y-auto custom-scroll space-y-3 flex-1"></div>
+
+            <div class="p-5 bg-kaito-card border-t border-kaito-border space-y-3">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-kaito-muted font-semibold uppercase tracking-wider">Subtotal esta ronda:</span>
+                    <span id="modalCarroSubtotalVal" class="text-lg font-black text-kaito-red">S/ 0.00</span>
+                </div>
+                <button id="btnEnviarCocinaModal" onclick="enviarPedidoACocinaFinal()" class="w-full py-4 bg-kaito-red hover:bg-kaito-redDark text-white font-black text-xs rounded-xl shadow-lg transition flex items-center justify-center gap-2 red-glow">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Confirmar y Enviar Ronda a la Barra</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PEDIR LA CUENTA (YAPE / POS / EFECTIVO CON DIVISIÓN EXACTA) -->
+    <div id="modalPagarCuenta" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-kaito-surface w-full max-w-md rounded-3xl border border-kaito-border p-6 relative shadow-2xl max-h-[90vh] overflow-y-auto custom-scroll">
+            <button onclick="cerrarModalPedirCuenta()" class="absolute top-4 right-4 text-kaito-muted hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+
+            <div class="text-center mb-3">
+                <h3 class="text-base font-extrabold text-white">Solicitud de Cuenta KAI-TO</h3>
+                <p class="text-xs text-kaito-muted"><span id="lblModalPagarMesa" class="text-kaito-red font-bold">Mesa 04</span> • <span id="lblModalSedeNombre">Miraflores</span></p>
+            </div>
+
+            <div class="bg-kaito-card p-4 rounded-2xl border border-kaito-border text-center mb-3 shadow-sm">
+                <span class="text-[9px] uppercase tracking-widest text-kaito-muted font-extrabold block">Total a Pagar</span>
+                <span id="lblModalPagarTotal" class="text-3xl font-black text-kaito-red">S/ 0.00</span>
+            </div>
+
+            <!-- División de Cuenta (Para grupos de amigos en barra libre) -->
+            <div class="bg-kaito-card p-3 rounded-2xl border border-kaito-border mb-3">
+                <span class="text-[9px] font-black uppercase tracking-widest text-kaito-red block mb-1.5 text-center">
+                    <i class="fa-solid fa-users mr-1"></i> Dividir Cuenta entre Amigos
+                </span>
+                <div class="flex items-center gap-1 mb-2">
+                    <button type="button" onclick="calcularSplitBill(1)" class="btn-split active flex-1 py-1.5 rounded-lg bg-kaito-surface border border-kaito-red text-kaito-red font-bold text-xs">1</button>
+                    <button type="button" onclick="calcularSplitBill(2)" class="btn-split flex-1 py-1.5 rounded-lg bg-kaito-surface border border-kaito-border text-white font-bold text-xs">2</button>
+                    <button type="button" onclick="calcularSplitBill(3)" class="btn-split flex-1 py-1.5 rounded-lg bg-kaito-surface border border-kaito-border text-white font-bold text-xs">3</button>
+                    <button type="button" onclick="calcularSplitBill(4)" class="btn-split flex-1 py-1.5 rounded-lg bg-kaito-surface border border-kaito-border text-white font-bold text-xs">4</button>
+                    <button type="button" onclick="calcularSplitBill(5)" class="btn-split flex-1 py-1.5 rounded-lg bg-kaito-surface border border-kaito-border text-white font-bold text-xs">5+</button>
+                </div>
+                <div id="boxResultadoSplit" class="text-center py-1.5 px-3 bg-kaito-surface rounded-xl border border-kaito-red/30 hidden">
+                    <span class="text-[9px] text-kaito-muted block">Monto por persona:</span>
+                    <span id="lblMontoPorPersona" class="text-base font-black text-amber-400">S/ 0.00 c/u</span>
+                </div>
+            </div>
+
+            <!-- Métodos -->
+            <div class="space-y-1.5 mb-4 text-xs">
+                <label class="flex items-center p-2.5 rounded-xl bg-kaito-card border border-kaito-border cursor-pointer hover:border-kaito-red transition">
+                    <input type="radio" name="radioMetodoPago" value="Yape / Plin" checked class="accent-kaito-red mr-3">
+                    <div>
+                        <span class="font-bold text-white block">📲 Yape / Plin</span>
+                        <span class="text-[10px] text-kaito-muted">Código QR en mesa</span>
+                    </div>
+                </label>
+                <label class="flex items-center p-2.5 rounded-xl bg-kaito-card border border-kaito-border cursor-pointer hover:border-kaito-red transition">
+                    <input type="radio" name="radioMetodoPago" value="Tarjeta POS" class="accent-kaito-red mr-3">
+                    <div>
+                        <span class="font-bold text-white block">💳 Tarjeta (POS Inalámbrico)</span>
+                        <span class="text-[10px] text-kaito-muted">Visa, Mastercard, Amex</span>
+                    </div>
+                </label>
+                <label class="flex items-center p-2.5 rounded-xl bg-kaito-card border border-kaito-border cursor-pointer hover:border-kaito-red transition">
+                    <input type="radio" name="radioMetodoPago" value="Efectivo" class="accent-kaito-red mr-3">
+                    <div>
+                        <span class="font-bold text-white block">💵 Efectivo</span>
+                        <span class="text-[10px] text-kaito-muted">El mozo acude con tu cambio</span>
+                    </div>
+                </label>
+            </div>
+
+            <button onclick="confirmarSolicitudDeCuenta()" class="w-full py-3.5 bg-kaito-red hover:bg-kaito-redDark text-white font-black text-xs rounded-xl shadow-lg transition red-glow">
+                Confirmar y Pedir Cuenta al Mozo
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toastNotification" class="fixed top-5 right-5 z-50 bg-kaito-card text-white px-4 py-3 rounded-2xl shadow-2xl border border-kaito-border flex items-center space-x-3 transform translate-x-96 transition-transform duration-300">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-kaito-red text-base"></i>
+        <span id="toastMsg" class="text-xs font-bold block">Notificación</span>
+    </div>
+
+    <!-- JAVASCRIPT KAITO -->
+    <script>
+        // CATÁLOGO REAL DE KAI-TO (PROMO S/ 95 + MAKIS EMBLEMÁTICOS)
+        const PRODUCTOS_KAITO = [
+            {
+                id: 101,
+                nombre: { es: "PROMO SALÓN: 3 Tablas (36 Makis) + 2 Complementos + 2 Bebidas", en: "SPECIAL PROMO: 36 Makis + 2 Sides + 2 Drinks" },
+                categoria: "combos",
+                precioBase: 95.00,
+                desc: {
+                    es: "3 tablas completas de makis a elección (36 cortes) + 2 complementos (Gyozas o Alitas) + 2 gaseosas.",
+                    en: "3 full maki rolls of your choice (36 pieces) + 2 side dishes (Gyozas/Wings) + 2 sodas."
+                },
+                img: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "Promo S/ 95", en: "Special S/ 95" },
+                ingredientes: { es: "36 cortes de makis fusión a elección, salsa tare, salsa acevichada.", en: "36 pieces of fusion makis of your choice." },
+                alergenos: "Mariscos, Soya, Pescado",
+                extrasDisponibles: []
+            },
+            {
+                id: 102,
+                nombre: { es: "Maki Acevichado Clásico KAI-TO (10 cortes)", en: "KAI-TO Classic Acevichado Maki (10 pcs)" },
+                categoria: "makis",
+                precioBase: 32.00,
+                desc: {
+                    es: "Relleno de langostino al panko crocante y palta hass, cubierto con láminas de atún fresco y salsa acevichada secreta.",
+                    en: "Crispy panko shrimp and avocado, topped with fresh tuna slices and house acevichada sauce."
+                },
+                img: "https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "Más Pedido", en: "Top Seller" },
+                ingredientes: { es: "Arroz shari, alga nori, langostino panko, palta, atún rojo, salsa acevichada.", en: "Shari rice, nori, panko shrimp, avocado, red tuna, acevichada sauce." },
+                alergenos: "Mariscos, Pescado, Huevo",
+                extrasDisponibles: []
+            },
+            {
+                id: 103,
+                nombre: { es: "Maki Furai Crocante (10 cortes)", en: "Crispy Furai Maki (10 pcs)" },
+                categoria: "makis",
+                precioBase: 30.00,
+                desc: {
+                    es: "Salmón fresco, palta hass y queso crema, empanizado en panko crocante con salsa dulce tare.",
+                    en: "Fresh salmon, avocado, and cream cheese, deep-fried in crispy panko with sweet tare sauce."
+                },
+                img: "https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "Crocante", en: "Crispy" },
+                ingredientes: { es: "Salmón, queso crema, palta, panko japonés, salsa tare.", en: "Salmon, cream cheese, avocado, Japanese panko, tare glaze." },
+                alergenos: "Lactosa, Pescado, Gluten",
+                extrasDisponibles: []
+            },
+            {
+                id: 104,
+                nombre: { es: "Maki Lomo Saltado Nikkei (10 cortes)", en: "Nikkei Lomo Saltado Maki (10 pcs)" },
+                categoria: "makis",
+                precioBase: 34.00,
+                desc: {
+                    es: "Lomo fino flambeado al wok con cebolla morada crocante, papas al hilo y reducción de saltado criollo.",
+                    en: "Wok-seared beef tenderloin, crispy red onions, shoestring potatoes, and rich saltado reduction."
+                },
+                img: "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "Fusión Criolla", en: "Criollo Fusion" },
+                ingredientes: { es: "Lomo fino Angus, cebolla crocante, papas al hilo, reducción al pisco.", en: "Angus tenderloin, crispy onion, potato strings, pisco reduction." },
+                alergenos: "Soya, Gluten",
+                extrasDisponibles: []
+            },
+            {
+                id: 105,
+                nombre: { es: "Gyozas Crocantes de Cerdo & Shiitake (6 unids)", en: "Crispy Pork & Shiitake Gyozas (6 pcs)" },
+                categoria: "piqueos",
+                precioBase: 24.00,
+                desc: {
+                    es: "Empanaditas japonesas al vapor y doradas a la plancha, rellenas de cerdo especiado y hongos shiitake.",
+                    en: "Pan-fried Japanese dumplings stuffed with seasoned pork and shiitake mushrooms."
+                },
+                img: "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "Entrada", en: "Starter" },
+                ingredientes: { es: "Masa gyoza, cerdo, shiitake, cebollita china, salsa ponzu.", en: "Gyoza dough, pork, shiitake, scallions, ponzu dip." },
+                alergenos: "Soya, Gluten",
+                extrasDisponibles: []
+            },
+            {
+                id: 106,
+                nombre: { es: "Cerveza Japonesa Asahi Super Dry (330ml)", en: "Asahi Super Dry Japanese Beer (330ml)" },
+                categoria: "bebidas",
+                precioBase: 16.00,
+                desc: {
+                    es: "Cerveza premium japonesa de sabor seco y refrescante, el maridaje perfecto para makis.",
+                    en: "Premium dry Japanese lager, crisp and refreshing, perfect maki pairing."
+                },
+                img: "https://images.unsplash.com/photo-1608270191763-71a7428f5ca8?auto=format&fit=crop&w=800&q=85",
+                tag: { es: "Importada", en: "Imported" },
+                ingredientes: { es: "Malta, lúpulo, levadura, agua purificada.", en: "Malt, hops, yeast, water." },
+                alergenos: "Gluten",
+                extrasDisponibles: []
+            }
+        ];
+
+        let idiomaActual = 'es';
+        let mesaActual = 'Mesa 04';
+        let sedeActual = 'Miraflores';
+        let tipoAtencion = 'auto';
+        let platoModalActivo = null;
+        let cantidadModal = 1;
+        let carritoRondaTemporal = [];
+        let totalConsumoBase = 0;
+        let personasSplit = 1;
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAOdDt5smefZAZHcMZA2spWVRwT8xaAAq4",
+            authDomain: "work-9d40e.firebaseapp.com",
+            databaseURL: "https://work-9d40e-default-rtdb.firebaseio.com",
+            projectId: "work-9d40e",
+            storageBucket: "work-9d40e.firebasestorage.app",
+            messagingSenderId: "200660411485",
+            appId: "1:200660411485:web:cd81eb3611578c8fee19b4"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
+
+        function cambiarSedeKaito(sede) {
+            sedeActual = sede;
+            const dir = sede === 'Miraflores' ? 'Miraflores — Calle Bolognesi 143' : 'Surco — Av. Caminos del Inca 3252';
+            document.getElementById('lblSedeHero').innerText = dir;
+            document.getElementById('lblModalSedeNombre').innerText = sede;
+            mostrarToast(`Sede seleccionada: ${sede}`, 'info');
+        }
+
+        function cambiarIdioma(lang) {
+            idiomaActual = lang;
+            const flags = { es: '🇪🇸', en: '🇬🇧', fr: '🇫🇷', pt: '🇧🇷' };
+            document.getElementById('flagIcon').innerText = flags[lang] || '🇪🇸';
+            renderizarCatalogoMenu(PRODUCTOS_KAITO);
+        }
+
+        function setTipoAtencion(tipo) {
+            tipoAtencion = tipo;
+            const btnAuto = document.getElementById('btnAtencionAuto');
+            const btnMozo = document.getElementById('btnAtencionMozo');
+
+            if (tipo === 'auto') {
+                btnAuto.className = 'px-3 py-1 rounded-lg text-xs font-bold transition bg-kaito-red text-white shadow';
+                btnMozo.className = 'px-3 py-1 rounded-lg text-xs font-bold transition text-slate-300 hover:text-kaito-red';
+            } else {
+                btnMozo.className = 'px-3 py-1 rounded-lg text-xs font-bold transition bg-emerald-500 text-white shadow';
+                btnAuto.className = 'px-3 py-1 rounded-lg text-xs font-bold transition text-slate-300 hover:text-kaito-red';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarCatalogoMenu(PRODUCTOS_KAITO);
+            conectarFirebaseMesa();
+        });
+
+        function conectarFirebaseMesa() {
+            const mesaKey = `${sedeActual}_${mesaActual}`.replace(/\s+/g, '_');
+            db.ref('mesas/' + mesaKey).on('value', (snapshot) => {
+                const dataMesa = snapshot.val();
+                if (dataMesa && dataMesa.comandas && dataMesa.comandas.length > 0) {
+                    totalConsumoBase = dataMesa.totalAcumulado || 0;
+                    renderizarTicket(dataMesa);
+                    document.getElementById('subseccionMenu').classList.add('hidden');
+                    document.getElementById('subseccionTicket').classList.remove('hidden');
+                } else {
+                    totalConsumoBase = 0;
+                    document.getElementById('subseccionMenu').classList.remove('hidden');
+                    document.getElementById('subseccionTicket').classList.add('hidden');
+                }
+            });
+        }
+
+        function renderizarCatalogoMenu(platos) {
+            const grid = document.getElementById('gridCatalogoPlatos');
+            grid.innerHTML = '';
+
+            platos.forEach(p => {
+                const nom = p.nombre[idiomaActual] || p.nombre.es;
+                const desc = p.desc[idiomaActual] || p.desc.es;
+                const tag = p.tag[idiomaActual] || p.tag.es;
+
+                const card = document.createElement('div');
+                card.className = 'bg-kaito-card rounded-3xl p-4 border border-kaito-border hover:border-kaito-red/40 transition-all flex flex-col sm:flex-row gap-4 shadow-md';
+                card.innerHTML = `
+                    <div class="w-full sm:w-36 h-36 rounded-2xl overflow-hidden relative cursor-pointer flex-shrink-0" onclick="abrirModalDetalle(${p.id})">
+                        <img src="${p.img}" alt="${nom}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                        <span class="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-black/80 text-kaito-red text-[8px] font-extrabold tracking-wider uppercase">${tag}</span>
+                    </div>
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start gap-2">
+                                <h4 onclick="abrirModalDetalle(${p.id})" class="text-sm font-extrabold text-white hover:text-kaito-red cursor-pointer transition leading-snug">${nom}</h4>
+                                <span class="text-sm font-black text-kaito-red whitespace-nowrap">S/ ${p.precioBase.toFixed(2)}</span>
+                            </div>
+                            <p class="text-xs text-kaito-muted mt-1 line-clamp-2">${desc}</p>
+                            <span class="text-[9px] text-rose-400 font-bold block mt-2">⚠️ ${p.alergenos}</span>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-kaito-border flex items-center justify-between">
+                            <button onclick="abrirModalDetalle(${p.id})" class="text-[11px] font-bold text-kaito-muted hover:text-white">Ver Makis</button>
+                            <button onclick="abrirModalDetalle(${p.id})" class="px-3.5 py-1.5 bg-kaito-red hover:bg-kaito-redDark text-white text-xs font-black rounded-xl transition shadow flex items-center gap-1.5">
+                                <i class="fa-solid fa-plus text-[10px]"></i> Pedir
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filtrarCategoria(cat, event) {
+            document.querySelectorAll('.cat-pill').forEach(btn => btn.className = 'cat-pill px-3.5 py-2 rounded-xl font-semibold bg-kaito-card text-kaito-muted hover:text-white border border-kaito-border whitespace-nowrap transition');
+            event.currentTarget.className = 'cat-pill active px-3.5 py-2 rounded-xl font-bold bg-kaito-red text-white whitespace-nowrap transition shadow';
+
+            if (cat === 'todos') {
+                renderizarCatalogoMenu(PRODUCTOS_KAITO);
+            } else {
+                renderizarCatalogoMenu(PRODUCTOS_KAITO.filter(p => p.categoria === cat));
+            }
+        }
+
+        function abrirModalDetalle(id) {
+            const prod = PRODUCTOS_KAITO.find(p => p.id === id);
+            if (!prod) return;
+
+            platoModalActivo = prod;
+            cantidadModal = 1;
+
+            document.getElementById('modalImgPlato').src = prod.img;
+            document.getElementById('modalTagPlato').innerText = prod.tag[idiomaActual] || prod.tag.es;
+            document.getElementById('modalNombrePlato').innerText = prod.nombre[idiomaActual] || prod.nombre.es;
+            document.getElementById('modalDescPlato').innerText = prod.desc[idiomaActual] || prod.desc.es;
+            document.getElementById('modalIngredientesPlato').innerText = prod.ingredientes[idiomaActual] || prod.ingredientes.es;
+            document.getElementById('modalAlergenosPlato').innerText = prod.alergenos;
+            document.getElementById('modalPrecioBasePlato').innerText = `S/ ${prod.precioBase.toFixed(2)}`;
+            document.getElementById('modalTxtCantidad').innerText = cantidadModal;
+            document.getElementById('modalBtnPrecioTotal').innerText = `S/ ${prod.precioBase.toFixed(2)}`;
+            document.getElementById('modalInputNotas').value = '';
+
+            document.getElementById('modalDetallePlato').classList.remove('hidden');
+        }
+
+        function cerrarModalDetalle() {
+            document.getElementById('modalDetallePlato').classList.add('hidden');
+        }
+
+        function ajustarCantidadModal(delta) {
+            const nuevo = cantidadModal + delta;
+            if (nuevo >= 1) {
+                cantidadModal = nuevo;
+                document.getElementById('modalTxtCantidad').innerText = cantidadModal;
+                document.getElementById('modalBtnPrecioTotal').innerText = `S/ ${(platoModalActivo.precioBase * cantidadModal).toFixed(2)}`;
+            }
+        }
+
+        function confirmarAgregarAlCarrito() {
+            if (!platoModalActivo) return;
+            const nota = document.getElementById('modalInputNotas').value.trim();
+            const nom = platoModalActivo.nombre[idiomaActual] || platoModalActivo.nombre.es;
+
+            carritoRondaTemporal.push({
+                productoId: platoModalActivo.id,
+                nombre: nom,
+                precioUnitario: platoModalActivo.precioBase,
+                cantidad: cantidadModal,
+                subtotal: platoModalActivo.precioBase * cantidadModal,
+                notas: nota || 'Sin notas especiales'
+            });
+
+            cerrarModalDetalle();
+            actualizarBarraFlotante();
+            mostrarToast(`Añadido: ${cantidadModal}x ${nom}`, 'success');
+        }
+
+        function pedirPromoDirecta() {
+            abrirModalDetalle(101); // Abre la promo S/ 95
+        }
+
+        function actualizarBarraFlotante() {
+            const barra = document.getElementById('barraFlotanteCarrito');
+            const totalCant = carritoRondaTemporal.reduce((acc, it) => acc + it.cantidad, 0);
+            const totalMonto = carritoRondaTemporal.reduce((acc, it) => acc + it.subtotal, 0);
+
+            if (totalCant > 0) {
+                barra.classList.remove('translate-y-36');
+                document.getElementById('txtCantCarritoFlotante').innerText = totalCant;
+                document.getElementById('txtTotalCarritoFlotante').innerText = `S/ ${totalMonto.toFixed(2)}`;
+            } else {
+                barra.classList.add('translate-y-36');
+            }
+        }
+
+        function abrirModalCarrito() {
+            const lista = document.getElementById('listaItemsModalCarrito');
+            lista.innerHTML = '';
+
+            carritoRondaTemporal.forEach((it, idx) => {
+                const card = document.createElement('div');
+                card.className = 'p-3 bg-kaito-card rounded-2xl border border-kaito-border flex justify-between items-start';
+                card.innerHTML = `
+                    <div class="flex-1 pr-3">
+                        <span class="text-xs font-bold text-white block">${it.cantidad}x ${it.nombre}</span>
+                        <span class="text-[10px] text-kaito-muted block mt-0.5 italic">Nota: "${it.notas}"</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xs font-black text-kaito-red">S/ ${it.subtotal.toFixed(2)}</span>
+                        <button onclick="eliminarItemCarro(${idx})" class="text-slate-500 hover:text-rose-400 text-xs"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                lista.appendChild(card);
+            });
+
+            const subtotal = carritoRondaTemporal.reduce((acc, it) => acc + it.subtotal, 0);
+            document.getElementById('modalCarroSubtotalVal').innerText = `S/ ${subtotal.toFixed(2)}`;
+            document.getElementById('modalCarrito').classList.remove('hidden');
+        }
+
+        function cerrarModalCarrito() {
+            document.getElementById('modalCarrito').classList.add('hidden');
+        }
+
+        function eliminarItemCarro(idx) {
+            carritoRondaTemporal.splice(idx, 1);
+            if (carritoRondaTemporal.length === 0) {
+                cerrarModalCarrito();
+            } else {
+                abrirModalCarrito();
+            }
+            actualizarBarraFlotante();
+        }
+
+        function enviarPedidoACocinaFinal() {
+            if (carritoRondaTemporal.length === 0) return;
+
+            const horaEnvio = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const mesaKey = `${sedeActual}_${mesaActual}`.replace(/\s+/g, '_');
+
+            db.ref('mesas/' + mesaKey).once('value').then((snapshot) => {
+                let dataMesa = snapshot.val() || {
+                    mesaId: `${mesaActual} (${sedeActual})`,
+                    inicioServicio: horaEnvio,
+                    totalAcumulado: 0,
+                    contadorRondas: 0,
+                    comandas: []
+                };
+
+                if (!dataMesa.comandas) dataMesa.comandas = [];
+
+                dataMesa.contadorRondas = (dataMesa.contadorRondas || 0) + 1;
+                const totalRonda = carritoRondaTemporal.reduce((acc, it) => acc + it.subtotal, 0);
+                dataMesa.totalAcumulado = (dataMesa.totalAcumulado || 0) + totalRonda;
+
+                const nuevaComanda = {
+                    id: 'CMD-' + Math.floor(1000 + Math.random() * 9000),
+                    mesaId: `${mesaActual} (${sedeActual})`,
+                    ronda: dataMesa.contadorRondas,
+                    hora: horaEnvio,
+                    timestamp: Date.now(),
+                    estado: 'nuevo',
+                    items: [...carritoRondaTemporal]
+                };
+
+                dataMesa.comandas.push(nuevaComanda);
+                return db.ref('mesas/' + mesaKey).set(dataMesa);
+            }).then(() => {
+                carritoRondaTemporal = [];
+                actualizarBarraFlotante();
+                cerrarModalCarrito();
+                mostrarToast(`¡Ronda de Makis enviada a la barra!`, 'success');
+            });
+        }
+
+        function renderizarTicket(dataMesa) {
+            document.getElementById('lblTicketMesaTitle').innerText = `${dataMesa.mesaId} • ${dataMesa.inicioServicio}`;
+            const contenedor = document.getElementById('listaItemsTicketAcumulado');
+            contenedor.innerHTML = '';
+
+            if (dataMesa.comandas) {
+                dataMesa.comandas.forEach(cmd => {
+                    const bloque = document.createElement('div');
+                    bloque.className = 'pt-3 pb-2 text-xs';
+
+                    let itemsHtml = '';
+                    if (cmd.items) {
+                        cmd.items.forEach(it => {
+                            itemsHtml += `
+                                <div class="flex justify-between items-start py-1">
+                                    <div>
+                                        <span class="text-white font-bold">${it.cantidad}x ${it.nombre}</span>
+                                        ${it.notas !== 'Sin notas especiales' ? `<span class="text-[10px] text-kaito-muted block italic">"${it.notas}"</span>` : ''}
+                                    </div>
+                                    <span class="text-kaito-red font-bold">S/ ${it.subtotal.toFixed(2)}</span>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    bloque.innerHTML = `
+                        <div class="flex justify-between items-center mb-1 pb-1 border-b border-kaito-border">
+                            <span class="font-bold text-kaito-red">Ronda #${cmd.ronda} (${cmd.hora})</span>
+                            <span class="text-[9px] px-2 py-0.5 bg-kaito-red/20 text-kaito-red rounded font-bold uppercase">En Barra</span>
+                        </div>
+                        <div class="space-y-1">${itemsHtml}</div>
+                    `;
+                    contenedor.appendChild(bloque);
+                });
+            }
+
+            const total = dataMesa.totalAcumulado || 0;
+            document.getElementById('ticketSubtotalNeto').innerText = `S/ ${(total / 1.18).toFixed(2)}`;
+            document.getElementById('ticketIgvCalculado').innerText = `S/ ${(total - (total / 1.18)).toFixed(2)}`;
+            document.getElementById('ticketTotalAcumuladoSoles').innerText = `S/ ${total.toFixed(2)}`;
+        }
+
+        function volverAlMenuParaPedirMas() {
+            document.getElementById('subseccionMenu').classList.remove('hidden');
+            document.getElementById('subseccionTicket').classList.add('hidden');
+        }
+
+        function solicitarAsistenciaMozo() {
+            const alerta = {
+                id: 'ALT-' + Date.now(),
+                mesa: `${mesaActual} (${sedeActual})`,
+                tipo: 'mozo',
+                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                mensaje: `🥢 Mozo solicitado en ${mesaActual} (${sedeActual})`
+            };
+            db.ref('alertas').push(alerta).then(() => {
+                mostrarToast('El mozo se acerca a tu mesa', 'success');
+            });
+        }
+
+        function calcularSplitBill(personas) {
+            personasSplit = personas;
+            document.querySelectorAll('.btn-split').forEach(btn => btn.className = 'btn-split flex-1 py-1.5 rounded-lg bg-kaito-surface border border-kaito-border text-white font-bold text-xs');
+            event.currentTarget.className = 'btn-split active flex-1 py-1.5 rounded-lg bg-kaito-surface border border-kaito-red text-kaito-red font-bold text-xs';
+
+            const box = document.getElementById('boxResultadoSplit');
+            if (personas > 1 && totalConsumoBase > 0) {
+                document.getElementById('lblMontoPorPersona').innerText = `S/ ${(totalConsumoBase / personas).toFixed(2)} c/u (${personas} personas)`;
+                box.classList.remove('hidden');
+            } else {
+                box.classList.add('hidden');
+            }
+        }
+
+        function abrirModalPedirCuenta() {
+            document.getElementById('lblModalPagarMesa').innerText = mesaActual;
+            document.getElementById('lblModalPagarTotal').innerText = `S/ ${totalConsumoBase.toFixed(2)}`;
+            calcularSplitBill(1);
+            document.getElementById('modalPagarCuenta').classList.remove('hidden');
+        }
+
+        function cerrarModalPedirCuenta() {
+            document.getElementById('modalPagarCuenta').classList.add('hidden');
+        }
+
+        function confirmarSolicitudDeCuenta() {
+            const metodo = document.querySelector('input[name="radioMetodoPago"]:checked').value;
+            const alerta = {
+                id: 'ALT-' + Date.now(),
+                mesa: `${mesaActual} (${sedeActual})`,
+                tipo: 'cuenta',
+                metodo: metodo,
+                total: totalConsumoBase,
+                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                mensaje: `💳 Cuenta solicitada en ${mesaActual} (${sedeActual}) — ${metodo} (S/ ${totalConsumoBase.toFixed(2)})`
+            };
+            db.ref('alertas').push(alerta).then(() => {
+                cerrarModalPedirCuenta();
+                mostrarToast(`Cuenta solicitada al mozo (${metodo})`, 'success');
+            });
+        }
+
+        function buscarPlatosEnVivo(texto) {
+            const query = texto.toLowerCase().trim();
+            if (!query) {
+                renderizarCatalogoMenu(PRODUCTOS_KAITO);
+                return;
+            }
+            const filtrados = PRODUCTOS_KAITO.filter(p => {
+                const nom = (p.nombre[idiomaActual] || p.nombre.es).toLowerCase();
+                const desc = (p.desc[idiomaActual] || p.desc.es).toLowerCase();
+                return nom.includes(query) || desc.includes(query);
+            });
+            renderizarCatalogoMenu(filtrados);
+        }
+
+        function mostrarToast(msg, tipo = 'info') {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('translate-x-96');
+            setTimeout(() => toast.classList.add('translate-x-96'), 3000);
+        }
+    </script>
+</body>
+</html>
