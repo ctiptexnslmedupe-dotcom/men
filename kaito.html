@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KAI-TO | Barra Fusión Japo-Peruana</title>
-    
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -25,11 +23,7 @@
             }
         }
     </script>
-
-    <!-- Font Awesome (Iconos) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <!-- Estilos personalizados -->
     <style>
         .red-glow-btn {
             background: #E50914;
@@ -41,11 +35,7 @@
     </style>
 </head>
 <body class="bg-[#0B0C10] text-slate-200 antialiased font-sans min-h-screen flex flex-col justify-between">
-<!-- ========================================================================= -->
-    <!-- SECCIÓN DE RESERVAS                                                       -->
-    <!-- ========================================================================= -->
     <section class="max-w-3xl mx-auto px-6 py-12 text-center my-auto w-full">
-        <!-- Badge Superior -->
         <div class="inline-flex items-center space-x-2 bg-red-950/40 border border-red-800/40 px-3 py-1.5 rounded-full mb-6">
             <span class="w-2 h-2 rounded-full bg-kaito-red animate-pulse"></span>
             <span class="text-[10px] font-bold tracking-widest text-red-400 uppercase">06.0 / Reservas</span>
@@ -56,7 +46,6 @@
             Asegura tu lugar para disfrutar del soplete en vivo y la verdadera experiencia Nikkei. Completa tus datos para coordinar vía WhatsApp.
         </p>
 
-        <!-- Formulario -->
         <form id="reservaForm" onsubmit="enviarReservaWhatsApp(event)" class="kaito-card p-6 sm:p-8 rounded-3xl space-y-5 text-left border border-white/10 shadow-2xl">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -112,9 +101,6 @@
             </button>
         </form>
     </section>
-    <!-- ========================================================================= -->
-    <!-- FOOTER Y DERECHOS RESERVADOS                                              -->
-    <!-- ========================================================================= -->
     <footer class="border-t border-white/10 bg-[#050608] py-8 px-6 text-xs text-kaito-muted w-full mt-auto">
         <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
@@ -135,10 +121,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- ========================================================================= -->
-    <!-- SCRIPT: ENVÍO A WHATSAPP                                                  -->
-    <!-- ========================================================================= -->
     <script>
         function enviarReservaWhatsApp(e) {
             e.preventDefault();
