@@ -1,18 +1,71 @@
-<h2 class="text-3xl sm:text-4xl font-editorial text-white uppercase tracking-wider mb-4">Reserva tu Mesa o Barra Libre</h2>
-        <p class="text-xs sm:text-sm text-kaito-muted mb-8 leading-relaxed">
-            Asegura tu lugar para disfrutar del soplete en vivo y la verdadera experiencia Nikkei. Completa tus datos para coordinar directamente vía WhatsApp.
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAI-TO | Barra Fusión Japo-Peruana</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'kaito-red': '#E50914',
+                        'kaito-dark': '#0B0C10',
+                        'kaito-card': '#12141C',
+                        'kaito-muted': '#9A9EA6'
+                    },
+                    fontFamily: {
+                        'editorial': ['Times New Roman', 'serif'],
+                        'brand': ['Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome (Iconos) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Estilos personalizados -->
+    <style>
+        .red-glow-btn {
+            background: #E50914;
+            box-shadow: 0 0 20px rgba(229, 9, 20, 0.4);
+        }
+        .kaito-card {
+            background-color: #12141C;
+        }
+    </style>
+</head>
+<body class="bg-[#0B0C10] text-slate-200 antialiased font-sans min-h-screen flex flex-col justify-between">
+<!-- ========================================================================= -->
+    <!-- SECCIÓN DE RESERVAS                                                       -->
+    <!-- ========================================================================= -->
+    <section class="max-w-3xl mx-auto px-6 py-12 text-center my-auto w-full">
+        <!-- Badge Superior -->
+        <div class="inline-flex items-center space-x-2 bg-red-950/40 border border-red-800/40 px-3 py-1.5 rounded-full mb-6">
+            <span class="w-2 h-2 rounded-full bg-kaito-red animate-pulse"></span>
+            <span class="text-[10px] font-bold tracking-widest text-red-400 uppercase">06.0 / Reservas</span>
+        </div>
+
+        <h2 class="text-3xl sm:text-4xl font-editorial text-white uppercase tracking-wider mb-3">Reserva tu Mesa o Barra Libre</h2>
+        <p class="text-xs sm:text-sm text-kaito-muted mb-8 max-w-lg mx-auto">
+            Asegura tu lugar para disfrutar del soplete en vivo y la verdadera experiencia Nikkei. Completa tus datos para coordinar vía WhatsApp.
         </p>
 
-        <!-- Formulario Interactivo de Reserva -->
-        <form id="reservaForm" onsubmit="enviarReservaWhatsApp(event)" class="kaito-card p-6 sm:p-8 rounded-3xl space-y-5 text-left border border-white/[0.1]">
+        <!-- Formulario -->
+        <form id="reservaForm" onsubmit="enviarReservaWhatsApp(event)" class="kaito-card p-6 sm:p-8 rounded-3xl space-y-5 text-left border border-white/10 shadow-2xl">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">Nombre Completo</label>
-                    <input type="text" id="nombreReserva" required placeholder="Ej: Renzo Silva" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-kaito-red transition">
+                    <input type="text" id="nombreReserva" required placeholder="Ej: Renzo Silva" class="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-kaito-red transition">
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">Sede</label>
-                    <select id="sedeReserva" required class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-kaito-red transition">
+                    <select id="sedeReserva" required class="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-kaito-red transition">
                         <option value="Miraflores (Bolognesi 143)">Miraflores — Calle Bolognesi 143</option>
                         <option value="Surco (Caminos del Inca 3252)">Surco — Av. Caminos del Inca 3252</option>
                     </select>
@@ -22,15 +75,15 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">Fecha</label>
-                    <input type="date" id="fechaReserva" required class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-kaito-red transition">
+                    <input type="date" id="fechaReserva" required class="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-kaito-red transition">
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">Hora</label>
-                    <input type="time" id="horaReserva" required class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-kaito-red transition">
+                    <input type="time" id="horaReserva" required class="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-kaito-red transition">
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">Personas</label>
-                    <select id="personasReserva" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-kaito-red transition">
+                    <select id="personasReserva" class="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-kaito-red transition">
                         <option value="2 personas">2 Personas</option>
                         <option value="3-4 personas">3 - 4 Personas</option>
                         <option value="5-6 personas">5 - 6 Personas</option>
@@ -42,65 +95,54 @@
             <div>
                 <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">Tipo de Experiencia</label>
                 <div class="grid grid-cols-2 gap-3 text-xs">
-                    <label class="flex items-center space-x-2 bg-black/30 p-3 rounded-xl border border-white/5 cursor-pointer hover:border-kaito-red/50 transition">
-                        <input type="radio" name="tipoExperiencia" value="Barra Libre (S/ 59.90)" checked class="accent-red-500">
+                    <label class="flex items-center space-x-2 bg-black/40 p-3 rounded-xl border border-white/5 cursor-pointer hover:border-kaito-red/50 transition">
+                        <input type="radio" name="tipoExperiencia" value="Barra Libre (S/ 59.90)" checked class="accent-red-600">
                         <span class="text-white font-medium">Barra Libre</span>
                     </label>
-                    <label class="flex items-center space-x-2 bg-black/30 p-3 rounded-xl border border-white/5 cursor-pointer hover:border-kaito-red/50 transition">
-                        <input type="radio" name="tipoExperiencia" value="A la Carta / Promos" class="accent-red-500">
+                    <label class="flex items-center space-x-2 bg-black/40 p-3 rounded-xl border border-white/5 cursor-pointer hover:border-kaito-red/50 transition">
+                        <input type="radio" name="tipoExperiencia" value="A la Carta / Promos" class="accent-red-600">
                         <span class="text-white font-medium">A la Carta / Promos</span>
                     </label>
                 </div>
             </div>
 
-            <button type="submit" class="w-full py-4 red-glow-btn text-white font-black text-xs uppercase tracking-[0.2em] rounded-xl transition hover:brightness-110 flex items-center justify-center space-x-2">
+            <button type="submit" class="w-full py-4 red-glow-btn text-white font-black text-xs uppercase tracking-[0.2em] rounded-xl transition hover:brightness-110 flex items-center justify-center space-x-2 mt-2">
                 <i class="fa-brands fa-whatsapp text-lg"></i>
                 <span>Confirmar Reserva por WhatsApp</span>
             </button>
         </form>
     </section>
-
     <!-- ========================================================================= -->
-    <!-- 8. FOOTER & DERECHOS RESERVADOS                                            -->
+    <!-- FOOTER Y DERECHOS RESERVADOS                                              -->
     <!-- ========================================================================= -->
-    <footer class="border-t border-white/[0.08] bg-[#050608] py-12 px-6 sm:px-12 text-xs text-kaito-muted relative z-10">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <footer class="border-t border-white/10 bg-[#050608] py-8 px-6 text-xs text-kaito-muted w-full mt-auto">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 rounded-lg bg-kaito-red flex items-center justify-center font-bold text-xs text-white">
+                <div class="w-7 h-7 rounded-lg bg-kaito-red flex items-center justify-center font-bold text-xs text-white">
                     海
                 </div>
-                <span class="font-brand font-bold text-white tracking-widest text-sm">KAI-TO — BARRA FUSIÓN</span>
+                <span class="font-brand font-bold text-white tracking-widest text-xs">KAI-TO — BARRA FUSIÓN</span>
             </div>
 
-            <p class="text-center md:text-left text-[11px]">
-                © 2026 KAI-TO Barra Fusión Japo-Peruana. Todos los derechos reservados. Miraflores & Surco, Lima, Perú.
+            <p class="text-center text-[11px]">
+                © 2026 KAI-TO Barra Fusión Japo-Peruana. Miraflores & Surco, Lima.
             </p>
 
-            <div class="flex space-x-4 text-base">
-                <a href="https://instagram.com" target="_blank" class="hover:text-kaito-red transition"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://tiktok.com" target="_blank" class="hover:text-kaito-red transition"><i class="fa-brands fa-tiktok"></i></a>
-                <a href="https://wa.me/51951770377" target="_blank" class="hover:text-kaito-red transition"><i class="fa-brands fa-whatsapp"></i></a>
+            <div class="flex space-x-4 text-sm">
+                <a href="https://instagram.com" target="_blank" class="hover:text-kaito-red transition" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://tiktok.com" target="_blank" class="hover:text-kaito-red transition" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://wa.me/51951770377" target="_blank" class="hover:text-kaito-red transition" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
             </div>
         </div>
     </footer>
 
     <!-- ========================================================================= -->
-    <!-- SCRIPTS EN VIVO: RELOJ LIMA, GSAP ANIMATIONS & WHATSAPP REDIRECT         -->
+    <!-- SCRIPT: ENVÍO A WHATSAPP                                                  -->
     <!-- ========================================================================= -->
     <script>
-        // 1. Reloj en Vivo Hora de Lima
-        function actualizarRelojLima() {
-            const ahora = new Date();
-            const opciones = { timeZone: 'America/Lima', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-            const horaLima = new Intl.DateTimeFormat('es-PE', opciones).format(ahora);
-            document.getElementById('relojLimaKaito').textContent = horaLima.replace(/:/g, ' : ');
-        }
-        setInterval(actualizarRelojLima, 1000);
-        actualizarRelojLima();
-
-        // 2. Integración WhatsApp Dinámica para Reservas
         function enviarReservaWhatsApp(e) {
             e.preventDefault();
+            
             const nombre = document.getElementById('nombreReserva').value;
             const sede = document.getElementById('sedeReserva').value;
             const fecha = document.getElementById('fechaReserva').value;
@@ -119,27 +161,6 @@
             const urlWhatsApp = `https://wa.me/51951770377?text=${encodeURIComponent(mensaje)}`;
             window.open(urlWhatsApp, '_blank');
         }
-
-        // 3. Animaciones Cinemáticas con GSAP
-        document.addEventListener("DOMContentLoaded", () => {
-            gsap.registerPlugin(ScrollTrigger);
-
-            gsap.from(".gsap-hero", {
-                duration: 1.2,
-                y: 40,
-                opacity: 0,
-                stagger: 0.2,
-                ease: "power3.out"
-            });
-
-            gsap.from(".gsap-hero-img", {
-                duration: 1.5,
-                scale: 0.95,
-                opacity: 0,
-                delay: 0.4,
-                ease: "power2.out"
-            });
-        });
     </script>
 </body>
 </html>
