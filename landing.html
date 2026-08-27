@@ -6,6 +6,10 @@
     <title>KeyMar Systems — Plataforma de IA, Desarrollo Web & Growth Marketing</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- GSAP & ScrollTrigger para Animaciones Cinematográficas Apple -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -14,14 +18,13 @@
                     colors: {
                         apple: {
                             black: '#000000',
-                            void: '#050507',
-                            card: '#101114',
-                            cardHover: '#16181d',
-                            border: '#242731',
+                            void: '#040406',
+                            card: '#101116',
+                            cardHover: '#161822',
+                            border: '#24283b',
                             subtext: '#86868b',
                             text: '#f5f5f7',
                             blue: '#2997ff',
-                            blueDark: '#0071e3',
                             cyan: '#06b6d4',
                             purple: '#a855f7',
                             gold: '#d4af37',
@@ -52,104 +55,109 @@
         }
         .font-brand { font-family: 'Cinzel', serif; }
 
-        /* AURORA ESPECULAR EN MOVIMIENTO (APPLE VISION PRO / M4 STYLE) */
-        .aurora-mesh {
-            background: radial-gradient(circle at 50% -20%, rgba(41, 151, 255, 0.28) 0%, rgba(6, 182, 212, 0.18) 30%, rgba(168, 85, 247, 0.12) 55%, rgba(212, 175, 55, 0.08) 80%, transparent 100%);
-            animation: auroraPulse 14s ease-in-out infinite alternate;
-        }
-        @keyframes auroraPulse {
-            0% { transform: scale(1) translateY(0); filter: hue-rotate(0deg); }
-            50% { transform: scale(1.12) translateY(30px); filter: hue-rotate(25deg); }
-            100% { transform: scale(1) translateY(0); filter: hue-rotate(0deg); }
-        }
-
-        .headline-gradient {
-            background: linear-gradient(180deg, #ffffff 10%, #e2e8f0 40%, #94a3b8 100%);
+        /* DEGRADADO METÁLICO ANIMADO APPLE */
+        .apple-shimmer-text {
+            background: linear-gradient(90deg, #ffffff 0%, #a1a1a6 25%, #2997ff 50%, #06b6d4 75%, #ffffff 100%);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            animation: textShimmer 8s linear infinite;
+        }
+        @keyframes textShimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
         }
 
-        .blue-glow-gradient {
-            background: linear-gradient(135deg, #2997ff 0%, #0071e3 50%, #06b6d4 100%);
-        }
-
-        .bento-card {
-            background: rgba(16, 17, 20, 0.75);
+        /* SPOTLIGHT GLOW BORDER EFECTO APPLE */
+        .spotlight-card {
+            position: relative;
+            background: rgba(16, 17, 22, 0.75);
             backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
+            border-radius: 28px;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 30px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
-        .bento-card:hover {
-            background: rgba(22, 24, 29, 0.85);
-            border-color: rgba(41, 151, 255, 0.4);
-            box-shadow: 0 15px 45px -10px rgba(41, 151, 255, 0.25);
-            transform: translateY(-3px);
+        .spotlight-card::before {
+            content: '';
+            position: absolute;
+            top: var(--mouse-y, -200px);
+            left: var(--mouse-x, -200px);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(41, 151, 255, 0.25) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .spotlight-card:hover::before {
+            opacity: 1;
+        }
+        .spotlight-card:hover {
+            border-color: rgba(41, 151, 255, 0.45);
+            box-shadow: 0 20px 50px -15px rgba(41, 151, 255, 0.3);
         }
 
-        .tab-button.active {
-            background: linear-gradient(135deg, #2997ff 0%, #0071e3 100%);
+        /* CONTENEDOR 3D TILT */
+        .tilt-container {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        .tilt-element {
+            transition: transform 0.15s ease-out;
+        }
+
+        /* TAB ACTIVA */
+        .tab-btn.active {
+            background: linear-gradient(135deg, #2997ff 0%, #0071e3 50%, #06b6d4 100%);
             color: #ffffff;
-            box-shadow: 0 4px 20px rgba(41, 151, 255, 0.35);
+            box-shadow: 0 6px 25px rgba(41, 151, 255, 0.4);
         }
 
-        /* Micro-animación de flotación */
-        .float-subtle {
-            animation: floatAnim 6s ease-in-out infinite alternate;
-        }
-        @keyframes floatAnim {
-            0% { transform: translateY(0px); }
-            100% { transform: translateY(-8px); }
-        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #000000; }
+        ::-webkit-scrollbar-thumb { background: #24283b; border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2997ff; }
     </style>
 </head>
-<body class="selection:bg-apple-blue selection:text-white">
+<body class="selection:bg-apple-blue selection:text-white relative">
 
-    <!-- AURORA DEGRADADA DE FONDO DINÁMICA -->
-    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div class="absolute -top-44 left-1/2 -translate-x-1/2 w-[1100px] h-[750px] aurora-mesh rounded-full blur-[130px]"></div>
-        <div class="absolute top-1/3 left-[-15%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[180px]"></div>
-        <div class="absolute bottom-10 right-[-10%] w-[700px] h-[700px] bg-cyan-600/10 rounded-full blur-[180px]"></div>
-    </div>
+    <!-- CANVAS INTERACTIVO CON ONDAS DE LUZ Y PARTÍCULAS APPLE -->
+    <canvas id="appleCanvasBg" class="fixed inset-0 pointer-events-none z-0 w-full h-full"></canvas>
 
     <!-- ========================================================================= -->
-    <!-- 1. NAVEGACIÓN SUPERIOR (ESTILO APPLE KEYNOTE)                             -->
+    <!-- 1. NAVEGACIÓN SUPERIOR BLUR APPLE                                         -->
     <!-- ========================================================================= -->
-    <header class="sticky top-0 z-40 bg-black/75 backdrop-blur-2xl border-b border-white/[0.08] px-6 py-3.5">
+    <header class="sticky top-0 z-40 bg-black/70 backdrop-blur-2xl border-b border-white/[0.08] px-6 py-3.5 transition-all">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             
-            <!-- LOGO OFICIAL DEL DRAGÓN KM & FIRMA KEYMAR SYSTEMS -->
-            <a href="#" class="flex items-center space-x-3 group">
-                <div class="w-10 h-10 flex items-center justify-center bg-white/[0.05] rounded-2xl border border-white/[0.1] group-hover:border-apple-blue transition-all shadow-lg">
-                    <!-- VECTOR SVG DE ALTA FIDELIDAD DEL DRAGÓN KEYMAR -->
-                    <svg viewBox="0 0 100 100" class="w-7 h-7 text-white group-hover:text-apple-blue transition-colors" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-                        <!-- Estructura KM Monograma -->
-                        <path d="M 22 78 L 22 22 M 22 50 L 48 22 M 22 45 L 48 78" stroke="#2997ff" stroke-width="4.5"/>
-                        <path d="M 48 78 L 48 22 L 68 56 L 88 22 L 88 78" stroke="currentColor" stroke-width="4.5"/>
-                        <!-- Dragón heráldico protector -->
-                        <path d="M 32 26 C 26 14, 40 10, 50 16 C 58 11, 68 16, 62 26 C 72 26, 76 38, 66 44 C 58 48, 48 42, 42 54" stroke="#d4af37" stroke-width="2.8"/>
-                        <circle cx="50" cy="18" r="1.5" fill="#d4af37"/>
-                    </svg>
+            <!-- LOGO HERÁLDICO DORADO -->
+            <a href="#" class="flex items-center space-x-3 group cursor-pointer">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-600 via-apple-gold to-yellow-200 p-[1.5px] shadow-lg shadow-amber-500/20 group-hover:scale-105 transition-transform">
+                    <div class="w-full h-full bg-apple-black rounded-[14px] flex items-center justify-center">
+                        <i class="fa-solid fa-crown text-apple-gold text-sm"></i>
+                    </div>
                 </div>
                 <div>
-                    <span class="text-xs font-bold uppercase tracking-[0.25em] text-white block leading-none">
-                        KeyMar <span class="text-apple-blue">Systems</span>
+                    <span class="text-xs tracking-[0.25em] font-brand font-black uppercase text-white leading-none block">
+                        KeyMar <span class="text-apple-gold">Systems</span>
                     </span>
-                    <span class="text-[9px] text-apple-subtext tracking-widest uppercase font-medium">Artificial Intelligence & Growth</span>
+                    <span class="text-[9px] text-apple-subtext tracking-widest uppercase font-medium">AI & Growth Engineering</span>
                 </div>
             </a>
 
-            <!-- Navegación Central -->
+            <!-- Links de Navegación -->
             <nav class="hidden md:flex items-center space-x-8 text-xs font-medium text-apple-subtext">
-                <a href="#soluciones" class="hover:text-white transition flex items-center gap-1.5">Soluciones</a>
-                <a href="#foodtech" class="hover:text-white transition flex items-center gap-1.5">FoodTech Suite</a>
-                <a href="#calculadora" class="hover:text-white transition flex items-center gap-1.5">Impacto ROI</a>
-                <a href="#inversion" class="hover:text-white transition flex items-center gap-1.5">Planes & Inversión</a>
+                <a href="#soluciones" class="hover:text-white transition">Soluciones</a>
+                <a href="#foodtech" class="hover:text-white transition">Suite Restaurantes</a>
+                <a href="#calculadora" class="hover:text-white transition">Impacto Financiero</a>
+                <a href="#inversion" class="hover:text-white transition">Inversión</a>
             </nav>
 
             <!-- CTA Directo WhatsApp -->
-            <a href="https://wa.me/51951652087?text=Hola%20KeyMar%20Systems,%20quiero%20coordinar%20un%20proyecto%20con%20su%20agencia." target="_blank" class="px-5 py-2 bg-white text-black hover:bg-slate-200 text-xs font-bold rounded-full shadow-xl transition flex items-center gap-2">
+            <a href="https://wa.me/51951652087?text=Hola%20KeyMar%20Systems,%20quiero%20coordinar%20un%20proyecto%20con%20su%20agencia." target="_blank" class="px-5 py-2 bg-white text-black hover:bg-slate-200 text-xs font-bold rounded-full shadow-xl transition flex items-center gap-2 hover:scale-105">
                 <i class="fa-brands fa-whatsapp text-sm text-emerald-600"></i>
                 <span class="hidden sm:inline">Iniciar Proyecto</span>
             </a>
@@ -157,137 +165,141 @@
     </header>
 
     <!-- ========================================================================= -->
-    <!-- 2. HERO MONUMENTAL: LA NUEVA ERA DE LA TECNOLOGÍA EMPRESARIAL            -->
+    <!-- 2. HERO SECTION CINEMATOGRÁFICO (APPLE KEYNOTE REVEAL)                   -->
     <!-- ========================================================================= -->
     <section class="relative z-10 pt-20 pb-20 px-4 text-center max-w-5xl mx-auto">
         
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.1] backdrop-blur-xl mb-8 shadow-inner">
-            <span class="w-2 h-2 rounded-full bg-apple-blue animate-ping"></span>
-            <span class="text-xs font-semibold text-slate-200">Software de Vanguardia, Agentes IA & Pauta de Alto Rendimiento</span>
+        <div class="gsap-hero-elem inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.1] backdrop-blur-xl mb-8 shadow-inner">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+            <span class="text-xs font-semibold text-slate-200">Inteligencia Artificial • Desarrollo Web de Autor • Growth</span>
         </div>
 
-        <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight headline-gradient leading-[1.08] mb-6">
-            La tecnología que multiplica la facturación de tu negocio.
+        <h1 class="gsap-hero-elem text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight apple-shimmer-text leading-[1.08] mb-6">
+            La tecnología que multiplica la facturación de tu empresa.
         </h1>
 
-        <p class="text-base sm:text-xl text-apple-subtext max-w-2xl mx-auto leading-relaxed mb-12 font-normal">
-            No creamos plantillas genéricas. Desarrollamos <b>Páginas Web interactivas de conversión extrema</b>, <b>Agentes de Inteligencia Artificial en WhatsApp 24/7</b> y <b>Sistemas Operativos a Medida</b> diseñados para dominar tu mercado.
+        <p class="gsap-hero-elem text-base sm:text-xl text-apple-subtext max-w-2xl mx-auto leading-relaxed mb-12 font-normal">
+            No usamos plantillas lentas. Diseñamos <b>Páginas Web interactivas de ultra alta conversión</b>, <b>Agentes de IA en WhatsApp 24/7</b> y <b>Sistemas Operativos a Medida</b> para negocios que buscan liderar su sector.
         </p>
 
-        <!-- Botones Principales -->
-        <div class="flex flex-wrap items-center justify-center gap-4 mb-20">
-            <a href="#inversion" class="px-8 py-4 blue-glow-gradient text-white hover:brightness-110 font-bold text-xs uppercase tracking-wider rounded-2xl transition shadow-2xl flex items-center gap-2">
-                <span>Ver Planes & Inversión S/ 900</span>
+        <!-- Botones de Acción -->
+        <div class="gsap-hero-elem flex flex-wrap items-center justify-center gap-4 mb-20">
+            <a href="#inversion" class="px-8 py-4 bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-400 text-white hover:brightness-110 font-bold text-xs uppercase tracking-wider rounded-2xl transition shadow-2xl shadow-cyan-500/25 flex items-center gap-2 hover:scale-105">
+                <span>Ver Inversión Llave en Mano S/ 900</span>
                 <i class="fa-solid fa-arrow-right text-xs"></i>
             </a>
-            <button onclick="abrirModalDemoDirecta()" class="px-8 py-4 bg-[#161617] hover:bg-[#1f1f22] text-white border border-white/10 font-bold text-xs rounded-2xl transition flex items-center gap-2 shadow-lg">
+            <button onclick="abrirModalDemoDirecta()" class="px-8 py-4 bg-[#161617] hover:bg-[#1f1f22] text-white border border-white/10 font-bold text-xs rounded-2xl transition flex items-center gap-2 shadow-lg hover:scale-105">
                 <i class="fa-regular fa-circle-play text-apple-blue text-sm"></i>
                 <span>Probar Portafolio en Vivo</span>
             </button>
         </div>
 
-        <!-- MOCKUP PRO DE ALTA DEFINICIÓN (CANVAS INTERACTIVO) -->
-        <div class="bento-card p-6 sm:p-10 text-left relative overflow-hidden float-subtle border border-white/[0.12] shadow-2xl">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-white/[0.08]">
-                <div class="flex items-center space-x-2.5">
-                    <div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
-                    <div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
-                    <div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
-                    <span class="text-xs text-apple-subtext font-mono ml-2">cloud.keymarsystems.pe — Ecosistema Digital</span>
-                </div>
-                <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-                    ● Latencia 0.2s en Servidores Cloud
-                </span>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-                <!-- Tarjeta 1: Web de Ultra Lujo -->
-                <div class="p-5 bg-black/50 rounded-2xl border border-white/[0.06] space-y-2">
-                    <i class="fa-solid fa-laptop-code text-apple-blue text-xl mb-1"></i>
-                    <h4 class="text-sm font-bold text-white">Desarrollo Web Nivel Apple</h4>
-                    <p class="text-xs text-apple-subtext leading-relaxed">Carga instantánea, animaciones 60 FPS y arquitectura diseñada para cerrar ventas.</p>
+        <!-- MOCKUP 3D TILT INTERACTIVO (GIRA CON EL MOUSE) -->
+        <div class="tilt-container max-w-4xl mx-auto">
+            <div id="heroTiltCard" class="tilt-element spotlight-card p-6 sm:p-10 text-left shadow-2xl">
+                
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-white/[0.08]">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
+                        <div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
+                        <div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+                        <span class="text-xs text-apple-subtext font-mono ml-2">cloud.keymarsystems.pe — Ecosistema Digital</span>
+                    </div>
+                    <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                        ● Latencia 0.2s en Servidores Google Cloud
+                    </span>
                 </div>
 
-                <!-- Tarjeta 2: Agentes IA WhatsApp -->
-                <div class="p-5 bg-black/50 rounded-2xl border border-white/[0.06] space-y-2">
-                    <i class="fa-solid fa-robot text-purple-400 text-xl mb-1"></i>
-                    <h4 class="text-sm font-bold text-white">Agentes IA WhatsApp 24/7</h4>
-                    <p class="text-xs text-apple-subtext leading-relaxed">Respuestas en 2 segundos, resolución de dudas y agendamiento automático de citas.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+                    <!-- Tarjeta 1 -->
+                    <div class="p-5 bg-black/60 rounded-2xl border border-white/[0.06] space-y-2 hover:border-apple-blue/50 transition">
+                        <i class="fa-solid fa-laptop-code text-apple-blue text-xl mb-1"></i>
+                        <h4 class="text-sm font-bold text-white">Desarrollo Web Nivel Apple</h4>
+                        <p class="text-xs text-apple-subtext leading-relaxed">Carga instantánea, código optimizado a 60 FPS y diseño para cerrar ventas.</p>
+                    </div>
+
+                    <!-- Tarjeta 2 -->
+                    <div class="p-5 bg-black/60 rounded-2xl border border-white/[0.06] space-y-2 hover:border-purple-400/50 transition">
+                        <i class="fa-solid fa-robot text-purple-400 text-xl mb-1"></i>
+                        <h4 class="text-sm font-bold text-white">Agentes IA WhatsApp 24/7</h4>
+                        <p class="text-xs text-apple-subtext leading-relaxed">Atención en 2 segundos, resolución de dudas y agendamiento automático de citas.</p>
+                    </div>
+
+                    <!-- Tarjeta 3 -->
+                    <div class="p-5 bg-black/60 rounded-2xl border border-white/[0.06] space-y-2 hover:border-apple-gold/50 transition">
+                        <i class="fa-solid fa-fire-burner text-apple-gold text-xl mb-1"></i>
+                        <h4 class="text-sm font-bold text-white">KeyMar FoodTech OS</h4>
+                        <p class="text-xs text-apple-subtext leading-relaxed">Modo Mozo en mesa, 4 idiomas, cocina anti-colapso por tandas y cierre en Excel.</p>
+                    </div>
                 </div>
 
-                <!-- Tarjeta 3: FoodTech Suite -->
-                <div class="p-5 bg-black/50 rounded-2xl border border-white/[0.06] space-y-2">
-                    <i class="fa-solid fa-fire-burner text-amber-400 text-xl mb-1"></i>
-                    <h4 class="text-sm font-bold text-white">KeyMar FoodTech OS</h4>
-                    <p class="text-xs text-apple-subtext leading-relaxed">Comandera para mozos en mesa, 4 idiomas, cocina anti-colapso y cierre en Excel.</p>
-                </div>
             </div>
         </div>
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 3. SOLUCIONES Y SERVICIOS CORE (TABS INTERACTIVAS)                       -->
+    <!-- 3. CATÁLOGO INTERACTIVO DE SOLUCIONES (TABS DINÁMICAS)                    -->
     <!-- ========================================================================= -->
-    <section id="soluciones" class="relative z-10 max-w-6xl mx-auto px-4 py-20">
+    <section id="soluciones" class="relative z-10 max-w-6xl mx-auto px-4 py-24">
         
-        <div class="text-center max-w-2xl mx-auto mb-12">
-            <span class="text-xs font-bold tracking-widest text-apple-blue uppercase block mb-2">Ingeniería de Crecimiento</span>
-            <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Activos digitales que generan ingresos reales</h2>
-            <p class="text-xs sm:text-sm text-apple-subtext mt-2">Tecnología robusta adaptada a clínicas, inmobiliarias, marcas de lujo y restaurantes.</p>
+        <div class="text-center max-w-2xl mx-auto mb-14">
+            <span class="text-xs font-bold tracking-widest text-apple-blue uppercase block mb-2">Ingeniería de Alto Calibre</span>
+            <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Soluciones que generan ingresos desde el día uno</h2>
+            <p class="text-xs sm:text-sm text-apple-subtext mt-2">Tecnología robusta para clínicas, inmobiliarias, marcas de autor y restaurantes.</p>
         </div>
 
         <!-- TABS SELECTORAS -->
         <div class="flex justify-center space-x-2 pb-8 overflow-x-auto custom-scroll text-xs font-bold">
-            <button onclick="cambiarTab('web')" id="tabBtn-web" class="tab-button active px-5 py-3 rounded-2xl bg-apple-card border border-white/[0.08] transition flex items-center gap-2">
+            <button onclick="cambiarTab('web')" id="tabBtn-web" class="tab-btn active px-5 py-3 rounded-2xl bg-apple-card border border-white/[0.08] transition flex items-center gap-2">
                 <i class="fa-solid fa-code"></i> 1. Páginas Web Pro
             </button>
-            <button onclick="cambiarTab('ia')" id="tabBtn-ia" class="tab-button px-5 py-3 rounded-2xl bg-apple-card border border-white/[0.08] text-apple-subtext hover:text-white transition flex items-center gap-2">
+            <button onclick="cambiarTab('ia')" id="tabBtn-ia" class="tab-btn px-5 py-3 rounded-2xl bg-apple-card border border-white/[0.08] text-apple-subtext hover:text-white transition flex items-center gap-2">
                 <i class="fa-solid fa-robot"></i> 2. Agentes IA WhatsApp
             </button>
-            <button onclick="cambiarTab('ads')" id="tabBtn-ads" class="tab-button px-5 py-3 rounded-2xl bg-apple-card border border-white/[0.08] text-apple-subtext hover:text-white transition flex items-center gap-2">
+            <button onclick="cambiarTab('ads')" id="tabBtn-ads" class="tab-btn px-5 py-3 rounded-2xl bg-apple-card border border-white/[0.08] text-apple-subtext hover:text-white transition flex items-center gap-2">
                 <i class="fa-solid fa-chart-line"></i> 3. Growth Marketing & Ads
             </button>
-            <button onclick="cambiarTab('foodtech')" id="tabBtn-foodtech" class="tab-button px-5 py-3 rounded-2xl bg-apple-card border border-white/[0.08] text-apple-subtext hover:text-white transition flex items-center gap-2">
-                <i class="fa-solid fa-utensils"></i> 4. FoodTech para Restaurantes
+            <button onclick="cambiarTab('foodtech')" id="tabBtn-foodtech" class="tab-btn px-5 py-3 rounded-2xl bg-apple-card border border-white/[0.08] text-apple-subtext hover:text-white transition flex items-center gap-2">
+                <i class="fa-solid fa-utensils"></i> 4. FoodTech Restaurantes
             </button>
         </div>
 
-        <!-- CONTENIDO DINÁMICO DE TABS -->
-        <div class="bento-card p-6 sm:p-10 border border-white/[0.1] shadow-2xl relative overflow-hidden">
+        <!-- CONTENEDOR DE TABS -->
+        <div class="spotlight-card p-6 sm:p-10 shadow-2xl">
             
-            <!-- PANEL 1: PÁGINAS WEB DE ALTA GAMA -->
+            <!-- PANEL 1: PÁGINAS WEB DE ALTO IMPACTO -->
             <div id="panel-web" class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center text-left">
                 <div class="space-y-4">
                     <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-blue-500/10 text-apple-blue border border-blue-500/20">
                         Nivel de Diseño Apple / Stripe
                     </span>
-                    <h3 class="text-2xl sm:text-4xl font-extrabold text-white">Desarrollo Web que posiciona a tu marca como líder indiscutible</h3>
+                    <h3 class="text-2xl sm:text-4xl font-extrabold text-white">Páginas Web que posicionan a tu marca como líder</h3>
                     <p class="text-xs sm:text-sm text-apple-subtext leading-relaxed">
-                        El 90% de páginas en el mercado son plantillas lentas de WordPress. Construimos activos digitales personalizados con código ultraligero, interactividad fluida y optimización para captar clientes en WhatsApp.
+                        El 90% de páginas web son plantillas lentas de WordPress que nadie lee. En KeyMar desarrollamos interfaces interactivas con arquitectura moderna, carga en 0.4 segundos y embudos optimizados para convertir prospectos en llamadas y ventas.
                     </p>
 
                     <div class="grid grid-cols-2 gap-3 pt-2 text-xs">
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-white block">⚡ Velocidad Extrema</b> 99/100 Google PageSpeed</div>
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-white block">📱 Mobile First</b> Perfecta en iPhone y Android</div>
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-white block">🎯 Embudos de Conversión</b> Llamadas directas</div>
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-white block">🔒 Seguridad SSL Cloud</b> Cero hackeos</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-white block">⚡ Carga Ultrarrápida</b> 99/100 en Google Speed</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-white block">📱 Mobile First</b> Perfecta en iPhone y Android</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-white block">🎯 Enfoque en Conversión</b> Llamadas directas</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-white block">🔒 Seguridad SSL Cloud</b> Cero hackeos</div>
                     </div>
 
                     <div class="pt-4">
-                        <a href="https://wa.me/51951652087?text=Hola%20KeyMar%20Systems,%20quiero%20cotizar%20una%20Página%20Web%20de%20Alto%20Impacto." target="_blank" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-black hover:bg-slate-200 font-bold text-xs rounded-xl shadow-lg transition">
+                        <a href="https://wa.me/51951652087?text=Hola%20KeyMar%20Systems,%20quiero%20cotizar%20una%20Página%20Web%20de%20Alto%20Impacto." target="_blank" class="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-black hover:bg-slate-200 font-bold text-xs rounded-xl shadow-lg transition hover:scale-105">
                             <span>Cotizar Mi Página Web</span>
                             <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </a>
                     </div>
                 </div>
 
-                <div class="bg-[#0a0a0c] rounded-2xl p-6 border border-white/[0.08] space-y-4">
+                <div class="bg-black/60 rounded-2xl p-6 border border-white/[0.08] space-y-4">
                     <div class="flex justify-between items-center text-xs pb-2 border-b border-white/[0.08]">
                         <span class="text-apple-blue font-bold">KeyMar Web Architecture</span>
                         <span class="text-emerald-400 font-mono">● 100% Optimizado</span>
                     </div>
                     <p class="text-xs text-slate-300 leading-relaxed">
-                        Creamos la vitrina digital de tu empresa para que cuando tus clientes te busquen, perciban prestigio y profesionalismo instantáneo.
+                        Creamos la vitrina digital de tu empresa para que cuando tus clientes te busquen, perciban prestigio y solvencia instantánea.
                     </p>
                     <div class="p-3 bg-white/[0.03] rounded-xl border border-white/[0.06] text-[11px] text-apple-subtext">
                         Ideal para: Clínicas estéticas, bufetes de abogados, inmobiliarias, gimnasios y marcas corporativas.
@@ -301,27 +313,27 @@
                     <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-purple-500/10 text-purple-400 border border-purple-500/20">
                         Ventas & Calificación Automática 24/7
                     </span>
-                    <h3 class="text-2xl sm:text-4xl font-extrabold text-white">Agentes de Inteligencia Artificial entrenados en tu negocio</h3>
+                    <h3 class="text-2xl sm:text-4xl font-extrabold text-white">Agentes de Inteligencia Artificial entrenados en tu empresa</h3>
                     <p class="text-xs sm:text-sm text-apple-subtext leading-relaxed">
                         El 60% de los clientes compra al primer negocio que responde en WhatsApp. Nuestros agentes de IA atienden en menos de 3 segundos, responden dudas complejas, califican prospectos y agendan citas en tu calendario mientras duermes.
                     </p>
 
                     <div class="grid grid-cols-2 gap-3 pt-2 text-xs">
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-purple-300 block">🤖 Respuestas Humanas</b> Sin sonar a robot rígido</div>
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-purple-300 block">📅 Agendamiento 24/7</b> Sincronizado a Google Calendar</div>
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-purple-300 block">📊 Calificación BANT</b> Filtra curiosos de clientes reales</div>
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-purple-300 block">🔄 Seguimiento Automático</b> Reactiva prospectos fríos</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-purple-300 block">🤖 Respuestas Humanas</b> Sin sonar a robot rígido</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-purple-300 block">📅 Agendamiento 24/7</b> Sincronizado a Google Calendar</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-purple-300 block">📊 Calificación BANT</b> Filtra curiosos de clientes</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-purple-300 block">🔄 Seguimiento Automático</b> Reactiva prospectos</div>
                     </div>
 
                     <div class="pt-4">
-                        <a href="https://wa.me/51951652087?text=Hola%20KeyMar%20Systems,%20quiero%20implementar%20un%20Agente%20de%20IA%20en%20mi%20WhatsApp." target="_blank" class="inline-flex items-center gap-2 px-6 py-3.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow-lg transition">
+                        <a href="https://wa.me/51951652087?text=Hola%20KeyMar%20Systems,%20quiero%20implementar%20un%20Agente%20de%20IA%20en%20mi%20WhatsApp." target="_blank" class="inline-flex items-center gap-2 px-6 py-3.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow-lg transition hover:scale-105">
                             <span>Automatizar Mi WhatsApp</span>
                             <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </a>
                     </div>
                 </div>
 
-                <div class="bg-[#0a0a0c] rounded-2xl p-5 border border-white/[0.08] space-y-3">
+                <div class="bg-black/60 rounded-2xl p-5 border border-white/[0.08] space-y-3">
                     <div class="p-3 bg-white/[0.03] rounded-xl border border-purple-500/30 text-xs space-y-1">
                         <span class="text-purple-300 font-bold block">Cliente: "¿Cuánto cuesta la consulta y tienen disponibilidad mañana?"</span>
                     </div>
@@ -344,28 +356,28 @@
                     </p>
 
                     <div class="grid grid-cols-2 gap-3 pt-2 text-xs">
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-emerald-400 block">🎯 Segmentación Láser</b> Llegamos al cliente con dinero</div>
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-emerald-400 block">📈 Medición de ROI</b> Sabes exactamente cuánto ganas</div>
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-emerald-400 block">📹 Creativos Persuasivos</b> Copys y videos de alto enganche</div>
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-emerald-400 block">🔄 Retargeting</b> Recuperamos a los indecisos</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-emerald-400 block">🎯 Segmentación Láser</b> Llegamos al cliente con dinero</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-emerald-400 block">📈 Medición de ROI</b> Sabes exactamente cuánto ganas</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-emerald-400 block">📹 Creativos Persuasivos</b> Copys y videos de alto enganche</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-emerald-400 block">🔄 Retargeting</b> Recuperamos a los indecisos</div>
                     </div>
 
                     <div class="pt-4">
-                        <a href="https://wa.me/51951652087?text=Hola%20KeyMar%20Systems,%20quiero%20lanzar%20campañas%20de%20ventas%20con%20publicidad." target="_blank" class="inline-flex items-center gap-2 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg transition">
+                        <a href="https://wa.me/51951652087?text=Hola%20KeyMar%20Systems,%20quiero%20lanzar%20campañas%20de%20ventas%20con%20publicidad." target="_blank" class="inline-flex items-center gap-2 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg transition hover:scale-105">
                             <span>Lanzar Campaña de Ventas</span>
                             <i class="fa-solid fa-arrow-right text-[10px]"></i>
                         </a>
                     </div>
                 </div>
 
-                <div class="bg-[#0a0a0c] rounded-2xl p-6 border border-white/[0.08] text-center space-y-3">
+                <div class="bg-black/60 rounded-2xl p-6 border border-white/[0.08] text-center space-y-3">
                     <i class="fa-solid fa-chart-pie text-4xl text-emerald-400"></i>
                     <h4 class="text-sm font-bold text-white">Retorno de Inversión Medible</h4>
                     <p class="text-xs text-apple-subtext leading-relaxed">Convertimos cada sol invertido en anuncios en prospectos calificados en tu bandeja de WhatsApp.</p>
                 </div>
             </div>
 
-            <!-- PANEL 4: FOODTECH SUITE (PRODUCTO ESTRELLA) -->
+            <!-- PANEL 4: FOODTECH SUITE -->
             <div id="panel-foodtech" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-8 items-center text-left" id="foodtech">
                 <div class="space-y-4">
                     <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest bg-amber-500/10 text-amber-400 border border-amber-500/20">
@@ -377,22 +389,22 @@
                     </p>
 
                     <div class="grid grid-cols-2 gap-3 pt-2 text-xs">
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-amber-300 block">🤵 Modo Mozo en Mesa</b> Pedidos en 0.1s a cocina</div>
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-amber-300 block">🥘 Cocción por Tandas</b> Ideal para Woks y Chifas</div>
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-amber-300 block">💎 Parantes Acrílicos</b> Grabados para cada mesa</div>
-                        <div class="p-3 bg-black/50 rounded-xl border border-white/[0.06]"><b class="text-amber-300 block">📊 Reportes Excel</b> Arqueo de caja en 1 clic</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-amber-300 block">🤵 Modo Mozo en Mesa</b> Pedidos en 0.1s a cocina</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-amber-300 block">🥘 Cocción por Tandas</b> Ideal para Woks y Chifas</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-amber-300 block">💎 Parantes Acrílicos</b> Grabados para cada mesa</div>
+                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-amber-300 block">📊 Reportes Excel</b> Arqueo de caja en 1 clic</div>
                     </div>
 
                     <div class="pt-4 flex flex-wrap gap-3">
-                        <button onclick="abrirModalDemoDirecta()" class="px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2">
+                        <button onclick="abrirModalDemoDirecta()" class="px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs rounded-xl shadow-lg transition flex items-center gap-2 hover:scale-105">
                             <i class="fa-solid fa-play"></i>
                             <span>Probar Demo (Mesa & Cocina)</span>
                         </button>
                     </div>
                 </div>
 
-                <div class="bg-[#0a0a0c] rounded-2xl p-5 border border-white/[0.08] space-y-3">
-                    <div class="flex justify-between items-center text-xs font-bold text-km-gold border-b border-white/[0.08] pb-2">
+                <div class="bg-black/60 rounded-2xl p-5 border border-white/[0.08] space-y-3">
+                    <div class="flex justify-between items-center text-xs font-bold text-apple-gold border-b border-white/[0.08] pb-2">
                         <span>Aureus Reserve • Mesa 04</span>
                         <span class="text-emerald-400">● Conectado en Vivo</span>
                     </div>
@@ -407,10 +419,10 @@
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 4. CALCULADORA INTERACTIVA DE RETENCIÓN & VENTAS                          -->
+    <!-- 4. CALCULADORA DE IMPACTO FINANCIERO (ROI)                                -->
     <!-- ========================================================================= -->
     <section id="calculadora" class="relative z-10 max-w-4xl mx-auto px-4 py-16">
-        <div class="bento-card p-8 sm:p-12 text-center relative overflow-hidden">
+        <div class="spotlight-card p-8 sm:p-12 text-center">
             
             <span class="text-xs font-bold tracking-widest text-apple-blue uppercase block mb-2">Simulador de Impacto Financiero</span>
             <h2 class="text-2xl sm:text-4xl font-bold text-white mb-3">¿Cuánto dinero pierdes al mes por no responder en 1 minuto?</h2>
@@ -422,17 +434,17 @@
                         <span class="text-apple-subtext">Consultas recibidas al mes:</span>
                         <span id="lblNumeroLeads" class="text-lg text-apple-blue font-bold">150 Consultas</span>
                     </div>
-                    <input type="range" id="sliderLeads" min="30" max="600" value="150" step="10" oninput="calcularImpactoIA(this.value)" class="w-full accent-apple-blue bg-[#242731] rounded-lg cursor-pointer h-2">
+                    <input type="range" id="sliderLeads" min="30" max="600" value="150" step="10" oninput="calcularImpactoIA(this.value)" class="w-full accent-apple-blue bg-[#24283b] rounded-lg cursor-pointer h-2">
                 </div>
 
                 <!-- Resultados -->
                 <div class="grid grid-cols-2 gap-4 pt-4 border-t border-white/[0.08]">
-                    <div class="bg-black/50 p-4 rounded-2xl border border-white/[0.06]">
+                    <div class="bg-black/60 p-4 rounded-2xl border border-white/[0.06]">
                         <span class="text-[10px] text-apple-subtext uppercase font-bold block mb-1">Ventas adicionales con IA</span>
                         <span id="lblVentasRecuperadas" class="text-2xl font-bold text-apple-blue font-mono">+ 22 Cierres</span>
                         <span class="text-[10px] text-apple-subtext block mt-0.5">por respuesta en 2 segundos</span>
                     </div>
-                    <div class="bg-black/50 p-4 rounded-2xl border border-white/[0.06]">
+                    <div class="bg-black/60 p-4 rounded-2xl border border-white/[0.06]">
                         <span class="text-[10px] text-apple-subtext uppercase font-bold block mb-1">Facturación estimada</span>
                         <span id="lblIngresoExtra" class="text-2xl font-bold text-emerald-400 font-mono">+ S/ 4,400</span>
                         <span class="text-[10px] text-apple-subtext block mt-0.5">mensuales para tu empresa</span>
@@ -448,12 +460,12 @@
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 5. ESTRUCTURA DE PLANES E INVERSIÓN (EXACTA: S/ 900 SETUP + 2 MESES GRATIS)-->
+    <!-- 5. ESTRUCTURA DE PLANES E INVERSIÓN (S/ 900 SETUP + 2 MESES GRATIS)        -->
     <!-- ========================================================================= -->
     <section id="inversion" class="relative z-10 max-w-5xl mx-auto px-4 py-20">
         
         <div class="text-center max-w-xl mx-auto mb-16">
-            <span class="text-xs font-bold tracking-widest text-km-gold uppercase block mb-2">Inversión Transparente</span>
+            <span class="text-xs font-bold tracking-widest text-apple-gold uppercase block mb-2">Inversión Transparente</span>
             <h2 class="text-3xl sm:text-5xl font-bold text-white tracking-tight">Planes diseñados para generar ROI inmediato</h2>
             <p class="text-xs sm:text-sm text-apple-subtext mt-2">Sin contratos forzosos. Todo llave en mano listo para operar.</p>
         </div>
@@ -461,7 +473,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             
             <!-- PLAN 1: PACK RESTAURANTES S/ 900 -->
-            <div class="bento-card p-8 rounded-[32px] border-2 border-amber-500/50 relative overflow-hidden flex flex-col justify-between">
+            <div class="spotlight-card p-8 border-2 border-amber-500/50 relative flex flex-col justify-between">
                 <span class="absolute top-0 right-0 px-4 py-1.5 bg-amber-500 text-black text-[9px] font-black uppercase tracking-widest rounded-bl-2xl">
                     Pack Restaurantes
                 </span>
@@ -486,7 +498,7 @@
                 </div>
 
                 <div class="pt-6">
-                    <a href="https://wa.me/51951652087?text=Hola%20KeyMar%20Systems,%20quiero%20contratar%20el%20Pack%20de%20Restaurantes%20de%20S/%20900." target="_blank" class="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 shadow-lg transition">
+                    <a href="https://wa.me/51951652087?text=Hola%20KeyMar%20Systems,%20quiero%20contratar%20el%20Pack%20de%20Restaurantes%20de%20S/%20900." target="_blank" class="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 shadow-lg transition hover:scale-105">
                         <i class="fa-brands fa-whatsapp text-sm"></i>
                         <span>Instalar en mi Restaurante</span>
                     </a>
@@ -494,8 +506,8 @@
             </div>
 
             <!-- PLAN 2: PACK CORPORATIVO WEB + AGENTE IA -->
-            <div class="bento-card p-8 rounded-[32px] border-2 border-apple-blue/60 relative overflow-hidden flex flex-col justify-between shadow-2xl">
-                <span class="absolute top-0 right-0 px-4 py-1.5 blue-glow-gradient text-white text-[9px] font-black uppercase tracking-widest rounded-bl-2xl">
+            <div class="spotlight-card p-8 border-2 border-apple-blue/60 relative flex flex-col justify-between shadow-2xl">
+                <span class="absolute top-0 right-0 px-4 py-1.5 bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-[9px] font-black uppercase tracking-widest rounded-bl-2xl">
                     Pack Corporativo
                 </span>
 
@@ -519,7 +531,7 @@
                 </div>
 
                 <div class="pt-6">
-                    <a href="https://wa.me/51951652087?text=Hola%20KeyMar%20Systems,%20quiero%20cotizar%20el%20Pack%20Web%20Pro%20+%20Agente%20de%20IA." target="_blank" class="w-full py-3.5 blue-glow-gradient text-white font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 shadow-xl transition">
+                    <a href="https://wa.me/51951652087?text=Hola%20KeyMar%20Systems,%20quiero%20cotizar%20el%20Pack%20Web%20Pro%20+%20Agente%20de%20IA." target="_blank" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 shadow-xl transition hover:scale-105">
                         <i class="fa-brands fa-whatsapp text-sm"></i>
                         <span>Iniciar Proyecto Corporativo</span>
                     </a>
@@ -529,11 +541,11 @@
         </div>
     </section>
 
-    <!-- FOOTER COMERCIAL -->
-    <footer class="relative z-10 border-t border-white/[0.08] bg-[#050507] py-12 px-4 text-center">
+    <!-- FOOTER CORPORATIVO -->
+    <footer class="relative z-10 border-t border-white/[0.08] bg-[#020204] py-12 px-4 text-center">
         <div class="max-w-4xl mx-auto space-y-4">
             <div class="flex items-center justify-center space-x-2">
-                <div class="w-6 h-6 rounded-lg bg-km-gold/20 flex items-center justify-center text-km-gold text-xs">
+                <div class="w-6 h-6 rounded-lg bg-apple-gold/20 flex items-center justify-center text-apple-gold text-xs">
                     <i class="fa-solid fa-crown"></i>
                 </div>
                 <span class="text-xs font-brand font-bold uppercase tracking-widest text-white">KeyMar Systems</span>
@@ -554,7 +566,7 @@
             <span>¿En qué podemos ayudarte? Chatea aquí 🤖</span>
         </div>
 
-        <button id="btnChatbotFlotante" onclick="toggleChatbot()" class="w-14 h-14 rounded-full blue-glow-gradient text-white flex items-center justify-center shadow-2xl hover:scale-110 transition-transform">
+        <button id="btnChatbotFlotante" onclick="toggleChatbot()" class="w-14 h-14 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 text-white flex items-center justify-center shadow-2xl hover:scale-110 transition-transform shadow-cyan-500/30">
             <i id="iconoChatFlotante" class="fa-solid fa-comment-dots text-xl"></i>
         </button>
     </div>
@@ -593,7 +605,7 @@
 
         <div class="p-3 bg-[#1d1d1f] border-t border-white/[0.08] flex items-center gap-2">
             <input type="text" id="inputChatTexto" onkeypress="if(event.key === 'Enter') enviarMensajeUsuario()" placeholder="Escribe tu consulta..." class="flex-1 bg-[#0a0a0c] text-xs text-white px-3.5 py-2.5 rounded-xl border border-white/[0.1] focus:border-apple-blue focus:outline-none">
-            <button onclick="enviarMensajeUsuario()" class="w-8 h-8 rounded-xl blue-glow-gradient text-white flex items-center justify-center text-xs font-bold hover:brightness-110 transition">
+            <button onclick="enviarMensajeUsuario()" class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-400 text-white flex items-center justify-center text-xs font-bold hover:brightness-110 transition">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
         </div>
@@ -631,20 +643,118 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT: TABS, CALCULADORA & CHATBOT -->
+    <!-- ========================================================================= -->
+    <!-- JAVASCRIPT: GSAP, CANVAS ONDAS APPLE & SPOTLIGHT                          -->
+    <!-- ========================================================================= -->
     <script>
-        function cambiarTab(tipo) {
-            document.querySelectorAll('.tab-button').forEach(b => {
-                b.className = 'tab-button px-5 py-3 rounded-2xl bg-apple-card border border-white/[0.08] text-apple-subtext hover:text-white transition flex items-center gap-2';
+        // 1. CANVAS ONDAS Y PARTÍCULAS INTERACTIVAS APPLE
+        const canvas = document.getElementById('appleCanvasBg');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let mouse = { x: -1000, y: -1000 };
+        const particles = [];
+
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        for (let i = 0; i < 45; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4,
+                size: Math.random() * 2 + 1,
+                color: i % 2 === 0 ? 'rgba(41, 151, 255, 0.4)' : 'rgba(6, 182, 212, 0.3)'
             });
-            document.getElementById(`tabBtn-${tipo}`).className = 'tab-button active px-5 py-3 rounded-2xl transition flex items-center gap-2';
+        }
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, width, height);
+
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0) p.x = width;
+                if (p.x > width) p.x = 0;
+                if (p.y < 0) p.y = height;
+                if (p.y > height) p.y = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+            });
+
+            requestAnimationFrame(drawParticles);
+        }
+        drawParticles();
+
+        // 2. SPOTLIGHT BORDER EFFECT (SIGUE AL MOUSE)
+        document.querySelectorAll('.spotlight-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // 3. 3D MOUSE TILT EN EL HERO
+        const heroTiltCard = document.getElementById('heroTiltCard');
+        if (heroTiltCard) {
+            document.addEventListener('mousemove', e => {
+                const cx = window.innerWidth / 2;
+                const cy = window.innerHeight / 2;
+                const dx = (e.clientX - cx) / cx;
+                const dy = (e.clientY - cy) / cy;
+                heroTiltCard.style.transform = `rotateY(${dx * 7}deg) rotateX(${-dy * 7}deg)`;
+            });
+        }
+
+        // 4. ANIMACIONES GSAP AL CARGAR Y SCROLL
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.from('.gsap-hero-elem', {
+                opacity: 0,
+                y: 30,
+                filter: 'blur(10px)',
+                duration: 1.1,
+                stagger: 0.18,
+                ease: 'power3.out'
+            });
+
+            gsap.from('.spotlight-card', {
+                scrollTrigger: {
+                    trigger: '#soluciones',
+                    start: 'top 80%'
+                },
+                opacity: 0,
+                y: 40,
+                duration: 0.9,
+                stagger: 0.15,
+                ease: 'power2.out'
+            });
+        });
+
+        // 5. TABS INTERACTIVAS
+        function cambiarTab(tipo) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.className = 'tab-btn px-5 py-3 rounded-2xl bg-apple-card border border-white/[0.08] text-apple-subtext hover:text-white transition flex items-center gap-2');
+            document.getElementById(`tabBtn-${tipo}`).className = 'tab-btn active px-5 py-3 rounded-2xl transition flex items-center gap-2';
 
             ['web', 'ia', 'ads', 'foodtech'].forEach(s => {
                 document.getElementById(`panel-${s}`).classList.add('hidden');
             });
             document.getElementById(`panel-${tipo}`).classList.remove('hidden');
+
+            gsap.fromTo(`#panel-${tipo}`, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' });
         }
 
+        // 6. CALCULADORA ROI
         function calcularImpactoIA(leads) {
             document.getElementById('lblNumeroLeads').innerText = `${leads} Consultas`;
             const cierres = Math.floor(leads * 0.15);
@@ -660,6 +770,7 @@
             document.getElementById('modalDemoLauncher').classList.add('hidden');
         }
 
+        // 7. CHATBOT INTERACTIVO CON INDICADOR DE ESCRITURA
         function toggleChatbot() {
             const ventana = document.getElementById('ventanaChatbot');
             const icono = document.getElementById('iconoChatFlotante');
@@ -677,7 +788,7 @@
             const msg = document.createElement('div');
 
             if (esUsuario) {
-                msg.className = 'blue-glow-gradient text-white p-3 rounded-2xl rounded-tr-none ml-auto max-w-[85%]';
+                msg.className = 'bg-gradient-to-tr from-blue-600 to-cyan-500 text-white p-3.5 rounded-2xl rounded-tr-none ml-auto max-w-[85%]';
                 msg.innerText = texto;
             } else {
                 msg.className = 'bg-[#1d1d1f] p-3.5 rounded-2xl rounded-tl-none border border-white/[0.06] text-white max-w-[85%] leading-relaxed';
@@ -690,8 +801,20 @@
 
         function procesarRespuestaIA(pregunta) {
             const q = pregunta.toLowerCase();
+            const cont = document.getElementById('chatMensajesContenedor');
+
+            // Indicador de escritura animado
+            const typingBubble = document.createElement('div');
+            typingBubble.className = 'bg-[#1d1d1f] p-3 rounded-2xl rounded-tl-none border border-white/[0.06] text-apple-subtext text-xs italic max-w-[50%]';
+            typingBubble.id = 'typingBubbleElem';
+            typingBubble.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin mr-1.5 text-apple-blue"></i> Escribiendo...';
+            cont.appendChild(typingBubble);
+            cont.scrollTop = cont.scrollHeight;
 
             setTimeout(() => {
+                const el = document.getElementById('typingBubbleElem');
+                if (el) el.remove();
+
                 if (q.includes('web') || q.includes('pagina') || q.includes('sitio')) {
                     agregarMensajeChat("Desarrollamos <b>Páginas Web de Alto Impacto estilo Apple</b> optimizadas para convertir visitantes en clientes por WhatsApp. ¿De qué rubro es tu empresa?");
                 } else if (q.includes('ia') || q.includes('whatsapp') || q.includes('bot') || q.includes('agente')) {
@@ -703,7 +826,7 @@
                 } else {
                     agregarMensajeChat("En KeyMar Systems multiplicamos la facturación de tu negocio con Páginas Web Pro, Agentes IA en WhatsApp y Pauta Digital. ¿Te gustaría coordinar una sesión de diagnóstico?<br><br><a href='https://wa.me/51951652087?text=Hola,%20tengo%20una%20consulta.' target='_blank' class='text-apple-blue font-bold underline'>Hablar por WhatsApp (+51 951 652 087)</a>");
                 }
-            }, 450);
+            }, 600);
         }
 
         function enviarMensajeUsuario() {
