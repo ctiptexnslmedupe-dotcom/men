@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KAI-TO — The Philosophy of Nikkei Artistry | Lima, Perú</title>
+    <title>KAI-TO | Barra Fusión — La Filosofía del Arte Nikkei | Lima, Perú</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- GSAP & ScrollTrigger para Animaciones Cinemáticas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -16,7 +20,7 @@
                             surface: '#111113',
                             card: '#161619',
                             border: 'rgba(255, 255, 255, 0.08)',
-                            borderLight: 'rgba(255, 255, 255, 0.15)',
+                            borderLight: 'rgba(255, 255, 255, 0.16)',
                             text: '#f4f3ef',
                             subtext: '#8c8a84',
                             muted: '#5e5c56',
@@ -35,7 +39,7 @@
     <!-- Google Fonts & Font Awesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -49,10 +53,20 @@
         .font-editorial { font-family: 'Cormorant Garamond', serif; }
         .font-brand { font-family: 'Cinzel', serif; }
         
-        /* Línea horizontal ultrafina estilo Shibui */
+        /* Línea horizontal ultrafina Shibui */
         .shibui-line {
             height: 1px;
-            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.12) 20%, rgba(255, 255, 255, 0.12) 80%, transparent 100%);
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.15) 25%, rgba(255, 255, 255, 0.15) 75%, transparent 100%);
+            transform-origin: left center;
+        }
+
+        .kanji-bg {
+            animation: kanjiFloat 18s ease-in-out infinite alternate;
+        }
+        @keyframes kanjiFloat {
+            0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.03; }
+            50% { transform: translate(-50%, -50%) scale(1.06) rotate(2deg); opacity: 0.06; }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.03; }
         }
 
         /* Custom scrollbar */
@@ -64,10 +78,17 @@
 </head>
 <body class="selection:bg-masa-sand selection:text-black">
 
+    <!-- KANJI JAPONÉS '海' (KAI = OCÉANO) DE FONDO EN PENUMBRA -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] kanji-bg flex items-center justify-center text-masa-sand select-none">
+            <span class="text-[340px] font-bold font-serif">海</span>
+        </div>
+    </div>
+
     <!-- ========================================================================= -->
-    <!-- 1. HEADER MINIMALISTA & RELOJ EN VIVO (ESTILO EXACTO MASA NYC)           -->
+    <!-- 1. HEADER EDITORIAL & RELOJ DE LIMA EN VIVO                               -->
     <!-- ========================================================================= -->
-    <header class="sticky top-0 z-50 bg-[#0a0a0b]/90 backdrop-blur-md border-b border-white/[0.08] px-6 sm:px-12 py-4">
+    <header class="sticky top-0 z-50 bg-[#0a0a0b]/90 backdrop-blur-md border-b border-white/[0.08] px-6 sm:px-12 py-4 transition-all">
         <div class="max-w-7xl mx-auto flex justify-between items-center text-xs">
             
             <!-- Branding -->
@@ -76,62 +97,61 @@
                     KAI-TO
                 </a>
                 <span class="hidden md:inline text-[10px] tracking-[0.25em] text-masa-subtext uppercase border-l border-white/[0.1] pl-6">
-                    The Philosophy of Shibui
+                    La Filosofía del Shibui
                 </span>
             </div>
 
             <!-- Menú Central -->
             <nav class="hidden lg:flex items-center space-x-8 text-[11px] font-medium tracking-[0.2em] uppercase text-masa-subtext">
-                <a href="#philosophy" class="hover:text-white transition">Philosophy</a>
-                <a href="#experiences" class="hover:text-white transition">Experiences</a>
-                <a href="#menus" class="hover:text-white transition">Menus</a>
-                <a href="#locations" class="hover:text-white transition">Locations</a>
-                <a href="#private-dining" class="hover:text-white transition">Private Dining</a>
+                <a href="#filosofia" class="hover:text-white transition">Filosofía</a>
+                <a href="#experiencias" class="hover:text-white transition">Experiencias</a>
+                <a href="#carta" class="hover:text-white transition">Carta</a>
+                <a href="#sedes" class="hover:text-white transition">Sedes</a>
+                <a href="#reservas" class="hover:text-white transition">Reservas</a>
             </nav>
 
             <!-- Reloj en Vivo & CTA -->
             <div class="flex items-center space-x-6">
-                <!-- RELOJ EN VIVO IDÉNTICO A MASA NYC -->
                 <div class="hidden sm:flex items-center font-mono text-[11px] tracking-widest text-masa-sand">
                     <span class="mr-2 text-masa-subtext font-sans">Lima, PE —</span>
-                    <span id="relojMasaStyle">20 : 00 : 00</span>
+                    <span id="relojLimaLive">20 : 00 : 00</span>
                 </div>
 
-                <a href="#reservations" class="px-5 py-2 border border-white/20 hover:border-masa-sand hover:text-masa-sand text-white text-[11px] font-medium uppercase tracking-[0.25em] transition duration-300">
-                    Reservations
+                <a href="#reservas" class="px-5 py-2 border border-white/20 hover:border-masa-sand hover:text-masa-sand text-white text-[11px] font-medium uppercase tracking-[0.25em] transition duration-300">
+                    Reservar
                 </a>
             </div>
         </div>
     </header>
 
     <!-- ========================================================================= -->
-    <!-- 2. HERO SECTION: MINIMALISMO ABSOLUTO, KANJI & ALTA COCINA               -->
+    <!-- 2. HERO PRINCIPAL CINEMATOGRÁFICO                                         -->
     <!-- ========================================================================= -->
-    <section class="relative min-h-[90vh] flex flex-col justify-between pt-24 pb-16 px-6 sm:px-12 max-w-7xl mx-auto">
+    <section class="relative min-h-[90vh] flex flex-col justify-between pt-24 pb-16 px-6 sm:px-12 max-w-7xl mx-auto z-10">
         
         <div class="space-y-4 max-w-3xl">
-            <span class="text-[10px] tracking-[0.35em] text-masa-sand uppercase block">
-                Nikkei Cuisine & Omotenashi
+            <span class="gsap-hero text-[10px] tracking-[0.35em] text-masa-sand uppercase block">
+                Cocina Nikkei & Omotenashi • Lima
             </span>
-            <h1 class="text-4xl sm:text-6xl md:text-7xl font-editorial font-light text-white leading-[1.05]">
-                Where tradition meets artistry,<br>and every cut reflects precision.
+            <h1 class="gsap-hero text-4xl sm:text-6xl md:text-7xl font-editorial font-light text-white leading-[1.05]">
+                Donde la pureza del océano se une al fuego criollo,<br>y cada corte refleja devoción.
             </h1>
         </div>
 
-        <!-- Fotografía Central Inmersiva con proporción cinematográfica -->
-        <div class="relative my-12 w-full h-[55vh] rounded-none overflow-hidden border border-white/[0.08]">
-            <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=1600&q=90" alt="KAI-TO Omakase" class="w-full h-full object-cover grayscale-[15%] hover:scale-105 transition-transform duration-1000">
+        <!-- Fotografía Central Inmersiva con Efecto Zoom -->
+        <div class="gsap-hero-img relative my-12 w-full h-[55vh] rounded-none overflow-hidden border border-white/[0.08] group">
+            <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=1600&q=90" alt="KAI-TO Omakase" class="w-full h-full object-cover grayscale-[10%] group-hover:scale-105 transition-transform duration-1000">
             <div class="absolute bottom-6 left-6 text-xs tracking-widest text-white/80 font-mono">
-                01.0 / HINOKI COUNTER & BARRA LIBRE FUSIÓN
+                01.0 / BARRA FUSIÓN & HINOKI COUNTER
             </div>
         </div>
 
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 text-xs text-masa-subtext leading-relaxed pt-4 border-t border-white/[0.08]">
+        <div class="gsap-hero flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 text-xs text-masa-subtext leading-relaxed pt-4 border-t border-white/[0.08]">
             <p class="max-w-md text-[13px] text-[#b8b5ac] font-light">
-                Experience the world of KAI-TO, where the purity of the ocean unites with Peruvian criollo fire. Intimate dining in Miraflores and Surco, Lima.
+                Bienvenido al universo de KAI-TO. Una propuesta donde la técnica japonesa ancestral y los insumos peruanos de origen conviven en perfecta armonía en Miraflores y Surco.
             </p>
             <div class="flex space-x-6 text-[11px] tracking-widest uppercase">
-                <span>Tue–Sun / 12:30–23:00</span>
+                <span>Mar–Dom / 12:30–23:00</span>
                 <span class="text-masa-sand">Miraflores • Surco</span>
             </div>
         </div>
@@ -140,25 +160,25 @@
     <div class="shibui-line max-w-7xl mx-auto my-12"></div>
 
     <!-- ========================================================================= -->
-    <!-- 3. SECTION 01: LA FILOSOFÍA SHIBUI (IDENTIDAD MASA NYC)                   -->
+    <!-- 3. SECCIÓN 01: LA FILOSOFÍA SHIBUI (WABI-SABI)                            -->
     <!-- ========================================================================= -->
-    <section id="philosophy" class="py-20 px-6 sm:px-12 max-w-7xl mx-auto">
+    <section id="filosofia" class="py-20 px-6 sm:px-12 max-w-7xl mx-auto z-10 relative">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             
-            <div class="lg:col-span-4 space-y-2">
+            <div class="lg:col-span-4 space-y-2 gsap-section-title">
                 <span class="text-xs font-mono text-masa-sand">01.0</span>
-                <h2 class="text-2xl sm:text-3xl font-editorial text-white uppercase tracking-wider">The Philosophy of Shibusa</h2>
+                <h2 class="text-2xl sm:text-3xl font-editorial text-white uppercase tracking-wider">La Filosofía Shibusa</h2>
             </div>
 
-            <div class="lg:col-span-8 space-y-6 text-sm text-[#b8b5ac] font-light leading-relaxed">
-                <p class="text-base text-white font-editorial italic">
-                    "Simplicity, implicity, modesty, silence, naturalness, imperfection & normalcy."
+            <div class="lg:col-span-8 space-y-6 text-sm text-[#b8b5ac] font-light leading-relaxed gsap-section-content">
+                <p class="text-base sm:text-lg text-white font-editorial italic">
+                    "Simplicidad, sutileza, silencio, naturalidad y perfección imperfecta."
                 </p>
                 <p>
-                    Following the ancestral principles of Japanese culinary refinement, KAI-TO is created to elevate the aesthetics of everyday dining. Our cuisine does not disguise raw ingredients; it honors their living, energetic state.
+                    Siguiendo los principios de refinamiento culinario japonés, KAI-TO nace para elevar la experiencia gastronómica diaria. Nuestra cocina no enmascara los ingredientes; rinde homenaje a su frescura y estado vivo.
                 </p>
                 <p>
-                    Every cut of wild tuna, every glaze of house-aged tare sauce, and each seasonal maki is meticulously handcrafted to celebrate the dialogue between coastal Peru and Japanese mastery.
+                    Cada corte de atún rojo del Pacífico, cada reducción de salsa tare añejada en casa y cada maki de autor es elaborado con precisión artesanal para celebrar el diálogo entre la costa peruana y la maestría itamae.
                 </p>
             </div>
 
@@ -168,84 +188,84 @@
     <div class="shibui-line max-w-7xl mx-auto my-12"></div>
 
     <!-- ========================================================================= -->
-    <!-- 4. SECTION 02: EXPERIENCIAS & MENÚS (FORMATO MASA TOCK)                  -->
+    <!-- 4. SECCIÓN 02: EXPERIENCIAS GASTRONÓMICAS                                 -->
     <!-- ========================================================================= -->
-    <section id="experiences" class="py-20 px-6 sm:px-12 max-w-7xl mx-auto">
+    <section id="experiencias" class="py-20 px-6 sm:px-12 max-w-7xl mx-auto z-10 relative">
         
-        <div class="flex justify-between items-end mb-16 border-b border-white/[0.08] pb-6">
+        <div class="flex justify-between items-end mb-16 border-b border-white/[0.08] pb-6 gsap-section-title">
             <div>
                 <span class="text-xs font-mono text-masa-sand block mb-1">02.0</span>
-                <h2 class="text-3xl sm:text-4xl font-editorial text-white uppercase tracking-wider">Dining Experiences</h2>
+                <h2 class="text-3xl sm:text-4xl font-editorial text-white uppercase tracking-wider">Experiencias de Salón</h2>
             </div>
-            <span class="text-xs text-masa-subtext uppercase tracking-widest hidden sm:inline">Lima Flagships</span>
+            <span class="text-xs text-masa-subtext uppercase tracking-widest hidden sm:inline">Lima, Perú</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             
             <!-- Experiencia 1: Barra Libre Fusión -->
-            <div class="p-8 bg-masa-surface border border-white/[0.08] flex flex-col justify-between hover:border-masa-sand/40 transition duration-500">
+            <div class="gsap-card p-8 bg-masa-surface border border-white/[0.08] flex flex-col justify-between hover:border-masa-sand/40 transition duration-500">
                 <div class="space-y-4">
-                    <span class="text-[10px] tracking-[0.3em] uppercase text-masa-sand block">Signature Service</span>
+                    <span class="text-[10px] tracking-[0.3em] uppercase text-masa-sand block">Servicio Insignia</span>
                     <h3 class="text-2xl font-editorial text-white">Barra Libre Fusión</h3>
                     <div class="text-2xl font-editorial text-masa-sand font-normal pt-2">
-                        S/ 95 <span class="text-xs font-sans text-masa-subtext">/ guest</span>
+                        S/ 95 <span class="text-xs font-sans text-masa-subtext">/ comensal</span>
                     </div>
                     <p class="text-xs text-masa-subtext leading-relaxed pt-2">
-                        Unlimited rounds of signature fusion makis (Acevichado, Furai, Lomo Saltado, Spicy Tuna), accompanied by 2 chef appetizers and beverages.
+                        Rondas ilimitadas de nuestros makis de autor (Acevichado, Furai, Lomo Saltado, Spicy Tuna), acompañadas de 2 complementos del chef y bebidas.
                     </p>
                 </div>
 
                 <div class="pt-8 border-t border-white/[0.08] mt-8 flex justify-between items-center text-xs">
-                    <span class="text-masa-muted font-mono">Approx. 2 hours</span>
-                    <a href="#reservations" class="text-white hover:text-masa-sand font-medium uppercase tracking-widest">Reserve <i class="fa-solid fa-arrow-right text-[9px] ml-1"></i></a>
+                    <span class="text-masa-muted font-mono">Tiempo estimado: 2h</span>
+                    <a href="#reservas" class="text-white hover:text-masa-sand font-medium uppercase tracking-widest">Reservar <i class="fa-solid fa-arrow-right text-[9px] ml-1"></i></a>
                 </div>
             </div>
 
             <!-- Experiencia 2: Omakase Counter -->
-            <div class="p-8 bg-masa-surface border border-white/[0.08] flex flex-col justify-between hover:border-masa-sand/40 transition duration-500">
+            <div class="gsap-card p-8 bg-masa-surface border border-white/[0.08] flex flex-col justify-between hover:border-masa-sand/40 transition duration-500">
                 <div class="space-y-4">
-                    <span class="text-[10px] tracking-[0.3em] uppercase text-masa-sand block">Chef's Table</span>
-                    <h3 class="text-2xl font-editorial text-white">Omakase Counter Seating</h3>
+                    <span class="text-[10px] tracking-[0.3em] uppercase text-masa-sand block">Mesa del Chef</span>
+                    <h3 class="text-2xl font-editorial text-white">Omakase Counter (10 Tiempos)</h3>
                     <div class="text-2xl font-editorial text-masa-sand font-normal pt-2">
-                        S/ 140 <span class="text-xs font-sans text-masa-subtext">/ guest</span>
+                        S/ 140 <span class="text-xs font-sans text-masa-subtext">/ comensal</span>
                     </div>
                     <p class="text-xs text-masa-subtext leading-relaxed pt-2">
-                        An intimate 10-course progression directly curated by our head itamae. Rare catch of the day, nigiris, and tableside flame techniques.
+                        Una progresión íntima curada directamente por nuestro jefe de barra. Pesca salvaje selecta, nigiris flambeados al momento y técnicas ancestrales.
                     </p>
                 </div>
 
                 <div class="pt-8 border-t border-white/[0.08] mt-8 flex justify-between items-center text-xs">
-                    <span class="text-masa-muted font-mono">Hinoki Counter</span>
-                    <a href="#reservations" class="text-white hover:text-masa-sand font-medium uppercase tracking-widest">Reserve <i class="fa-solid fa-arrow-right text-[9px] ml-1"></i></a>
+                    <span class="text-masa-muted font-mono">Barra Hinoki</span>
+                    <a href="#reservas" class="text-white hover:text-masa-sand font-medium uppercase tracking-widest">Reservar <i class="fa-solid fa-arrow-right text-[9px] ml-1"></i></a>
                 </div>
             </div>
 
-            <!-- Experiencia 3: A la Carte & Combos -->
-            <div class="p-8 bg-masa-surface border border-white/[0.08] flex flex-col justify-between hover:border-masa-sand/40 transition duration-500">
+            <!-- Experiencia 3: A la Carta & Tablas -->
+            <div class="gsap-card p-8 bg-masa-surface border border-white/[0.08] flex flex-col justify-between hover:border-masa-sand/40 transition duration-500">
                 <div class="space-y-4">
-                    <span class="text-[10px] tracking-[0.3em] uppercase text-masa-sand block">Tableside Selection</span>
-                    <h3 class="text-2xl font-editorial text-white">A la Carte & Signature Rolls</h3>
+                    <span class="text-[10px] tracking-[0.3em] uppercase text-masa-sand block">Selección en Mesa</span>
+                    <h3 class="text-2xl font-editorial text-white">A la Carta & Rolls de Autor</h3>
                     <div class="text-2xl font-editorial text-masa-sand font-normal pt-2">
-                        From S/ 30 <span class="text-xs font-sans text-masa-subtext">/ 10 cuts</span>
+                        Desde S/ 30 <span class="text-xs font-sans text-masa-subtext">/ 10 cortes</span>
                     </div>
                     <p class="text-xs text-masa-subtext leading-relaxed pt-2">
-                        Individual tables of our awarded rolls, gyozas crocantes, tiraditos al ají amarillo, and curated Japanese craft beers.
+                        Tablas individuales de nuestras creaciones premiadas, gyozas crocantes al vapor, tiraditos al ají amarillo y cervezas artesanales japonesas.
                     </p>
                 </div>
 
                 <div class="pt-8 border-t border-white/[0.08] mt-8 flex justify-between items-center text-xs">
-                    <span class="text-masa-muted font-mono">Dining Room</span>
-                    <a href="#reservations" class="text-white hover:text-masa-sand font-medium uppercase tracking-widest">Reserve <i class="fa-solid fa-arrow-right text-[9px] ml-1"></i></a>
+                    <span class="text-masa-muted font-mono">Salón Principal</span>
+                    <a href="#reservas" class="text-white hover:text-masa-sand font-medium uppercase tracking-widest">Reservar <i class="fa-solid fa-arrow-right text-[9px] ml-1"></i></a>
                 </div>
             </div>
 
         </div>
 
-        <!-- Protocolo de etiqueta y hospitalidad idéntico a Masa -->
+        <!-- Protocolo de hospitalidad -->
         <div class="mt-12 p-8 bg-black border border-white/[0.06] text-xs text-masa-subtext space-y-3 leading-relaxed">
-            <h4 class="text-white uppercase tracking-[0.2em] font-medium text-[11px]">Hospitality & Dining Guidelines</h4>
+            <h4 class="text-white uppercase tracking-[0.2em] font-medium text-[11px]">Guía de Hospitalidad y Servicio</h4>
             <p>
-                At KAI-TO, hospitality is at the heart of every guest experience. We kindly encourage casually elegant attire. To ensure the highest culinary standards, tables for Barra Libre are reserved for complete parties. For special dietary accommodations and allergies, please inform our team upon booking.
+                En KAI-TO, el respeto por el tiempo y la experiencia de cada invitado es primordial. Agradecemos una vestimenta casual elegante. Para mantener el estándar de cocina, las mesas de Barra Libre se reservan para el grupo completo. Para restricciones alimentarias o alergias, por favor infórmelo a nuestro equipo al momento de reservar.
             </p>
         </div>
     </section>
@@ -253,83 +273,83 @@
     <div class="shibui-line max-w-7xl mx-auto my-12"></div>
 
     <!-- ========================================================================= -->
-    <!-- 5. SECTION 03: MENÚ DEGUSTACIÓN EDITORIAL (PLATO A PLATO)                 -->
+    <!-- 5. SECCIÓN 03: CARTA EDITORIAL DE TEMPORADA                               -->
     <!-- ========================================================================= -->
-    <section id="menus" class="py-20 px-6 sm:px-12 max-w-7xl mx-auto">
+    <section id="carta" class="py-20 px-6 sm:px-12 max-w-7xl mx-auto z-10 relative">
         
-        <div class="flex justify-between items-end mb-16 border-b border-white/[0.08] pb-6">
+        <div class="flex justify-between items-end mb-16 border-b border-white/[0.08] pb-6 gsap-section-title">
             <div>
                 <span class="text-xs font-mono text-masa-sand block mb-1">03.0</span>
-                <h2 class="text-3xl sm:text-4xl font-editorial text-white uppercase tracking-wider">Current Selection</h2>
+                <h2 class="text-3xl sm:text-4xl font-editorial text-white uppercase tracking-wider">Selección de Carta</h2>
             </div>
-            <span class="text-xs text-masa-subtext uppercase tracking-widest">Seasonal Creations</span>
+            <span class="text-xs text-masa-subtext uppercase tracking-widest">Creaciones del Chef</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12 text-left">
             
             <!-- Plato 1 -->
-            <div class="space-y-2 border-b border-white/[0.06] pb-6">
+            <div class="space-y-2 border-b border-white/[0.06] pb-6 gsap-menu-item">
                 <div class="flex justify-between items-baseline">
                     <h3 class="text-lg font-editorial text-white">Maki Acevichado Clásico</h3>
                     <span class="font-editorial text-masa-sand text-base">S/ 32.00</span>
                 </div>
                 <p class="text-xs text-masa-subtext font-light leading-relaxed">
-                    Crispy panko shrimp and ripe Hass avocado, blanketed with fresh yellowfin tuna and our secret house tiger's milk emulsion.
+                    Langostino empanizado al panko crocante y palta hass madura, cubierto con láminas finas de atún rojo del día y emulsión acevichada secreta de la casa.
                 </p>
             </div>
 
             <!-- Plato 2 -->
-            <div class="space-y-2 border-b border-white/[0.06] pb-6">
+            <div class="space-y-2 border-b border-white/[0.06] pb-6 gsap-menu-item">
                 <div class="flex justify-between items-baseline">
-                    <h3 class="text-lg font-editorial text-white">Ceviche de Pesca del Día</h3>
+                    <h3 class="text-lg font-editorial text-white">Ceviche Clásico de Pesca del Día</h3>
                     <span class="font-editorial text-masa-sand text-base">S/ 48.00</span>
                 </div>
                 <p class="text-xs text-masa-subtext font-light leading-relaxed">
-                    Wild Pacific corvina cured in Key lime and limo chili leche de tigre, glazed sweet potato, and giant Andean choclo.
+                    Corvina salvaje curada al limón sutil y ají limo piurano en leche de tigre de autor, acompañada de camote glaseado y choclo gigante andino.
                 </p>
             </div>
 
             <!-- Plato 3 -->
-            <div class="space-y-2 border-b border-white/[0.06] pb-6">
+            <div class="space-y-2 border-b border-white/[0.06] pb-6 gsap-menu-item">
                 <div class="flex justify-between items-baseline">
                     <h3 class="text-lg font-editorial text-white">Maki Furai Tradicional</h3>
                     <span class="font-editorial text-masa-sand text-base">S/ 30.00</span>
                 </div>
                 <p class="text-xs text-masa-subtext font-light leading-relaxed">
-                    Fresh salmon, cream cheese, and avocado, deep-fried in Japanese panko crumb with sweet caramelized tare reduction.
+                    Salmón fresco, queso crema artesanal y palta, frito al momento en miga japonesa panko con reducción dulce de salsa tare.
                 </p>
             </div>
 
             <!-- Plato 4 -->
-            <div class="space-y-2 border-b border-white/[0.06] pb-6">
+            <div class="space-y-2 border-b border-white/[0.06] pb-6 gsap-menu-item">
                 <div class="flex justify-between items-baseline">
-                    <h3 class="text-lg font-editorial text-white">Maki Lomo Saltado Wok</h3>
+                    <h3 class="text-lg font-editorial text-white">Maki Lomo Saltado al Wok</h3>
                     <span class="font-editorial text-masa-sand text-base">S/ 34.00</span>
                 </div>
                 <p class="text-xs text-masa-subtext font-light leading-relaxed">
-                    Angus beef tenderloin seared at high wok heat, crispy red onion strings, and Peruvian pisco soy glaze.
+                    Lomo fino Angus sellado a fuego vivo en wok con cebolla morada crocante, papitas al hilo y reducción criolla de pisco y sillao.
                 </p>
             </div>
 
             <!-- Plato 5 -->
-            <div class="space-y-2 border-b border-white/[0.06] pb-6">
+            <div class="space-y-2 border-b border-white/[0.06] pb-6 gsap-menu-item">
                 <div class="flex justify-between items-baseline">
                     <h3 class="text-lg font-editorial text-white">Gyozas de Cerdo & Shiitake (6 unids)</h3>
                     <span class="font-editorial text-masa-sand text-base">S/ 24.00</span>
                 </div>
                 <p class="text-xs text-masa-subtext font-light leading-relaxed">
-                    Steamed and golden pan-fried dumplings stuffed with artisanal seasoned pork, scallions, and shiitake mushrooms.
+                    Empanaditas al vapor y doradas a la plancha rellenas de cerdo especiado, cebollita china y hongos shiitake con salsa ponzu.
                 </p>
             </div>
 
             <!-- Plato 6 -->
-            <div class="space-y-2 border-b border-white/[0.06] pb-6">
+            <div class="space-y-2 border-b border-white/[0.06] pb-6 gsap-menu-item">
                 <div class="flex justify-between items-baseline">
-                    <h3 class="text-lg font-editorial text-white">Asahi Super Dry Draft (330ml)</h3>
+                    <h3 class="text-lg font-editorial text-white">Cerveza Japonesa Asahi Super Dry (330ml)</h3>
                     <span class="font-editorial text-masa-sand text-base">S/ 16.00</span>
                 </div>
                 <p class="text-xs text-masa-subtext font-light leading-relaxed">
-                    Imported Japanese Karakuchi dry lager, crisp and refreshing, curated specifically to cleanse the palate between rolls.
+                    Cerveza rubia japonesa de perfil seco y refrescante (Karakuchi), curada especialmente para limpiar el paladar entre cada corte de maki.
                 </p>
             </div>
 
@@ -339,14 +359,14 @@
     <div class="shibui-line max-w-7xl mx-auto my-12"></div>
 
     <!-- ========================================================================= -->
-    <!-- 6. SECTION 04: NUESTRAS SEDES (MIRAFLORES & SURCO)                       -->
+    <!-- 6. SECCIÓN 04: NUESTRAS SEDES (MIRAFLORES & SURCO)                        -->
     <!-- ========================================================================= -->
-    <section id="locations" class="py-20 px-6 sm:px-12 max-w-7xl mx-auto">
+    <section id="sedes" class="py-20 px-6 sm:px-12 max-w-7xl mx-auto z-10 relative">
         
-        <div class="flex justify-between items-end mb-16 border-b border-white/[0.08] pb-6">
+        <div class="flex justify-between items-end mb-16 border-b border-white/[0.08] pb-6 gsap-section-title">
             <div>
                 <span class="text-xs font-mono text-masa-sand block mb-1">04.0</span>
-                <h2 class="text-3xl sm:text-4xl font-editorial text-white uppercase tracking-wider">Locations & Hours</h2>
+                <h2 class="text-3xl sm:text-4xl font-editorial text-white uppercase tracking-wider">Sedes & Horarios</h2>
             </div>
             <span class="text-xs text-masa-subtext uppercase tracking-widest">Lima, Perú</span>
         </div>
@@ -354,43 +374,43 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-left">
             
             <!-- Sede 1: Miraflores -->
-            <div class="space-y-6">
-                <div class="h-64 overflow-hidden border border-white/[0.08]">
-                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=85" alt="Miraflores" class="w-full h-full object-cover grayscale-[20%] hover:scale-105 transition-transform duration-700">
+            <div class="space-y-6 gsap-card">
+                <div class="h-64 overflow-hidden border border-white/[0.08] group">
+                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=85" alt="Miraflores" class="w-full h-full object-cover grayscale-[20%] group-hover:scale-105 transition-transform duration-700">
                 </div>
                 <div class="space-y-2">
                     <h3 class="text-2xl font-editorial text-white">Sede Miraflores</h3>
-                    <p class="text-xs text-masa-subtext font-light">Calle Bolognesi 143, Miraflores, Lima (A media cuadra de Pardo)</p>
+                    <p class="text-xs text-masa-subtext font-light">Calle Bolognesi 143, Miraflores, Lima (A media cuadra de Av. Pardo)</p>
                 </div>
                 <div class="space-y-1 text-xs text-masa-subtext font-mono">
-                    <p><b class="text-white font-sans">Lunch:</b> Tue–Sun / 12:30–16:00</p>
-                    <p><b class="text-white font-sans">Dinner:</b> Tue–Sun / 19:00–23:00</p>
-                    <p><b class="text-white font-sans">T:</b> +51 951 770 377</p>
+                    <p><b class="text-white font-sans">Almuerzo:</b> Mar–Dom / 12:30–16:00</p>
+                    <p><b class="text-white font-sans">Cena:</b> Mar–Dom / 19:00–23:00</p>
+                    <p><b class="text-white font-sans">Contacto:</b> +51 951 770 377</p>
                 </div>
                 <div class="pt-2">
                     <a href="https://maps.google.com/?q=Calle+Bolognesi+143+Miraflores" target="_blank" class="text-xs text-masa-sand hover:underline tracking-widest uppercase">
-                        View on Map <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
+                        Ver en Google Maps <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
                     </a>
                 </div>
             </div>
 
             <!-- Sede 2: Surco -->
-            <div class="space-y-6">
-                <div class="h-64 overflow-hidden border border-white/[0.08]">
-                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=85" alt="Surco" class="w-full h-full object-cover grayscale-[20%] hover:scale-105 transition-transform duration-700">
+            <div class="space-y-6 gsap-card">
+                <div class="h-64 overflow-hidden border border-white/[0.08] group">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=85" alt="Surco" class="w-full h-full object-cover grayscale-[20%] group-hover:scale-105 transition-transform duration-700">
                 </div>
                 <div class="space-y-2">
                     <h3 class="text-2xl font-editorial text-white">Sede Surco</h3>
                     <p class="text-xs text-masa-subtext font-light">Av. Caminos del Inca 3252, Santiago de Surco, Lima</p>
                 </div>
                 <div class="space-y-1 text-xs text-masa-subtext font-mono">
-                    <p><b class="text-white font-sans">Lunch:</b> Tue–Sun / 12:30–16:00</p>
-                    <p><b class="text-white font-sans">Dinner:</b> Tue–Sun / 19:00–23:00</p>
-                    <p><b class="text-white font-sans">T:</b> +51 951 770 377</p>
+                    <p><b class="text-white font-sans">Almuerzo:</b> Mar–Dom / 12:30–16:00</p>
+                    <p><b class="text-white font-sans">Cena:</b> Mar–Dom / 19:00–23:00</p>
+                    <p><b class="text-white font-sans">Contacto:</b> +51 951 770 377</p>
                 </div>
                 <div class="pt-2">
                     <a href="https://maps.google.com/?q=Av+Caminos+del+Inca+3252+Surco" target="_blank" class="text-xs text-masa-sand hover:underline tracking-widest uppercase">
-                        View on Map <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
+                        Ver en Google Maps <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
                     </a>
                 </div>
             </div>
@@ -401,64 +421,64 @@
     <div class="shibui-line max-w-7xl mx-auto my-12"></div>
 
     <!-- ========================================================================= -->
-    <!-- 7. SECTION 05: RESERVACIONES CONCIERGE (DIRECTO A WHATSAPP)               -->
+    <!-- 7. SECCIÓN 05: RESERVACIONES CONCIERGE (WHATSAPP)                         -->
     <!-- ========================================================================= -->
-    <section id="reservations" class="py-20 px-6 sm:px-12 max-w-3xl mx-auto text-center">
+    <section id="reservas" class="py-20 px-6 sm:px-12 max-w-3xl mx-auto text-center z-10 relative">
         
         <span class="text-xs font-mono text-masa-sand block mb-2">05.0</span>
-        <h2 class="text-3xl sm:text-5xl font-editorial text-white uppercase tracking-wider mb-4">Request a Reservation</h2>
+        <h2 class="text-3xl sm:text-5xl font-editorial text-white uppercase tracking-wider mb-4">Solicitar una Reserva</h2>
         <p class="text-xs text-masa-subtext max-w-md mx-auto leading-relaxed mb-10">
-            For dining room tables and Barra Libre experiences in Miraflores and Surco, please complete your request below.
+            Para mesas de salón, Barra Libre o experiencias Omakase en Miraflores y Surco, por favor complete los detalles a continuación.
         </p>
 
-        <!-- Formulario Minimalista -->
-        <div class="p-8 bg-masa-surface border border-white/[0.08] text-left space-y-6">
+        <!-- Formulario Concierge Minimalista -->
+        <div class="p-8 bg-masa-surface border border-white/[0.08] text-left space-y-6 shadow-2xl">
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
                 <div>
-                    <label class="text-[10px] uppercase tracking-widest text-masa-subtext block mb-2">Location</label>
+                    <label class="text-[10px] uppercase tracking-widest text-masa-subtext block mb-2">Sede</label>
                     <select id="resSedeInput" class="w-full bg-[#0a0a0b] text-white p-3 border border-white/[0.1] focus:border-masa-sand focus:outline-none text-xs">
                         <option value="Miraflores (Calle Bolognesi 143)">Miraflores — Calle Bolognesi 143</option>
                         <option value="Surco (Av. Caminos del Inca 3252)">Surco — Av. Caminos del Inca 3252</option>
                     </select>
                 </div>
                 <div>
-                    <label class="text-[10px] uppercase tracking-widest text-masa-subtext block mb-2">Experience</label>
+                    <label class="text-[10px] uppercase tracking-widest text-masa-subtext block mb-2">Experiencia</label>
                     <select id="resExpInput" class="w-full bg-[#0a0a0b] text-white p-3 border border-white/[0.1] focus:border-masa-sand focus:outline-none text-xs">
                         <option value="Barra Libre Fusión (S/ 95)">Barra Libre Fusión (S/ 95)</option>
                         <option value="Omakase Counter (S/ 140)">Omakase Counter (S/ 140)</option>
-                        <option value="A la Carte / Dining Room">A la Carte / Dining Room</option>
+                        <option value="A la Carta / Salón Principal">A la Carta / Salón Principal</option>
                     </select>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
                 <div>
-                    <label class="text-[10px] uppercase tracking-widest text-masa-subtext block mb-2">Party Size</label>
+                    <label class="text-[10px] uppercase tracking-widest text-masa-subtext block mb-2">Número de Personas</label>
                     <select id="resPartyInput" class="w-full bg-[#0a0a0b] text-white p-3 border border-white/[0.1] focus:border-masa-sand focus:outline-none text-xs">
-                        <option value="2 Guests">2 Guests</option>
-                        <option value="3 to 4 Guests">3 to 4 Guests</option>
-                        <option value="5 to 8 Guests">5 to 8 Guests</option>
-                        <option value="Private Event (+8)">Private Event (+8)</option>
+                        <option value="2 Personas">2 Personas</option>
+                        <option value="3 a 4 Personas">3 a 4 Personas</option>
+                        <option value="5 a 8 Personas">5 a 8 Personas</option>
+                        <option value="Evento Privado (+8)">Evento Privado (+8)</option>
                     </select>
                 </div>
                 <div>
-                    <label class="text-[10px] uppercase tracking-widest text-masa-subtext block mb-2">Preferred Time</label>
-                    <input type="text" id="resHoraInput" placeholder="e.g. Today 20:30 PM" class="w-full bg-[#0a0a0b] text-white p-3 border border-white/[0.1] focus:border-masa-sand focus:outline-none text-xs">
+                    <label class="text-[10px] uppercase tracking-widest text-masa-subtext block mb-2">Fecha y Hora Preferida</label>
+                    <input type="text" id="resHoraInput" placeholder="Ej: Hoy 20:30 PM" class="w-full bg-[#0a0a0b] text-white p-3 border border-white/[0.1] focus:border-masa-sand focus:outline-none text-xs">
                 </div>
             </div>
 
             <button onclick="enviarReservaMasaConcierge()" class="w-full py-4 bg-white hover:bg-masa-sand hover:text-black text-black font-semibold text-xs uppercase tracking-[0.25em] transition duration-300">
-                Confirm Availability via Concierge
+                Confirmar Disponibilidad vía Concierge
             </button>
         </div>
 
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 8. FOOTER EDITORIAL SHIBUI                                                -->
+    <!-- 8. FOOTER EDITORIAL                                                       -->
     <!-- ========================================================================= -->
-    <footer class="border-t border-white/[0.08] bg-[#070708] py-16 px-6 sm:px-12 text-center">
+    <footer class="border-t border-white/[0.08] bg-[#070708] py-16 px-6 sm:px-12 text-center z-10 relative">
         <div class="max-w-7xl mx-auto space-y-6">
             <span class="font-brand text-xs tracking-[0.35em] uppercase text-white block">
                 KAI-TO • BARRA FUSIÓN
@@ -467,28 +487,93 @@
                 Miraflores: Calle Bolognesi 143 • Surco: Av. Caminos del Inca 3252 • Lima, Perú
             </p>
             <div class="text-[10px] text-masa-muted font-mono pt-4 border-t border-white/[0.04]">
-                Digital Architecture by KeyMar Systems • © 2026 KAI-TO All Rights Reserved
+                Arquitectura Digital por KeyMar Systems • © 2026 KAI-TO Todos los derechos reservados
             </div>
         </div>
     </footer>
 
-    <!-- JAVASCRIPT: RELOJ EN VIVO & CONCIERGE WHATSAPP -->
+    <!-- JAVASCRIPT: GSAP ANIMACIONES & CONCIERGE WHATSAPP -->
     <script>
-        // RELOJ EN VIVO IDÉNTICO A MASA NYC
-        function actualizarRelojMasa() {
+        // 1. RELOJ DE LIMA EN VIVO
+        function actualizarRelojLima() {
             const ahora = new Date();
             const h = String(ahora.getHours()).padStart(2, '0');
             const m = String(ahora.getMinutes()).padStart(2, '0');
             const s = String(ahora.getSeconds()).padStart(2, '0');
-            const elem = document.getElementById('relojMasaStyle');
+            const elem = document.getElementById('relojLimaLive');
             if (elem) {
                 elem.innerText = `${h} : ${m} : ${s}`;
             }
         }
-        setInterval(actualizarRelojMasa, 1000);
-        actualizarRelojMasa();
+        setInterval(actualizarRelojLima, 1000);
+        actualizarRelojLima();
 
-        // RESERVA CONCIERGE A WHATSAPP DE KAITO (+51 951 770 377)
+        // 2. ANIMACIONES CINEMÁTICAS GSAP AL CARGAR Y AL HACER SCROLL
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Revelado suave del Hero
+            gsap.from('.gsap-hero', {
+                opacity: 0,
+                y: 40,
+                filter: 'blur(8px)',
+                duration: 1.2,
+                stagger: 0.2,
+                ease: 'power3.out'
+            });
+
+            gsap.from('.gsap-hero-img', {
+                opacity: 0,
+                scale: 0.96,
+                duration: 1.4,
+                delay: 0.4,
+                ease: 'power2.out'
+            });
+
+            // Animación de títulos y contenidos en scroll
+            gsap.utils.toArray('.gsap-section-title').forEach(elem => {
+                gsap.from(elem, {
+                    scrollTrigger: {
+                        trigger: elem,
+                        start: 'top 85%'
+                    },
+                    opacity: 0,
+                    y: 30,
+                    duration: 1,
+                    ease: 'power2.out'
+                });
+            });
+
+            gsap.utils.toArray('.gsap-card').forEach((elem, index) => {
+                gsap.from(elem, {
+                    scrollTrigger: {
+                        trigger: elem,
+                        start: 'top 85%'
+                    },
+                    opacity: 0,
+                    y: 35,
+                    duration: 0.8,
+                    delay: index * 0.1,
+                    ease: 'power2.out'
+                });
+            });
+
+            gsap.utils.toArray('.gsap-menu-item').forEach((elem, index) => {
+                gsap.from(elem, {
+                    scrollTrigger: {
+                        trigger: elem,
+                        start: 'top 90%'
+                    },
+                    opacity: 0,
+                    x: -20,
+                    duration: 0.7,
+                    delay: (index % 2) * 0.15,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // 3. RESERVA CONCIERGE A WHATSAPP DE KAITO (+51 951 770 377)
         function enviarReservaMasaConcierge() {
             const sede = document.getElementById('resSedeInput').value;
             const exp = document.getElementById('resExpInput').value;
