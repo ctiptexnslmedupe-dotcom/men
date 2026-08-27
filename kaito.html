@@ -1,639 +1,145 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KAI-TO | Barra Fusión Japo-Peruana — Web Oficial Lima</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- GSAP & ScrollTrigger para Animaciones Cinemáticas -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        kaito: {
-                            base: '#07080b',
-                            surface: '#0d0f15',
-                            card: '#131620',
-                            cardHover: '#1a1e2d',
-                            border: 'rgba(255, 255, 255, 0.08)',
-                            borderRed: 'rgba(239, 68, 68, 0.35)',
-                            red: '#ef4444',
-                            redDark: '#b91c1c',
-                            neonCyan: '#06b6d4',
-                            neonPink: '#f43f5e',
-                            gold: '#d4af37',
-                            sand: '#c5a880',
-                            text: '#f8fafc',
-                            muted: '#94a3b8'
-                        }
-                    },
-                    fontFamily: {
-                        serif: ['Cormorant Garamond', 'Cinzel', 'Georgia', 'serif'],
-                        sans: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
-                        brand: ['Cinzel', 'Georgia', 'serif']
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Google Fonts & Font Awesome -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        body {
-            background-color: #07080b;
-            color: #f8fafc;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            overflow-x: hidden;
-            letter-spacing: -0.015em;
-        }
-        .font-editorial { font-family: 'Cormorant Garamond', serif; }
-        
-        .kaito-card {
-            background: rgba(19, 22, 32, 0.75);
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .kaito-card:hover {
-            border-color: rgba(239, 68, 68, 0.45);
-            box-shadow: 0 15px 45px -10px rgba(239, 68, 68, 0.25);
-            transform: translateY(-4px);
-        }
-
-        .red-glow-btn {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%);
-            box-shadow: 0 4px 25px rgba(239, 68, 68, 0.4);
-        }
-
-        .kanji-bg {
-            animation: kanjiFloat 18s ease-in-out infinite alternate;
-        }
-        @keyframes kanjiFloat {
-            0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.03; }
-            50% { transform: translate(-50%, -50%) scale(1.06) rotate(2deg); opacity: 0.06; }
-            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0.03; }
-        }
-
-        .shibui-line {
-            height: 1px;
-            background: linear-gradient(90deg, transparent 0%, rgba(239, 68, 68, 0.3) 25%, rgba(255, 255, 255, 0.15) 50%, rgba(239, 68, 68, 0.3) 75%, transparent 100%);
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #07080b; }
-        ::-webkit-scrollbar-thumb { background: #202637; border-radius: 999px; }
-        ::-webkit-scrollbar-thumb:hover { background: #ef4444; }
-    </style>
-</head>
-<body class="selection:bg-kaito-red selection:text-white relative">
-
-    <!-- AURORA DEGRADADA NIKKEI (ROJO FUEGO & AZUL OCÉANO) -->
-    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[650px] bg-gradient-to-b from-red-600/20 via-blue-600/10 to-transparent rounded-full blur-[140px]"></div>
-        <div class="absolute top-1/2 left-[-15%] w-[600px] h-[600px] bg-red-950/20 rounded-full blur-[160px]"></div>
-        
-        <!-- KANJI '海' DE KAITO -->
-        <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] kanji-bg flex items-center justify-center text-kaito-red select-none">
-            <span class="text-[340px] font-bold font-serif opacity-10">海</span>
-        </div>
-    </div>
-
-    <!-- ========================================================================= -->
-    <!-- 1. HEADER EDITORIAL & TICKER DE LIMA EN VIVO                             -->
-    <!-- ========================================================================= -->
-    <header class="sticky top-0 z-50 bg-[#07080b]/90 backdrop-blur-2xl border-b border-white/[0.08] px-6 sm:px-12 py-3.5 transition-all">
-        <div class="max-w-7xl mx-auto flex justify-between items-center text-xs">
-            
-            <!-- Logo Oficial KAI-TO -->
-            <a href="#" class="flex items-center space-x-3 group">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-kaito-red to-rose-400 p-[1.5px] shadow-lg shadow-red-500/20 group-hover:scale-105 transition-transform">
-                    <div class="w-full h-full bg-kaito-base rounded-[10px] flex items-center justify-center font-bold text-xs text-white">
-                        海
-                    </div>
-                </div>
-                <div>
-                    <span class="text-xs font-black tracking-[0.25em] font-brand uppercase text-white leading-none block">
-                        KAI-TO <span class="text-kaito-red">| Barra Fusión</span>
-                    </span>
-                    <span class="text-[9px] text-kaito-muted tracking-widest uppercase font-medium">Japo-Peruana • Miraflores & Surco</span>
-                </div>
-            </a>
-
-            <!-- Navegación Central -->
-            <nav class="hidden lg:flex items-center space-x-7 text-[11px] font-semibold tracking-[0.2em] uppercase text-kaito-muted">
-                <a href="#experiencia" class="hover:text-white transition">Barra Libre</a>
-                <a href="#promociones" class="hover:text-white transition">Promociones</a>
-                <a href="#carta-completa" class="hover:text-white transition">Makis & Ramen</a>
-                <a href="#sedes" class="hover:text-white transition">Sedes</a>
-                <a href="#galeria" class="hover:text-white transition">Comunidad</a>
-            </nav>
-
-            <!-- Reloj & Botón Reservar -->
-            <div class="flex items-center space-x-5">
-                <div class="hidden sm:flex items-center font-mono text-[11px] tracking-widest text-kaito-red">
-                    <span class="mr-2 text-kaito-muted font-sans">Lima —</span>
-                    <span id="relojLimaKaito">20 : 00 : 00</span>
-                </div>
-
-                <a href="#reservas" class="px-5 py-2 red-glow-btn hover:brightness-110 text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-full transition">
-                    Reservar
-                </a>
-            </div>
-        </div>
-    </header>
-
-    <!-- ========================================================================= -->
-    <!-- 2. HERO PRINCIPAL: ENERGÍA URBANA NIKKEI & FUEGO AL SOPLETE              -->
-    <!-- ========================================================================= -->
-    <section class="relative min-h-[92vh] flex flex-col justify-between pt-20 pb-12 px-6 sm:px-12 max-w-7xl mx-auto z-10">
-        
-        <div class="space-y-4 max-w-3xl">
-            <div class="gsap-hero inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-red-500/10 border border-kaito-red/30 backdrop-blur-md">
-                <span class="w-2 h-2 rounded-full bg-kaito-red animate-ping"></span>
-                <span class="text-xs font-black uppercase tracking-widest text-kaito-red">Barra Libre • Sabor & Soplete en Vivo</span>
-            </div>
-            <h1 class="gsap-hero text-4xl sm:text-6xl md:text-7xl font-editorial font-light text-white leading-[1.05]">
-                Fusión japo-peruana al límite.<br>
-                Makis flameados, alitas y ramen.
-            </h1>
-        </div>
-
-        <!-- FOTOGRAFÍA INMERSIVA DE SUS PLATOS FLAMEADOS -->
-        <div class="gsap-hero-img relative my-10 w-full h-[52vh] rounded-3xl overflow-hidden border border-white/[0.1] shadow-2xl group">
-            <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=1600&q=90" alt="KAI-TO Makis Fusión" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000">
-            
-            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex items-end p-6 sm:p-10">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end w-full gap-4">
-                    <div>
-                        <span class="text-[10px] font-black uppercase tracking-widest text-kaito-red bg-black/70 px-3 py-1 rounded-md mb-2 inline-block">
-                            01.0 / Sabor, Fusión & Innovación
-                        </span>
-                        <h3 class="text-xl sm:text-2xl font-bold text-white">Tablas de Makis de Autor, Soplete & Coctelería Tiki</h3>
-                    </div>
-                    <a href="#promociones" class="px-5 py-2.5 bg-white hover:bg-slate-200 text-black font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition">
-                        Ver Promos de Salón
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="gsap-hero flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 text-xs text-kaito-muted leading-relaxed pt-4 border-t border-white/[0.08]">
-            <p class="max-w-md text-slate-300 font-light text-[13px]">
-                En KAI-TO fusionamos la precisión del sushi tradicional con los sabores intensos de la cocina peruana. Sedes en <b>Miraflores (Calle Bolognesi 143)</b> y <b>Surco (Caminos del Inca 3252)</b>.
-            </p>
-            <div class="flex space-x-6 text-[11px] tracking-widest uppercase font-mono">
-                <span class="text-white">Mar–Dom: 12:30 a 23:00</span>
-                <span class="text-kaito-red font-bold">● Barra Libre Activa</span>
-            </div>
-        </div>
-    </section>
-
-    <div class="shibui-line max-w-7xl mx-auto my-10"></div>
-
-    <!-- ========================================================================= -->
-    <!-- 3. SECCIÓN PROMOS REALES DE INSTAGRAM (S/ 68, S/ 69, S/ 95 Y DELIVERY)   -->
-    <!-- ========================================================================= -->
-    <section id="promociones" class="py-16 px-6 sm:px-12 max-w-7xl mx-auto z-10 relative">
-        
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 border-b border-white/[0.08] pb-6 gap-2">
-            <div>
-                <span class="text-xs font-mono text-kaito-red block mb-1">02.0</span>
-                <h2 class="text-3xl sm:text-4xl font-editorial text-white uppercase tracking-wider">Promociones de Salón & Delivery</h2>
-            </div>
-            <p class="text-xs text-kaito-muted max-w-xs">Nuestros combos más pedidos para compartir en pareja o grupos de amigos.</p>
-        </div>
-
-        <!-- GRILLA DE LAS 4 PROMOS REALES DE SU INSTAGRAM -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            
-            <!-- PROMO 1: 3 TABLAS + 6 ALITAS (S/ 68) -->
-            <div class="kaito-card p-6 rounded-3xl flex flex-col justify-between border-t-2 border-kaito-red">
-                <div class="space-y-3">
-                    <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-red-500/20 text-kaito-red inline-block">
-                        Top Salón
-                    </span>
-                    <h3 class="text-lg font-bold text-white leading-snug">3 Tablas de Makis (36 Cortes) + 6 Alitas</h3>
-                    <p class="text-xs text-kaito-muted leading-relaxed">
-                        3 tablas completas de makis a elección combinadas con 6 alitas crocantes en salsa acevichada o BBQ nikkei.
-                    </p>
-                </div>
-                <div class="pt-6 mt-4 border-t border-white/[0.06] flex justify-between items-end">
-                    <div>
-                        <span class="text-[10px] text-kaito-muted block">Precio Salón:</span>
-                        <span class="text-2xl font-black text-kaito-red font-mono">S/ 68.00</span>
-                    </div>
-                    <a href="https://wa.me/51951770377?text=Hola%20KAI-TO!%20Quiero%20la%20Promo%20de%203%20Tablas%20+%206%20Alitas%20por%20S/%2068." target="_blank" class="p-2.5 bg-white hover:bg-slate-200 text-black rounded-xl text-xs font-bold transition">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- PROMO 2: 24 CORTES + 1 COMPLEMENTO (S/ 69) -->
-            <div class="kaito-card p-6 rounded-3xl flex flex-col justify-between border-t-2 border-cyan-500">
-                <div class="space-y-3">
-                    <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-cyan-500/20 text-cyan-400 inline-block">
-                        Ideal Parejas
-                    </span>
-                    <h3 class="text-lg font-bold text-white leading-snug">24 Cortes (4 Medios Makis) + 1 Complemento</h3>
-                    <p class="text-xs text-kaito-muted leading-relaxed">
-                        4 variedades de medios makis para probar de todo + 6 unidades de gyozas o alitas crujientes.
-                    </p>
-                </div>
-                <div class="pt-6 mt-4 border-t border-white/[0.06] flex justify-between items-end">
-                    <div>
-                        <span class="text-[10px] text-kaito-muted block">Precio Salón:</span>
-                        <span class="text-2xl font-black text-cyan-400 font-mono">S/ 69.00</span>
-                    </div>
-                    <a href="https://wa.me/51951770377?text=Hola%20KAI-TO!%20Quiero%20la%20Promo%20de%2024%20Cortes%20+%201%20Complemento%20por%20S/%2069." target="_blank" class="p-2.5 bg-white hover:bg-slate-200 text-black rounded-xl text-xs font-bold transition">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- PROMO 3: 3 TABLAS + 2 COMPLEMENTOS + 2 BEBIDAS (S/ 95) -->
-            <div class="kaito-card p-6 rounded-3xl flex flex-col justify-between border-2 border-kaito-red bg-red-950/20 shadow-xl">
-                <div class="space-y-3">
-                    <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-kaito-red text-white inline-block">
-                        Combo Completo
-                    </span>
-                    <h3 class="text-lg font-bold text-white leading-snug">3 Tablas (36 Makis) + 2 Complementos + 2 Bebidas</h3>
-                    <p class="text-xs text-kaito-muted leading-relaxed">
-                        El festín total: 36 cortes de autor + 2 complementos a elección + 2 gaseosas o bebidas heladas.
-                    </p>
-                </div>
-                <div class="pt-6 mt-4 border-t border-white/[0.06] flex justify-between items-end">
-                    <div>
-                        <span class="text-[10px] text-kaito-muted block">Todo Incluido:</span>
-                        <span class="text-2xl font-black text-kaito-red font-mono">S/ 95.00</span>
-                    </div>
-                    <a href="https://wa.me/51951770377?text=Hola%20KAI-TO!%20Quiero%20el%20Combo%20de%203%20Tablas%20+%202%20Complementos%20+%202%20Bebidas%20por%20S/%2095." target="_blank" class="p-2.5 bg-kaito-red hover:bg-kaito-redDark text-white rounded-xl text-xs font-bold transition">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- PROMO 4: SEMANA DEL SUSHI DELIVERY BOX (S/ 59.90) -->
-            <div class="kaito-card p-6 rounded-3xl flex flex-col justify-between border-t-2 border-amber-500">
-                <div class="space-y-3">
-                    <span class="px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-amber-500/20 text-amber-400 inline-block">
-                        Delivery & Takeout
-                    </span>
-                    <h3 class="text-lg font-bold text-white leading-snug">Box Delivery: 3 Tablas + 1 Complemento</h3>
-                    <p class="text-xs text-kaito-muted leading-relaxed">
-                        Cajas especiales para llevar a casa con 36 cortes de makis seleccionados + 6 gyozas con salsas.
-                    </p>
-                </div>
-                <div class="pt-6 mt-4 border-t border-white/[0.06] flex justify-between items-end">
-                    <div>
-                        <span class="text-[10px] text-kaito-muted block">Delivery Box:</span>
-                        <span class="text-2xl font-black text-amber-400 font-mono">S/ 59.90</span>
-                    </div>
-                    <a href="https://wa.me/51951770377?text=Hola%20KAI-TO!%20Quiero%20pedir%20el%20Box%20Delivery%20de%20S/%2059.90." target="_blank" class="p-2.5 bg-white hover:bg-slate-200 text-black rounded-xl text-xs font-bold transition">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <div class="shibui-line max-w-7xl mx-auto my-10"></div>
-
-    <!-- ========================================================================= -->
-    <!-- 4. EXPERIENCIA BARRA LIBRE (ALL YOU CAN EAT)                              -->
-    <!-- ========================================================================= -->
-    <section id="experiencia" class="py-16 px-6 sm:px-12 max-w-7xl mx-auto z-10 relative">
-        <div class="kaito-card rounded-[32px] p-8 sm:p-12 border-2 border-white/[0.1] relative overflow-hidden">
-            
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                <div class="lg:col-span-7 space-y-4 text-left">
-                    <span class="text-xs font-mono text-kaito-red tracking-widest uppercase">03.0 / Experiencia Ilimitada</span>
-                    <h2 class="text-3xl sm:text-5xl font-editorial text-white leading-tight">
-                        La Famosa Barra Libre de Makis KAI-TO
-                    </h2>
-                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-light">
-                        Pide todas las rondas de makis que quieras. Cada corte se arma y se flamea al soplete en el momento para garantizar temperatura, textura y máxima frescura en mesa.
-                    </p>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-4 text-xs">
-                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-white block">🔥 Soplete en Vivo</b> Toppings gratinados</div>
-                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-white block">🍣 +20 Variedades</b> Clásicos y Fusión</div>
-                        <div class="p-3 bg-black/60 rounded-xl border border-white/[0.06]"><b class="text-white block">⏱️ Rondas Continuas</b> Cero esperas largas</div>
-                    </div>
-
-                    <div class="pt-4 flex flex-wrap gap-4 items-center">
-                        <span class="text-3xl font-black text-white font-mono">S/ 59.90 <span class="text-xs text-kaito-muted font-sans font-normal">/ persona</span></span>
-                        <a href="#reservas" class="px-6 py-3 red-glow-btn text-white font-black text-xs uppercase tracking-wider rounded-xl transition">
-                            Reservar Barra Libre
-                        </a>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-5 relative h-80 rounded-2xl overflow-hidden border border-white/[0.1] shadow-2xl">
-                    <img src="https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=800&q=85" alt="Barra Libre KAI-TO" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
-                        <span class="text-xs font-bold text-white">Pared de Neón & Ambiente All You Can Eat</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <div class="shibui-line max-w-7xl mx-auto my-10"></div>
-
-    <!-- ========================================================================= -->
-    <!-- 5. CARTA COMPLETA: MAKIS, NIGIRIS, ALITAS, RAMEN & TRAGOS TIKI            -->
-    <!-- ========================================================================= -->
-    <section id="carta-completa" class="py-16 px-6 sm:px-12 max-w-7xl mx-auto z-10 relative">
-        
-        <div class="flex justify-between items-end mb-12 border-b border-white/[0.08] pb-6">
-            <div>
-                <span class="text-xs font-mono text-kaito-red block mb-1">04.0</span>
-                <h2 class="text-3xl sm:text-4xl font-editorial text-white uppercase tracking-wider">Creaciones de Autor & Calientes</h2>
-            </div>
-            <span class="text-xs text-kaito-muted uppercase tracking-widest hidden sm:inline">Carta Gastronómica</span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 text-left text-xs">
-            
-            <!-- Plato 1: Maki Dragón Tartar (De sus reels) -->
-            <div class="space-y-2 border-b border-white/[0.06] pb-5">
-                <div class="flex justify-between items-baseline">
-                    <h3 class="text-base font-bold text-white">Maki Dragón Tartar (10 cortes)</h3>
-                    <span class="font-mono text-kaito-red text-sm font-bold">S/ 34.00</span>
-                </div>
-                <p class="text-kaito-muted leading-relaxed">
-                    Langostino crocante al panko y palta hass, coronado con abundante tartar de salmón fresco especiado y wantán frito al hilo.
-                </p>
-                <span class="text-[9px] text-amber-400 font-bold">🌶️ Topping Tartar Especial</span>
-            </div>
-
-            <!-- Plato 2: Maki Acevichado Especial al Soplete -->
-            <div class="space-y-2 border-b border-white/[0.06] pb-5">
-                <div class="flex justify-between items-baseline">
-                    <h3 class="text-base font-bold text-white">Maki Acevichado Flameado (10 cortes)</h3>
-                    <span class="font-mono text-kaito-red text-sm font-bold">S/ 32.00</span>
-                </div>
-                <p class="text-kaito-muted leading-relaxed">
-                    Relleno de ebi furai y palta, cubierto con láminas de atún rojo sopleteado al fuego vivo y salsa acevichada de la casa.
-                </p>
-                <span class="text-[9px] text-emerald-400 font-bold">🔥 Sopleteado al Momento</span>
-            </div>
-
-            <!-- Plato 3: Alitas KAI-TO (6 unids) -->
-            <div class="space-y-2 border-b border-white/[0.06] pb-5">
-                <div class="flex justify-between items-baseline">
-                    <h3 class="text-base font-bold text-white">Alitas KAI-TO en Salsa Acevichada o BBQ (6 unids)</h3>
-                    <span class="font-mono text-kaito-red text-sm font-bold">S/ 24.00</span>
-                </div>
-                <p class="text-kaito-muted leading-relaxed">
-                    Alitas de pollo extra crocantes bañadas en nuestra salsa acevichada cremosa con toque de togarashi y cebollita china.
-                </p>
-                <span class="text-[9px] text-kaito-red font-bold">🍗 El Piqueo Favorito</span>
-            </div>
-
-            <!-- Plato 4: Ramen Nikkei Especial -->
-            <div class="space-y-2 border-b border-white/[0.06] pb-5">
-                <div class="flex justify-between items-baseline">
-                    <h3 class="text-base font-bold text-white">Ramen Nikkei Tradicional KAI-TO</h3>
-                    <span class="font-mono text-kaito-red text-sm font-bold">S/ 36.00</span>
-                </div>
-                <p class="text-kaito-muted leading-relaxed">
-                    Fideos ramen artesanales en caldo concentrado de panceta de cerdo por 12 horas, huevo ajitsuke marinado, chashu y nori.
-                </p>
-                <span class="text-[9px] text-cyan-400 font-bold">🍜 Caliente & Reconfortante</span>
-            </div>
-
-            <!-- Plato 5: Nigiris de Salmón Flameados (4 cortes) -->
-            <div class="space-y-2 border-b border-white/[0.06] pb-5">
-                <div class="flex justify-between items-baseline">
-                    <h3 class="text-base font-bold text-white">Nigiris de Salmón al Fuego (4 cortes)</h3>
-                    <span class="font-mono text-kaito-red text-sm font-bold">S/ 28.00</span>
-                </div>
-                <p class="text-kaito-muted leading-relaxed">
-                    Bocados de shari cubiertos de salmón fresco flambeado al soplete con mantequilla japonesa, salsa tare y sal marina.
-                </p>
-                <span class="text-[9px] text-amber-400 font-bold">🍣 Nigiris Especiales</span>
-            </div>
-
-            <!-- Plato 6: Cócteles Tiki Fusión -->
-            <div class="space-y-2 border-b border-white/[0.06] pb-5">
-                <div class="flex justify-between items-baseline">
-                    <h3 class="text-base font-bold text-white">Cóctel Tiki KAI-TO (En Vaso de Cerámica)</h3>
-                    <span class="font-mono text-kaito-red text-sm font-bold">S/ 26.00</span>
-                </div>
-                <p class="text-kaito-muted leading-relaxed">
-                    Pisco Quebranta, ron blanco, maracuyá fresca, jarabe de jengibre y hierbabuena servido en nuestro icónico vaso tiki rojo.
-                </p>
-                <span class="text-[9px] text-purple-400 font-bold">🍹 Coctelería de Autor</span>
-            </div>
-
-        </div>
-    </section>
-
-    <div class="shibui-line max-w-7xl mx-auto my-10"></div>
-
-    <!-- ========================================================================= -->
-    <!-- 6. SEDES OFICIALES (MIRAFLORES & SURCO) CON MAPAS Y WHATSAPP              -->
-    <!-- ========================================================================= -->
-    <section id="sedes" class="py-16 px-6 sm:px-12 max-w-7xl mx-auto z-10 relative">
-        
-        <div class="text-center max-w-2xl mx-auto mb-12">
-            <span class="text-xs font-mono text-kaito-red uppercase block mb-1">05.0 / Locales</span>
-            <h2 class="text-3xl sm:text-4xl font-editorial text-white uppercase tracking-wider">Nuestras 2 Sedes en Lima</h2>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
-            
-            <!-- SEDE 1: MIRAFLORES -->
-            <div class="kaito-card p-6 sm:p-8 rounded-3xl space-y-4">
-                <div class="h-48 rounded-2xl overflow-hidden relative">
-                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=85" alt="Miraflores" class="w-full h-full object-cover">
-                    <span class="absolute top-3 left-3 px-3 py-1 bg-kaito-red text-white font-black text-[10px] uppercase rounded-full">Sede Miraflores</span>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold text-white">Sede Miraflores</h3>
-                    <p class="text-xs text-kaito-muted mt-1">Calle Bolognesi 143, Miraflores (Cerca al Parque Kennedy y Av. Pardo).</p>
-                    <div class="text-xs text-slate-300 font-mono mt-2 space-y-1">
-                        <p>🕒 Mar a Dom: 12:30 PM - 11:00 PM</p>
-                        <p>📲 WhatsApp: +51 951 770 377</p>
-                    </div>
-                </div>
-                <div class="pt-2 flex gap-3">
-                    <a href="https://wa.me/51951770377?text=Hola%20KAI-TO!%20Quiero%20reservar%20en%20la%20Sede%20MIRAFLORES." target="_blank" class="flex-1 py-3 bg-kaito-red hover:bg-kaito-redDark text-white font-bold text-xs rounded-xl text-center shadow transition">
-                        Reservar en Miraflores
-                    </a>
-                    <a href="https://maps.google.com/?q=Calle+Bolognesi+143+Miraflores" target="_blank" class="px-4 py-3 bg-kaito-surface hover:bg-kaito-card text-white border border-kaito-border rounded-xl text-xs flex items-center justify-center">
-                        <i class="fa-solid fa-map-location-dot"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- SEDE 2: SURCO -->
-            <div class="kaito-card p-6 sm:p-8 rounded-3xl space-y-4">
-                <div class="h-48 rounded-2xl overflow-hidden relative">
-                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=85" alt="Surco" class="w-full h-full object-cover">
-                    <span class="absolute top-3 left-3 px-3 py-1 bg-blue-600 text-white font-black text-[10px] uppercase rounded-full">Sede Surco</span>
-                </div>
-                <div>
-                    <h3 class="text-xl font-bold text-white">Sede Surco</h3>
-                    <p class="text-xs text-kaito-muted mt-1">Av. Caminos del Inca 3252, Santiago de Surco (Zona Gastronómica).</p>
-                    <div class="text-xs text-slate-300 font-mono mt-2 space-y-1">
-                        <p>🕒 Mar a Dom: 12:30 PM - 11:00 PM</p>
-                        <p>📲 WhatsApp: +51 951 770 377</p>
-                    </div>
-                </div>
-                <div class="pt-2 flex gap-3">
-                    <a href="https://wa.me/51951770377?text=Hola%20KAI-TO!%20Quiero%20reservar%20en%20la%20Sede%20SURCO." target="_blank" class="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl text-center shadow transition">
-                        Reservar en Surco
-                    </a>
-                    <a href="https://maps.google.com/?q=Av+Caminos+del+Inca+3252+Surco" target="_blank" class="px-4 py-3 bg-kaito-surface hover:bg-kaito-card text-white border border-kaito-border rounded-xl text-xs flex items-center justify-center">
-                        <i class="fa-solid fa-map-location-dot"></i>
-                    </a>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 7. CONCIERGE DE RESERVAS (DIRECTO A WHATSAPP DE KAITO)                    -->
-    <!-- ========================================================================= -->
-    <section id="reservas" class="py-16 px-6 sm:px-12 max-w-3xl mx-auto text-center z-10 relative">
-        
-        <span class="text-xs font-mono text-kaito-red block mb-2">06.0 / Reservas</span>
-        <h2 class="text-3xl sm:text-4xl font-editorial text-white uppercase tracking-wider mb-3">Asegura tu Mesa en KAI-TO</h2>
-        <p class="text-xs text-kaito-muted max-w-md mx-auto leading-relaxed mb-8">
-            Para mesas de salón, celebraciones de cumpleaños o Barra Libre en Miraflores y Surco, confirma tu reserva al instante:
+<h2 class="text-3xl sm:text-4xl font-editorial text-white uppercase tracking-wider mb-4">Reserva tu Mesa o Barra Libre</h2>
+        <p class="text-xs sm:text-sm text-kaito-muted mb-8 leading-relaxed">
+            Asegura tu lugar para disfrutar del soplete en vivo y la verdadera experiencia Nikkei. Completa tus datos para coordinar directamente vía WhatsApp.
         </p>
 
-        <div class="p-6 sm:p-8 kaito-card rounded-3xl text-left space-y-4 shadow-2xl border-2 border-kaito-red/40">
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+        <!-- Formulario Interactivo de Reserva -->
+        <form id="reservaForm" onsubmit="enviarReservaWhatsApp(event)" class="kaito-card p-6 sm:p-8 rounded-3xl space-y-5 text-left border border-white/[0.1]">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label class="text-[10px] uppercase font-bold text-kaito-muted block mb-1.5">Seleccionar Sede:</label>
-                    <select id="resSedeInput" class="w-full bg-[#07080b] text-white p-3 rounded-xl border border-kaito-border focus:border-kaito-red focus:outline-none">
-                        <option value="Miraflores (Calle Bolognesi 143)">Miraflores — Calle Bolognesi 143</option>
-                        <option value="Surco (Av. Caminos del Inca 3252)">Surco — Av. Caminos del Inca 3252</option>
-                    </select>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">Nombre Completo</label>
+                    <input type="text" id="nombreReserva" required placeholder="Ej: Renzo Silva" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-kaito-red transition">
                 </div>
                 <div>
-                    <label class="text-[10px] uppercase font-bold text-kaito-muted block mb-1.5">Experiencia:</label>
-                    <select id="resExpInput" class="w-full bg-[#07080b] text-white p-3 rounded-xl border border-kaito-border focus:border-kaito-red focus:outline-none">
-                        <option value="Barra Libre All You Can Eat">Barra Libre All You Can Eat</option>
-                        <option value="Promo 3 Tablas + 6 Alitas (S/ 68)">Promo 3 Tablas + 6 Alitas (S/ 68)</option>
-                        <option value="Promo 24 Cortes + 1 Comp (S/ 69)">Promo 24 Cortes + 1 Comp (S/ 69)</option>
-                        <option value="A la Carta / Celebración">A la Carta / Celebración</option>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">Sede</label>
+                    <select id="sedeReserva" required class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-kaito-red transition">
+                        <option value="Miraflores (Bolognesi 143)">Miraflores — Calle Bolognesi 143</option>
+                        <option value="Surco (Caminos del Inca 3252)">Surco — Av. Caminos del Inca 3252</option>
                     </select>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                    <label class="text-[10px] uppercase font-bold text-kaito-muted block mb-1.5">Número de Invitados:</label>
-                    <select id="resPartyInput" class="w-full bg-[#07080b] text-white p-3 rounded-xl border border-kaito-border focus:border-kaito-red focus:outline-none">
-                        <option value="2 Personas">2 Personas</option>
-                        <option value="3 a 4 Personas">3 a 4 Personas</option>
-                        <option value="5 a 8 Personas">5 a 8 Personas</option>
-                        <option value="Grupo Grande (+8)">Grupo Grande (+8)</option>
-                    </select>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">Fecha</label>
+                    <input type="date" id="fechaReserva" required class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-kaito-red transition">
                 </div>
                 <div>
-                    <label class="text-[10px] uppercase font-bold text-kaito-muted block mb-1.5">Día y Hora Estimada:</label>
-                    <input type="text" id="resHoraInput" placeholder="Ej: Hoy a las 8:30 PM" class="w-full bg-[#07080b] text-white p-3 rounded-xl border border-kaito-border focus:border-kaito-red focus:outline-none">
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">Hora</label>
+                    <input type="time" id="horaReserva" required class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-kaito-red transition">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">Personas</label>
+                    <select id="personasReserva" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-kaito-red transition">
+                        <option value="2 personas">2 Personas</option>
+                        <option value="3-4 personas">3 - 4 Personas</option>
+                        <option value="5-6 personas">5 - 6 Personas</option>
+                        <option value="Grupo grande (+6 personas)">Grupo (+6 personas)</option>
+                    </select>
                 </div>
             </div>
 
-            <button onclick="enviarReservaKaito()" class="w-full py-4 red-glow-btn hover:brightness-110 text-white font-black text-xs uppercase tracking-widest rounded-xl transition shadow-xl flex items-center justify-center gap-2">
-                <i class="fa-brands fa-whatsapp text-base"></i>
-                <span>Confirmar Reserva con KAI-TO por WhatsApp</span>
+            <div>
+                <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">Tipo de Experiencia</label>
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <label class="flex items-center space-x-2 bg-black/30 p-3 rounded-xl border border-white/5 cursor-pointer hover:border-kaito-red/50 transition">
+                        <input type="radio" name="tipoExperiencia" value="Barra Libre (S/ 59.90)" checked class="accent-red-500">
+                        <span class="text-white font-medium">Barra Libre</span>
+                    </label>
+                    <label class="flex items-center space-x-2 bg-black/30 p-3 rounded-xl border border-white/5 cursor-pointer hover:border-kaito-red/50 transition">
+                        <input type="radio" name="tipoExperiencia" value="A la Carta / Promos" class="accent-red-500">
+                        <span class="text-white font-medium">A la Carta / Promos</span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full py-4 red-glow-btn text-white font-black text-xs uppercase tracking-[0.2em] rounded-xl transition hover:brightness-110 flex items-center justify-center space-x-2">
+                <i class="fa-brands fa-whatsapp text-lg"></i>
+                <span>Confirmar Reserva por WhatsApp</span>
             </button>
-        </div>
-
+        </form>
     </section>
 
-    <!-- FOOTER OFICIAL -->
-    <footer class="border-t border-white/[0.08] bg-black py-12 px-6 text-center z-10 relative">
-        <div class="max-w-7xl mx-auto space-y-4">
-            <span class="font-brand text-xs tracking-[0.3em] uppercase text-white block">
-                KAI-TO • BARRA FUSIÓN JAPO-PERUANA
-            </span>
-            <p class="text-xs text-kaito-muted">
-                Miraflores: Calle Bolognesi 143 • Surco: Av. Caminos del Inca 3252 • Lima, Perú
+    <!-- ========================================================================= -->
+    <!-- 8. FOOTER & DERECHOS RESERVADOS                                            -->
+    <!-- ========================================================================= -->
+    <footer class="border-t border-white/[0.08] bg-[#050608] py-12 px-6 sm:px-12 text-xs text-kaito-muted relative z-10">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-kaito-red flex items-center justify-center font-bold text-xs text-white">
+                    海
+                </div>
+                <span class="font-brand font-bold text-white tracking-widest text-sm">KAI-TO — BARRA FUSIÓN</span>
+            </div>
+
+            <p class="text-center md:text-left text-[11px]">
+                © 2026 KAI-TO Barra Fusión Japo-Peruana. Todos los derechos reservados. Miraflores & Surco, Lima, Perú.
             </p>
-            <div class="text-[10px] text-kaito-muted pt-2 border-t border-white/[0.04]">
-                Sitio Web Oficial desarrollado por <b class="text-kaito-red">KeyMar Systems</b> • © 2026 KAI-TO S.A.C.
+
+            <div class="flex space-x-4 text-base">
+                <a href="https://instagram.com" target="_blank" class="hover:text-kaito-red transition"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://tiktok.com" target="_blank" class="hover:text-kaito-red transition"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://wa.me/51951770377" target="_blank" class="hover:text-kaito-red transition"><i class="fa-brands fa-whatsapp"></i></a>
             </div>
         </div>
     </footer>
 
-    <!-- JAVASCRIPT: RELOJ EN VIVO, GSAP & WHATSAPP DIRECTO (+51 951 770 377) -->
+    <!-- ========================================================================= -->
+    <!-- SCRIPTS EN VIVO: RELOJ LIMA, GSAP ANIMATIONS & WHATSAPP REDIRECT         -->
+    <!-- ========================================================================= -->
     <script>
-        function actualizarReloj() {
+        // 1. Reloj en Vivo Hora de Lima
+        function actualizarRelojLima() {
             const ahora = new Date();
-            const h = String(ahora.getHours()).padStart(2, '0');
-            const m = String(ahora.getMinutes()).padStart(2, '0');
-            const s = String(ahora.getSeconds()).padStart(2, '0');
-            const elem = document.getElementById('relojLimaKaito');
-            if (elem) elem.innerText = `${h} : ${m} : ${s}`;
+            const opciones = { timeZone: 'America/Lima', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const horaLima = new Intl.DateTimeFormat('es-PE', opciones).format(ahora);
+            document.getElementById('relojLimaKaito').textContent = horaLima.replace(/:/g, ' : ');
         }
-        setInterval(actualizarReloj, 1000);
-        actualizarReloj();
+        setInterval(actualizarRelojLima, 1000);
+        actualizarRelojLima();
 
-        document.addEventListener('DOMContentLoaded', () => {
+        // 2. Integración WhatsApp Dinámica para Reservas
+        function enviarReservaWhatsApp(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('nombreReserva').value;
+            const sede = document.getElementById('sedeReserva').value;
+            const fecha = document.getElementById('fechaReserva').value;
+            const hora = document.getElementById('horaReserva').value;
+            const personas = document.getElementById('personasReserva').value;
+            const experiencia = document.querySelector('input[name="tipoExperiencia"]:checked').value;
+
+            const mensaje = `Hola KAI-TO! Quisiera confirmar una reserva:\n\n` +
+                            `👤 *Nombre:* ${nombre}\n` +
+                            `📍 *Sede:* ${sede}\n` +
+                            `📅 *Fecha:* ${fecha}\n` +
+                            `⏰ *Hora:* ${hora}\n` +
+                            `👥 *Personas:* ${personas}\n` +
+                            `🍣 *Experiencia:* ${experiencia}`;
+
+            const urlWhatsApp = `https://wa.me/51951770377?text=${encodeURIComponent(mensaje)}`;
+            window.open(urlWhatsApp, '_blank');
+        }
+
+        // 3. Animaciones Cinemáticas con GSAP
+        document.addEventListener("DOMContentLoaded", () => {
             gsap.registerPlugin(ScrollTrigger);
 
-            gsap.from('.gsap-hero', {
-                opacity: 0,
-                y: 35,
-                filter: 'blur(6px)',
-                duration: 1.1,
-                stagger: 0.18,
-                ease: 'power3.out'
-            });
-
-            gsap.from('.gsap-hero-img', {
-                opacity: 0,
-                scale: 0.95,
+            gsap.from(".gsap-hero", {
                 duration: 1.2,
-                delay: 0.3,
-                ease: 'power2.out'
+                y: 40,
+                opacity: 0,
+                stagger: 0.2,
+                ease: "power3.out"
             });
 
-            gsap.from('.kaito-card', {
-                scrollTrigger: {
-                    trigger: '#promociones',
-                    start: 'top 85%'
-                },
+            gsap.from(".gsap-hero-img", {
+                duration: 1.5,
+                scale: 0.95,
                 opacity: 0,
-                y: 35,
-                duration: 0.8,
-                stagger: 0.12,
-                ease: 'power2.out'
+                delay: 0.4,
+                ease: "power2.out"
             });
         });
-
-        function enviarReservaKaito() {
-            const sede = document.getElementById('resSedeInput').value;
-            const exp = document.getElementById('resExpInput').value;
-            const party = document.getElementById('resPartyInput').value;
-            const time = document.getElementById('resHoraInput').value.trim() || 'Hoy';
-
-            const mensaje = `Hola KAI-TO! 👋 Deseo solicitar una reserva con los siguientes datos:%0A%0A• Sede: ${sede}%0A• Experiencia: ${exp}%0A• Invitados: ${party}%0A• Horario: ${time}%0A%0A¿Tienen disponibilidad?`;
-            
-            window.open(`https://wa.me/51951770377?text=${mensaje}`, '_blank');
-        }
     </script>
 </body>
 </html>
